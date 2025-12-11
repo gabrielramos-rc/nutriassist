@@ -15,8 +15,14 @@ NutriAssist is a SaaS platform for nutritionists to automate appointment schedul
 
 ## Key URLs
 
+- Vercel App: https://nutriassist-one.vercel.app
 - Supabase Project: https://xeckvimqbosmmzjivxjp.supabase.co
 - GitHub Repo: https://github.com/gabrielramos-rc/nutriassist.git
+
+### Test Data
+- Test Chat: https://nutriassist-one.vercel.app/chat/11111111-1111-1111-1111-111111111111
+- Nutritionist ID: `11111111-1111-1111-1111-111111111111`
+- Patient ID: `22222222-2222-2222-2222-222222222222`
 
 ## Project Structure
 ```

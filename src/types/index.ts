@@ -51,6 +51,7 @@ export interface NinaResponse {
     requiresHandoff?: boolean;
     handoffReason?: string;
     faqKey?: string;
+    currentAppointmentId?: string;
   };
 }
 
