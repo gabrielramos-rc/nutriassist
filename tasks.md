@@ -211,45 +211,45 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 5: Diet Q&A System
 
 ### 5.1 PDF Processing
-- [ ] Create `src/lib/pdf.ts`
-- [ ] Implement `extractTextFromPDF()`:
-  - [ ] Use pdf-parse library
-  - [ ] Extract all text content
-  - [ ] Preserve page numbers if possible
-  - [ ] Return structured text
+- [X] Create `src/lib/pdf.ts`
+- [X] Implement `extractTextFromPDF()`:
+  - [X] Use pdf-parse library
+  - [X] Extract all text content
+  - [X] Preserve page numbers if possible
+  - [X] Return structured text
 
 ### 5.2 PDF Upload API
-- [ ] Create `src/app/api/upload/route.ts`
-- [ ] Handle multipart form data
-- [ ] Validate file type (PDF only)
-- [ ] Validate file size (max 10MB)
-- [ ] Upload to Supabase Storage
-- [ ] Extract text from PDF
-- [ ] Update patient record with URL and extracted text
-- [ ] Return success response
+- [X] Create `src/app/api/upload/route.ts`
+- [X] Handle multipart form data
+- [X] Validate file type (PDF only)
+- [X] Validate file size (max 10MB)
+- [X] Upload to Supabase Storage
+- [X] Extract text from PDF
+- [X] Update patient record with URL and extracted text
+- [X] Return success response
 
 ### 5.3 Diet Q&A Handler
-- [ ] Create `src/services/nina/dietQA.ts`
-- [ ] Implement `handleDietQuestion()` function
-- [ ] Load patient's diet_extracted_text
-- [ ] If no diet found, prompt to upload or handoff
-- [ ] Send question + diet text to LLM
-- [ ] Prompt LLM to:
-  - [ ] Find relevant section in diet
-  - [ ] Answer conversationally in Portuguese
-  - [ ] Include page/section reference
-  - [ ] Say "not in plan" if not found
-- [ ] Return formatted response
+- [X] Create `src/services/nina/dietQA.ts`
+- [X] Implement `handleDietQuestion()` function
+- [X] Load patient's diet_extracted_text
+- [X] If no diet found, prompt to upload or handoff
+- [X] Send question + diet text to LLM
+- [X] Prompt LLM to:
+  - [X] Find relevant section in diet
+  - [X] Answer conversationally in Portuguese
+  - [X] Include page/section reference
+  - [X] Say "not in plan" if not found
+- [X] Return formatted response
 
 ### 5.4 Patient Identification
-- [ ] Create `src/services/patients.ts`
-- [ ] Implement `identifyPatient()`:
-  - [ ] By phone number (for WhatsApp)
-  - [ ] By email (for web with login)
-  - [ ] By session link (for anonymous web)
-- [ ] Implement `getPatientDiet()`:
-  - [ ] Return diet_extracted_text
-  - [ ] Return null if not uploaded
+- [X] Create `src/services/patients.ts`
+- [X] Implement `identifyPatient()`:
+  - [X] By phone number (for WhatsApp)
+  - [X] By email (for web with login)
+  - [X] By session link (for anonymous web)
+- [X] Implement `getPatientDiet()`:
+  - [X] Return diet_extracted_text
+  - [X] Return null if not uploaded
 
 ---
 

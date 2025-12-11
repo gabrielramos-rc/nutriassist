@@ -1,12 +1,8 @@
-import { chat } from "@/lib/openrouter";
 import { runGuardrails } from "./guardrails";
 import { classifyIntent, matchFAQKey } from "./intents";
 import { handleScheduling } from "./scheduling";
-import {
-  NINA_SYSTEM_PROMPT,
-  DIET_QA_PROMPT,
-  RESPONSE_TEMPLATES,
-} from "@/constants/nina";
+import { handleDietQuestion } from "./dietQA";
+import { RESPONSE_TEMPLATES } from "@/constants/nina";
 import type {
   NinaResponse,
   NinaIntent,
@@ -95,61 +91,6 @@ function handleGreeting(
 }
 
 
-/**
- * Handle diet-related questions
- */
-async function handleDietQuestion(
-  message: string,
-  nutritionist: Nutritionist,
-  patient: Patient | null | undefined,
-  conversationHistory: Message[]
-): Promise<NinaResponse> {
-  // Check if patient has a diet plan
-  if (!patient?.diet_extracted_text) {
-    return {
-      content: RESPONSE_TEMPLATES.noDietPlan(nutritionist.name),
-      intent: "diet_question",
-      metadata: {
-        requiresHandoff: false,
-      },
-    };
-  }
-
-  try {
-    // Build conversation context for LLM
-    const historyMessages = conversationHistory.slice(-6).map((msg) => ({
-      role: msg.sender === "patient" ? "user" as const : "assistant" as const,
-      content: msg.content,
-    }));
-
-    // Create the diet Q&A prompt
-    const prompt = DIET_QA_PROMPT
-      .replace("{dietText}", patient.diet_extracted_text)
-      .replace("{question}", message);
-
-    const response = await chat(
-      NINA_SYSTEM_PROMPT,
-      prompt,
-      historyMessages,
-      { temperature: 0.3, maxTokens: 512 }
-    );
-
-    return {
-      content: response,
-      intent: "diet_question",
-    };
-  } catch (error) {
-    console.error("Error handling diet question:", error);
-    return {
-      content: RESPONSE_TEMPLATES.error,
-      intent: "diet_question",
-      metadata: {
-        requiresHandoff: true,
-        handoffReason: "error_processing_diet_question",
-      },
-    };
-  }
-}
 
 /**
  * Handle FAQ questions
@@ -204,3 +145,4 @@ function handleOffTopic(): NinaResponse {
 export { runGuardrails } from "./guardrails";
 export { classifyIntent, classifySchedulingSubIntent, matchFAQKey } from "./intents";
 export { handleScheduling, processSlotSelection, processCancellation } from "./scheduling";
+export { handleDietQuestion } from "./dietQA";
