@@ -3,10 +3,10 @@ import {
   addDays,
   addMinutes,
   format,
-  parse,
   isAfter,
   isBefore,
   startOfDay,
+  endOfDay,
   setHours,
   setMinutes,
 } from "date-fns";
@@ -309,4 +309,72 @@ export async function listAppointments(
   const { data } = await query;
 
   return (data || []) as Appointment[];
+}
+
+/**
+ * Get today's appointment count for a nutritionist
+ */
+export async function getTodayAppointmentCount(nutritionistId: string): Promise<number> {
+  const supabase = getSupabase();
+  const today = new Date();
+
+  const { count, error } = await supabase
+    .from("appointments")
+    .select("id", { count: "exact", head: true })
+    .eq("nutritionist_id", nutritionistId)
+    .eq("status", "scheduled")
+    .gte("starts_at", startOfDay(today).toISOString())
+    .lte("starts_at", endOfDay(today).toISOString());
+
+  if (error) {
+    console.error("Error counting today's appointments:", error);
+    return 0;
+  }
+
+  return count || 0;
+}
+
+/**
+ * Get today's appointments for a nutritionist
+ */
+export async function getTodayAppointments(nutritionistId: string): Promise<Appointment[]> {
+  const supabase = getSupabase();
+  const today = new Date();
+
+  const { data, error } = await supabase
+    .from("appointments")
+    .select("*, patients(id, name, email, phone)")
+    .eq("nutritionist_id", nutritionistId)
+    .eq("status", "scheduled")
+    .gte("starts_at", startOfDay(today).toISOString())
+    .lte("starts_at", endOfDay(today).toISOString())
+    .order("starts_at", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching today's appointments:", error);
+    return [];
+  }
+
+  return (data || []) as Appointment[];
+}
+
+/**
+ * Update appointment status
+ */
+export async function updateAppointmentStatus(
+  appointmentId: string,
+  status: "scheduled" | "completed" | "cancelled" | "no_show"
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabase();
+
+  const { error } = await supabase
+    .from("appointments")
+    .update({ status })
+    .eq("id", appointmentId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
 }
