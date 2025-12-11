@@ -44,3 +44,4 @@ Dashboard ─────┘                         │
 
 - `nina-service.md` - Nina AI processing, intents, conversation state
 - `database.md` - Schema, tables, Realtime, migrations
+- `tech-stack.md` - Package versions, LLM config, Supabase details
