@@ -317,13 +317,13 @@ User: "Posso trocar frango por atum?"
 - Off-topic content redirected, not engaged
 - No medical advice - always handoff
 
-## Future Enhancements
+## Future Enhancements (Post-MVP)
 
-### Phase 3: WhatsApp Integration
+### WhatsApp Integration
 ```
 ┌─────────────────┐
 │   Web Chat      │──────┐
-└─────────────────┘      │     
+└─────────────────┘      │
                          │     ┌──────────────────┐
                          ├────▶│   Nina Service   │
 ┌─────────────────┐      │     └──────────────────┘
@@ -331,13 +331,32 @@ User: "Posso trocar frango por atum?"
 │   (Meta API)    │
 └─────────────────┘
 ```
+- Set up Meta Business API
+- Create webhook endpoint for incoming messages
+- Implement message receiving/sending
+- Patient identification by phone number
 
-### Phase 4: Google Calendar Integration
+### Google Calendar Integration
+- Set up Google OAuth
 - Two-way sync with nutritionist's calendar
-- Automatic slot detection
+- Automatic slot detection from calendar availability
 - Calendar event creation on booking
 
-### Phase 5: Multi-channel Expansion
+### Authentication (Supabase Auth)
+- Nutritionist login/signup
+- Patient login (optional)
+- Protected API routes
+- Protected dashboard
+- Production RLS policies (migration ready: `002_production_rls.sql`)
+
+### Multi-tenant Support
+- Multiple nutritionists on single instance
+- Subscription/billing system
+- Usage limits per plan
+- Admin dashboard
+
+### Multi-channel Expansion
 - Instagram DM integration
 - Telegram bot
-- SMS notifications
+- SMS notifications (Twilio)
+- Email notifications
