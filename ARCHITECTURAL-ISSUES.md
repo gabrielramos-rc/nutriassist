@@ -2,7 +2,7 @@
 
 This document captures all issues and limitations discovered during testing phases (10-16). Issues are categorized by priority and include suggested solutions.
 
-**Last Updated**: 2025-12-11
+**Last Updated**: 2025-12-11 (All issues resolved)
 
 ---
 
@@ -10,11 +10,11 @@ This document captures all issues and limitations discovered during testing phas
 
 1. [Issue #1: Scheduling Flow State Management](#issue-1-scheduling-flow-state-management) - HIGH ✅ RESOLVED
 2. [Issue #2: OpenRouter Model Unavailable](#issue-2-openrouter-model-unavailable) - HIGH ✅ RESOLVED
-3. [Issue #3: Chat Widget Session Persistence](#issue-3-chat-widget-session-persistence) - MEDIUM
-4. [Issue #4: Quick Reply Buttons Send Wrong Format](#issue-4-quick-reply-buttons-send-wrong-format) - LOW
-5. [Issue #5: Profile Validation Missing](#issue-5-profile-validation-missing) - LOW
-6. [Issue #6: Appointment Notes Not Editable](#issue-6-appointment-notes-not-editable) - LOW
-7. [Issue #7: Dashboard Reply Not Visible in Real-time](#issue-7-dashboard-reply-not-visible-in-real-time) - MEDIUM
+3. [Issue #3: Chat Widget Session Persistence](#issue-3-chat-widget-session-persistence) - MEDIUM ✅ PARTIAL
+4. [Issue #4: Quick Reply Buttons Send Wrong Format](#issue-4-quick-reply-buttons-send-wrong-format) - LOW ✅ RESOLVED
+5. [Issue #5: Profile Validation Missing](#issue-5-profile-validation-missing) - LOW ✅ RESOLVED
+6. [Issue #6: Appointment Notes Not Editable](#issue-6-appointment-notes-not-editable) - LOW ✅ RESOLVED
+7. [Issue #7: Dashboard Reply Not Visible in Real-time](#issue-7-dashboard-reply-not-visible-in-real-time) - MEDIUM ✅ RESOLVED
 
 ---
 
@@ -165,7 +165,16 @@ OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
 
 ## Issue #3: Chat Widget Session Persistence
 
-### Priority: MEDIUM
+### Priority: MEDIUM ✅ PARTIAL
+
+### Status: PARTIAL (2025-12-11)
+
+**Solution implemented:** Option C (Real-time Updates)
+- Added Supabase Realtime subscription to ChatWidget component
+- Patient now sees nutritionist replies instantly without page refresh
+- Full cross-device session persistence deferred (would require Supabase Auth)
+
+**PR:** #23 fix/issue-3-chat-realtime
 
 ### Problem
 When the nutritionist replies to a patient message from the dashboard, the reply is stored in the database but the patient doesn't see it in the chat widget. The chat widget creates a new session each time, losing the conversation history.
@@ -244,7 +253,16 @@ useEffect(() => {
 
 ## Issue #4: Quick Reply Buttons Send Wrong Format
 
-### Priority: LOW
+### Priority: LOW ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:**
+- Updated QuickReplies component to accept `{label, value}` objects
+- Button displays formatted slot text but sends slot number
+- ChatWidget maps slots with index as value
+
+**PR:** #20 fix/issue-4-quick-reply-format
 
 ### Problem
 The quick reply buttons for scheduling slots send the full slot text (e.g., "sexta 12/12 às 09:30") instead of the expected number format ("3"). This causes the scheduling flow to fail even when using the buttons.
@@ -284,7 +302,16 @@ onClick={() => sendMessage(reply.value)}
 
 ## Issue #5: Profile Validation Missing
 
-### Priority: LOW
+### Priority: LOW ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:**
+- Added `validateForm()` function with error state management
+- Validates required fields (name) before save
+- Shows inline error messages on invalid fields
+
+**PR:** #21 fix/issue-5-profile-validation
 
 ### Problem
 The profile settings form accepts empty values for required fields like the nutritionist's name. Users can save a profile with an empty name, which could cause display issues throughout the application.
@@ -328,7 +355,16 @@ const profileSchema = z.object({
 
 ## Issue #6: Appointment Notes Not Editable
 
-### Priority: LOW
+### Priority: LOW ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:**
+- Added `updateAppointmentNotes()` function to appointments service
+- Updated PATCH endpoint to handle notes updates
+- Added editable notes section to AppointmentModal with local state management
+
+**PR:** #22 fix/issue-6-appointment-notes
 
 ### Problem
 When editing an existing appointment, there is no way to add or modify notes. The notes field is not exposed in the edit appointment UI, even though the database schema supports storing notes.
@@ -372,7 +408,16 @@ When editing an existing appointment, there is no way to add or modify notes. Th
 
 ## Issue #7: Dashboard Reply Not Visible in Real-time
 
-### Priority: MEDIUM
+### Priority: MEDIUM ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:** Option C (Real-time Subscription)
+- Enabled Supabase Realtime on messages table via SQL migration
+- Added Realtime subscription to ConversationsPage
+- Nutritionist replies appear instantly without page refresh
+
+**PR:** #19 fix/issue-7-dashboard-reply
 
 ### Problem
 When a nutritionist replies to a patient message from the dashboard conversations page, the reply is stored in the database but doesn't appear immediately in the conversation view. The nutritionist must refresh the page to see their own reply.
@@ -447,13 +492,13 @@ useEffect(() => {
 
 | Issue | Priority | Effort | Impact | Status |
 |-------|----------|--------|--------|--------|
-| #2 OpenRouter Model | HIGH | Low | High | ✅ RESOLVED |
-| #1 Scheduling State | HIGH | Medium | High | ✅ RESOLVED |
-| #7 Dashboard Reply | MEDIUM | Low | Medium | Pending |
-| #4 Quick Reply Format | LOW | Low | Medium | Pending |
-| #5 Profile Validation | LOW | Low | Low | Pending |
-| #6 Appointment Notes | LOW | Low | Low | Pending |
-| #3 Session Persistence | MEDIUM | High | Medium | Pending |
+| #2 OpenRouter Model | HIGH | Low | High | ✅ RESOLVED (PR #17) |
+| #1 Scheduling State | HIGH | Medium | High | ✅ RESOLVED (PR #18) |
+| #7 Dashboard Reply | MEDIUM | Low | Medium | ✅ RESOLVED (PR #19) |
+| #4 Quick Reply Format | LOW | Low | Medium | ✅ RESOLVED (PR #20) |
+| #5 Profile Validation | LOW | Low | Low | ✅ RESOLVED (PR #21) |
+| #6 Appointment Notes | LOW | Low | Low | ✅ RESOLVED (PR #22) |
+| #3 Session Persistence | MEDIUM | High | Medium | ✅ PARTIAL (PR #23) |
 
 ---
 
