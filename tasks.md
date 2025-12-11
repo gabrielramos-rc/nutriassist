@@ -99,50 +99,50 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 2: Chat System
 
 ### 2.1 Conversation Service
-- [ ] Create `src/services/conversations.ts`
-- [ ] Implement `getOrCreateSession()` - find active session or create new
-- [ ] Implement `getSessionMessages()` - get last N messages for context
-- [ ] Implement `saveMessage()` - save message with intent
-- [ ] Implement `closeSession()` - mark session as closed
+- [X] Create `src/services/conversations.ts`
+- [X] Implement `getOrCreateSession()` - find active session or create new
+- [X] Implement `getSessionMessages()` - get last N messages for context
+- [X] Implement `saveMessage()` - save message with intent
+- [X] Implement `closeSession()` - mark session as closed
 
 ### 2.2 Chat API Endpoint
-- [ ] Create `src/app/api/chat/route.ts`
-- [ ] POST handler:
-  - [ ] Validate request body (message, sessionId or nutritionistId)
-  - [ ] Get or create chat session
-  - [ ] Load conversation context
-  - [ ] Load patient diet text (if patient identified)
-  - [ ] Process through Nina service
-  - [ ] Save messages to database
-  - [ ] Return response
-- [ ] Add error handling
+- [X] Create `src/app/api/chat/route.ts`
+- [X] POST handler:
+  - [X] Validate request body (message, sessionId or nutritionistId)
+  - [X] Get or create chat session
+  - [X] Load conversation context
+  - [X] Load patient diet text (if patient identified)
+  - [X] Process through Nina service
+  - [X] Save messages to database
+  - [X] Return response
+- [X] Add error handling
 
 ### 2.3 Chat UI Components
-- [ ] Create `src/components/chat/ChatWidget.tsx`
-  - [ ] Full chat interface component
-  - [ ] Message list with auto-scroll
-  - [ ] Input field with send button
-  - [ ] Loading states
-  - [ ] Error states
-- [ ] Create `src/components/chat/MessageBubble.tsx`
-  - [ ] Patient message style (right aligned)
-  - [ ] Nina message style (left aligned)
-  - [ ] Timestamp display
-  - [ ] Typing indicator
-- [ ] Create `src/components/chat/MessageInput.tsx`
-  - [ ] Text input with submit
-  - [ ] Enter to send
-  - [ ] Disabled state while sending
-- [ ] Create `src/components/chat/QuickReplies.tsx`
-  - [ ] Suggested response buttons
-  - [ ] Used for scheduling options
+- [X] Create `src/components/chat/ChatWidget.tsx`
+  - [X] Full chat interface component
+  - [X] Message list with auto-scroll
+  - [X] Input field with send button
+  - [X] Loading states
+  - [X] Error states
+- [X] Create `src/components/chat/MessageBubble.tsx`
+  - [X] Patient message style (right aligned)
+  - [X] Nina message style (left aligned)
+  - [X] Timestamp display
+  - [X] Typing indicator
+- [X] Create `src/components/chat/MessageInput.tsx`
+  - [X] Text input with submit
+  - [X] Enter to send
+  - [X] Disabled state while sending
+- [X] Create `src/components/chat/QuickReplies.tsx`
+  - [X] Suggested response buttons
+  - [X] Used for scheduling options
 
 ### 2.4 Patient Chat Page
-- [ ] Create `src/app/chat/[nutritionistId]/page.tsx`
-- [ ] Load nutritionist info
-- [ ] Initialize chat widget
-- [ ] Handle session creation
-- [ ] Display Nina greeting on first load
+- [X] Create `src/app/chat/[nutritionistId]/page.tsx`
+- [X] Load nutritionist info
+- [X] Initialize chat widget
+- [X] Handle session creation
+- [X] Display Nina greeting on first load
 
 ---
 
