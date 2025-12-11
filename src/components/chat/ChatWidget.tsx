@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { QuickReplies, QuickReplyOption } from "./QuickReplies";
+import { createClient } from "@/lib/supabase/client";
 import type { ChatMessage, ChatResponse, NinaResponse } from "@/types";
 
 interface ChatWidgetProps {
@@ -25,6 +26,7 @@ export function ChatWidget({
   const [error, setError] = useState<string | null>(null);
   const [quickReplies, setQuickReplies] = useState<QuickReplyOption[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const supabaseRef = useRef(createClient());
 
   // Auto-scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -48,6 +50,57 @@ export function ChatWidget({
       ]);
     }
   }, [initialGreeting, messages.length]);
+
+  // Subscribe to real-time messages (for nutritionist replies)
+  useEffect(() => {
+    if (!sessionId) return;
+
+    const supabase = supabaseRef.current;
+    const channelName = `chat:session:${sessionId}`;
+
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `chat_session_id=eq.${sessionId}`,
+        },
+        (payload) => {
+          const newMessage = payload.new as {
+            id: string;
+            sender: string;
+            content: string;
+            created_at: string;
+            intent?: string | null;
+          };
+
+          // Only add nutritionist messages (patient/nina already added locally)
+          if (newMessage.sender === "nutritionist") {
+            const chatMessage: ChatMessage = {
+              id: newMessage.id,
+              sender: "nutritionist",
+              content: newMessage.content,
+              timestamp: new Date(newMessage.created_at),
+            };
+
+            setMessages((prev) => {
+              // Avoid duplicates
+              const exists = prev.some((m) => m.id === newMessage.id);
+              if (exists) return prev;
+              return [...prev, chatMessage];
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [sessionId]);
 
   const sendMessage = async (content: string) => {
     // Add user message immediately
