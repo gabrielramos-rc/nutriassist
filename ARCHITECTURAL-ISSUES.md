@@ -8,7 +8,7 @@ This document captures all issues and limitations discovered during testing phas
 
 ## Table of Contents
 
-1. [Issue #1: Scheduling Flow State Management](#issue-1-scheduling-flow-state-management) - HIGH
+1. [Issue #1: Scheduling Flow State Management](#issue-1-scheduling-flow-state-management) - HIGH ✅ RESOLVED
 2. [Issue #2: OpenRouter Model Unavailable](#issue-2-openrouter-model-unavailable) - HIGH ✅ RESOLVED
 3. [Issue #3: Chat Widget Session Persistence](#issue-3-chat-widget-session-persistence) - MEDIUM
 4. [Issue #4: Quick Reply Buttons Send Wrong Format](#issue-4-quick-reply-buttons-send-wrong-format) - LOW
@@ -20,7 +20,17 @@ This document captures all issues and limitations discovered during testing phas
 
 ## Issue #1: Scheduling Flow State Management
 
-### Priority: HIGH
+### Priority: HIGH ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:** Option B (Message Metadata Analysis)
+- Before intent classification, check the last Nina message metadata
+- If `availableSlots` is present and user responds with a number (1-9), process as slot selection
+- If `currentAppointmentId` is present (without slots) and user responds "sim", process cancellation confirmation
+- Added `checkPendingConversationState()` function in `src/services/nina/index.ts`
+
+**PR:** fix/issue-1-scheduling-state
 
 ### Problem
 The multi-turn scheduling flow doesn't work. When a patient asks to book an appointment, Nina shows available slots and asks the patient to respond with a number (1-5). However, when the patient responds with the number, the system doesn't recognize it as a slot selection and instead treats it as a new, unrelated message (often creating a handoff).
@@ -83,10 +93,10 @@ const intent = await classifyIntent(userMessage, conversationHistory);
 - `supabase/migrations/` - Add state column to chat_sessions (if Option A)
 
 ### Acceptance Criteria
-- [ ] Patient can complete booking by responding with slot number
-- [ ] Patient can confirm cancellation by responding "sim"
-- [ ] Patient can complete rescheduling flow
-- [ ] State is cleared after flow completion or timeout
+- [x] Patient can complete booking by responding with slot number
+- [x] Patient can confirm cancellation by responding "sim"
+- [x] Patient can complete rescheduling flow
+- [x] State is cleared after flow completion (metadata-based, no persistent state needed)
 
 ---
 
@@ -435,15 +445,15 @@ useEffect(() => {
 
 ## Implementation Priority
 
-| Issue | Priority | Effort | Impact | Suggested Order |
-|-------|----------|--------|--------|-----------------|
-| #2 OpenRouter Model | HIGH | Low | High | 1st - Quick fix |
-| #1 Scheduling State | HIGH | Medium | High | 2nd - Core functionality |
-| #7 Dashboard Reply | MEDIUM | Low | Medium | 3rd - Easy fix |
-| #4 Quick Reply Format | LOW | Low | Medium | 4th - Easy fix |
-| #5 Profile Validation | LOW | Low | Low | 5th - Easy fix |
-| #6 Appointment Notes | LOW | Low | Low | 6th - Easy fix |
-| #3 Session Persistence | MEDIUM | High | Medium | 7th - Requires design decisions |
+| Issue | Priority | Effort | Impact | Status |
+|-------|----------|--------|--------|--------|
+| #2 OpenRouter Model | HIGH | Low | High | ✅ RESOLVED |
+| #1 Scheduling State | HIGH | Medium | High | ✅ RESOLVED |
+| #7 Dashboard Reply | MEDIUM | Low | Medium | Pending |
+| #4 Quick Reply Format | LOW | Low | Medium | Pending |
+| #5 Profile Validation | LOW | Low | Low | Pending |
+| #6 Appointment Notes | LOW | Low | Low | Pending |
+| #3 Session Persistence | MEDIUM | High | Medium | Pending |
 
 ---
 
@@ -474,4 +484,4 @@ git checkout -b fix/architectural-issues
 ---
 
 *Document created: 2025-12-11*
-*Last updated: 2025-12-11 (added issues #5, #6, #7 from Phases 12-15)*
+*Last updated: 2025-12-11 (resolved Issue #1: Scheduling Flow State Management)*
