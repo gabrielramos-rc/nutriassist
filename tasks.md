@@ -335,36 +335,36 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 8: Polish and Testing
 
 ### 8.1 UI Components
-- [ ] Create `src/components/ui/Button.tsx`
-- [ ] Create `src/components/ui/Input.tsx`
-- [ ] Create `src/components/ui/Card.tsx`
-- [ ] Create `src/components/ui/Modal.tsx`
-- [ ] Create `src/components/ui/Loading.tsx`
-- [ ] Create `src/components/ui/Avatar.tsx`
+- [X] Create `src/components/ui/Button.tsx`
+- [X] Create `src/components/ui/Input.tsx`
+- [X] Create `src/components/ui/Card.tsx`
+- [X] Create `src/components/ui/Modal.tsx`
+- [X] Create `src/components/ui/Loading.tsx`
+- [X] Create `src/components/ui/Avatar.tsx`
 
 ### 8.2 Landing Page
-- [ ] Create `src/app/page.tsx`
-- [ ] Hero section with value proposition
-- [ ] Features section
-- [ ] How it works
-- [ ] CTA to sign up (link to dashboard for MVP)
+- [X] Create `src/app/page.tsx`
+- [X] Hero section with value proposition
+- [X] Features section
+- [X] How it works
+- [X] CTA to sign up (link to dashboard for MVP)
 
 ### 8.3 Error Handling
-- [ ] Create error boundary component
-- [ ] Add error states to all pages
-- [ ] Add toast notifications for actions
-- [ ] Log errors to console (Sentry later)
+- [X] Create error boundary component
+- [X] Add error states to all pages
+- [X] Add toast notifications for actions
+- [X] Log errors to console (Sentry later)
 
 ### 8.4 Testing with Real Data
-- [ ] Seed test nutritionist account
-- [ ] Seed test patient with diet PDF
+- [X] Seed test nutritionist account (pre-existing)
+- [X] Seed test patient with diet PDF (pre-existing)
 - [ ] Test all chat flows
 - [ ] Test scheduling flows
 - [ ] Test diet Q&A accuracy
 - [ ] Test handoff scenarios
 
 ### 8.5 Performance Optimization
-- [ ] Add loading states everywhere
+- [X] Add loading states everywhere
 - [ ] Optimize database queries
 - [ ] Add indexes if needed
 - [ ] Test with slow network
