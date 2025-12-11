@@ -407,17 +407,21 @@ export async function getConversationWithMessages(sessionId: string, messageLimi
     return null;
   }
 
+  // Query in descending order to get the latest messages, then reverse for chronological display
   const { data: messages, error: messagesError } = await supabase
     .from("messages")
     .select("*")
     .eq("chat_session_id", sessionId)
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(messageLimit);
 
   if (messagesError) {
     console.error("Error fetching messages:", messagesError);
     return { ...session, messages: [] };
   }
+
+  // Reverse to get chronological order (oldest first)
+  const chronologicalMessages = (messages || []).reverse();
 
   // Check for pending handoffs
   const { data: handoffs } = await supabase
@@ -428,7 +432,7 @@ export async function getConversationWithMessages(sessionId: string, messageLimi
 
   return {
     ...session,
-    messages: messages || [],
+    messages: chronologicalMessages,
     pendingHandoffs: handoffs || [],
   };
 }

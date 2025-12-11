@@ -141,8 +141,8 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 
 ### 4.3 Responder como Nutricionista
 - [x] Campo de resposta visível
-- [ ] Enviar resposta funciona ⚠️ (input clears but message not visible in history)
-- [ ] Mensagem aparece como "nutritionist" (não "nina")
+- [x] Enviar resposta funciona (BUG FIXED: message limit query order was cutting off newest messages)
+- [x] Mensagem aparece como "nutritionist" (não "nina")
 - [ ] Paciente vê resposta no chat widget
 
 ### 4.4 Resolver Handoff
