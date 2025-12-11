@@ -6,6 +6,7 @@ import {
   rescheduleAppointment,
   getAppointment,
   updateAppointmentStatus,
+  updateAppointmentNotes,
 } from "@/services/appointments";
 import { getNutritionist } from "@/services/patients";
 
@@ -96,12 +97,12 @@ export async function POST(request: NextRequest) {
 
 /**
  * PATCH /api/appointments
- * Reschedule an appointment or update status
+ * Reschedule an appointment, update status, or update notes
  */
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { appointmentId, newStartsAt, duration, status } = body;
+    const { appointmentId, newStartsAt, duration, status, notes } = body;
 
     if (!appointmentId) {
       return NextResponse.json(
@@ -131,10 +132,22 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    // If notes is provided (including empty string to clear), update notes
+    if (notes !== undefined) {
+      const result = await updateAppointmentNotes(appointmentId, notes || null);
+      if (!result.success) {
+        return NextResponse.json(
+          { error: result.error },
+          { status: 400 }
+        );
+      }
+      return NextResponse.json({ success: true });
+    }
+
     // Otherwise, reschedule
     if (!newStartsAt) {
       return NextResponse.json(
-        { error: "newStartsAt or status is required" },
+        { error: "newStartsAt, status, or notes is required" },
         { status: 400 }
       );
     }
@@ -156,7 +169,7 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     console.error("Error updating appointment:", error);
     return NextResponse.json(
-      { error: "Failed to update appointment" },
+      { error: "Failed to update appointment", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
