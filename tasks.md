@@ -30,7 +30,7 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 |-------|-------------|-------|--------|
 | 10 | Bug Fixes (FAQ intent) | 3 | ✅ Complete |
 | 11 | Chat Widget Testing | 20 | ✅ Complete |
-| 12 | Dashboard Conversations | 9 | Pending |
+| 12 | Dashboard Conversations | 9 | ✅ Complete |
 
 **Why together:** These phases validate the core chat experience - the primary user-facing feature. Phase 10 fixes a bug that affects Phase 11 FAQ tests.
 
@@ -127,22 +127,28 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 ---
 
-### Phase 12: Dashboard Conversations Testing
+### Phase 12: Dashboard Conversations Testing ✅ COMPLETE
 
-#### 12.1 Conversation List (5 tests)
-- [ ] Conversations with handoff are highlighted
-- [ ] Click conversation opens details
-- [ ] Message history loads correctly
-- [ ] Messages ordered chronologically
-- [ ] Intent visible on messages
+#### 12.1 Conversation List (5 tests) ✅
+- [x] Conversations with handoff are highlighted
+- [x] Click conversation opens details
+- [x] Message history loads correctly
+- [x] Messages ordered chronologically
+- [x] Intent visible on messages
 
-#### 12.2 Nutritionist Reply (2 tests)
-- [ ] Nutritionist can reply to conversation
-- [ ] Reply appears as "nutritionist" not "nina"
+#### 12.2 Nutritionist Reply (2 tests) ✅
+- [x] Nutritionist can reply to conversation
+- [x] Reply appears as "nutritionist" not "nina"
 
-#### 12.3 Handoff Management (2 tests)
-- [ ] Resolve handoff button works
-- [ ] Handoff counter decreases after resolve
+**Bug Found & Fixed:**
+- **Issue:** Nutritionist replies not visible in conversation history
+- **Root Cause:** `getConversationWithMessages` queried messages ASC with LIMIT 50, cutting off newest messages
+- **Fix:** Changed to DESC order + reverse, ensuring latest 50 messages are shown
+- **File:** `src/services/conversations.ts:410-424`
+
+#### 12.3 Handoff Management (2 tests) ✅
+- [x] Resolve handoff button works
+- [x] Handoff counter decreases after resolve
 
 ---
 
