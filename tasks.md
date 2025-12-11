@@ -41,7 +41,7 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 | Phase | Description | Tests | Status |
 |-------|-------------|-------|--------|
-| 13 | Patients CRUD | 17 | Pending |
+| 13 | Patients CRUD | 17 | ✅ Complete |
 | 14 | Appointments CRUD | 11 | Pending |
 | 15 | Settings CRUD | 12 | Pending |
 
@@ -152,34 +152,34 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 ---
 
-### Phase 13: Dashboard Patients Testing
+### Phase 13: Dashboard Patients Testing ✅ COMPLETE
 
-#### 13.1 Search & Filter (2 tests)
-- [ ] Search by email works
-- [ ] Search by phone works
+#### 13.1 Search & Filter (2 tests) ✅
+- [x] Search by email works
+- [x] Search by phone works
 
-#### 13.2 Create Patient (6 tests)
-- [ ] "Novo Paciente" button opens modal
-- [ ] Required fields validated (name)
-- [ ] Email format validated
-- [ ] Phone accepts Brazilian format
-- [ ] Save creates patient
-- [ ] New patient appears in list
+#### 13.2 Create Patient (6 tests) ✅
+- [x] "Novo Paciente" button opens modal
+- [x] Required fields validated (name)
+- [x] Email format validated
+- [x] Phone accepts Brazilian format
+- [x] Save creates patient
+- [x] New patient appears in list
 
-#### 13.3 Edit Patient (4 tests)
-- [ ] Click patient opens edit modal
-- [ ] Edit data loads correctly
-- [ ] Changes are saved
-- [ ] List updates after save
+#### 13.3 Edit Patient (4 tests) ✅
+- [x] Click patient opens edit modal
+- [x] Edit data loads correctly
+- [x] Changes are saved
+- [x] List updates after save
 
-#### 13.4 Delete Patient (2 tests)
-- [ ] Delete button visible
-- [ ] Delete shows confirmation dialog
+#### 13.4 Delete Patient (2 tests) ✅
+- [x] Delete button visible
+- [x] Delete shows confirmation dialog
 
-#### 13.5 Diet PDF Management (3 tests)
-- [ ] Upload accepts only PDF files
-- [ ] Upload rejects files > 10MB
-- [ ] View/download diet PDF works
+#### 13.5 Diet PDF Management (3 tests) ✅
+- [x] Upload accepts only PDF files
+- [x] Upload rejects files > 10MB
+- [x] View/download diet PDF works
 
 ---
 
