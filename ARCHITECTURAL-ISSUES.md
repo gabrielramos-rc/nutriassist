@@ -9,7 +9,7 @@ This document captures all issues and limitations discovered during testing phas
 ## Table of Contents
 
 1. [Issue #1: Scheduling Flow State Management](#issue-1-scheduling-flow-state-management) - HIGH
-2. [Issue #2: OpenRouter Model Unavailable](#issue-2-openrouter-model-unavailable) - HIGH
+2. [Issue #2: OpenRouter Model Unavailable](#issue-2-openrouter-model-unavailable) - HIGH ✅ RESOLVED
 3. [Issue #3: Chat Widget Session Persistence](#issue-3-chat-widget-session-persistence) - MEDIUM
 4. [Issue #4: Quick Reply Buttons Send Wrong Format](#issue-4-quick-reply-buttons-send-wrong-format) - LOW
 5. [Issue #5: Profile Validation Missing](#issue-5-profile-validation-missing) - LOW
@@ -92,7 +92,17 @@ const intent = await classifyIntent(userMessage, conversationHistory);
 
 ## Issue #2: OpenRouter Model Unavailable
 
-### Priority: HIGH
+### Priority: HIGH ✅ RESOLVED
+
+### Status: RESOLVED (2025-12-11)
+
+**Solution implemented:** Combined Options A + B + C
+- Updated default models to best available free models (December 2025)
+- Added `OPENROUTER_MODEL` env var for single model override
+- Added `OPENROUTER_FALLBACK_MODELS` env var for custom fallback chain
+- Implemented sticky primary with automatic failover on 404
+
+**PR:** fix/issue-2-openrouter-fallback
 
 ### Problem
 The OpenRouter API returns 404 for the model `meta-llama/llama-3.1-8b-instruct:free`. This blocks all LLM-powered features including intent classification and diet Q&A.
@@ -104,44 +114,42 @@ The OpenRouter API returns 404 for the model `meta-llama/llama-3.1-8b-instruct:f
   - Intent classification falls back to keyword matching (less accurate)
   - Diet Q&A completely broken (returns error message)
 
-### Current Configuration
+### Resolution
+
+#### Default Fallback Chain (quality-based order)
 ```typescript
-// src/lib/openrouter.ts
-const DEFAULT_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
-```
-
-### Suggested Solutions
-
-#### Option A: Update to Available Free Model
-Check OpenRouter for currently available free models:
-- `meta-llama/llama-3.2-3b-instruct:free`
-- `mistralai/mistral-7b-instruct:free`
-- `google/gemma-2-9b-it:free`
-
-#### Option B: Use Environment Variable
-Make model configurable via environment:
-```typescript
-const MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.2-3b-instruct:free";
-```
-
-#### Option C: Add Fallback Chain
-Try multiple models in sequence:
-```typescript
-const MODELS = [
-  "meta-llama/llama-3.2-3b-instruct:free",
-  "mistralai/mistral-7b-instruct:free",
-  "google/gemma-2-9b-it:free"
+const DEFAULT_FALLBACK_MODELS = [
+  "deepseek/deepseek-chat-v3-0324:free",           // Best for dialogue
+  "mistralai/mistral-small-3.1-24b-instruct:free", // Great for structured output
+  "google/gemini-2.5-pro-exp-03-25:free",          // Excellent reasoning
+  "nousresearch/deephermes-3-llama-3-8b-preview:free", // Compact fallback
 ];
 ```
 
-### Files to Modify
-- `src/lib/openrouter.ts` - Update DEFAULT_MODEL or add fallback
-- `.env.local` - Add OPENROUTER_MODEL if making configurable
+#### Environment Variables
+```env
+# Optional: Override the default model
+OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324:free
+
+# Optional: Custom fallback chain (comma-separated)
+OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
+```
+
+#### Behavior
+1. If `OPENROUTER_FALLBACK_MODELS` set → use custom chain only
+2. If `OPENROUTER_MODEL` set → use it first, then defaults
+3. Otherwise → use default fallback chain
+4. Sticky primary: remembers which model is working
+5. Auto-failover: skips 404 models immediately
+
+### Files Modified
+- `src/lib/openrouter.ts` - Fallback chain implementation
+- `.env.example` - New environment variables documented
 
 ### Acceptance Criteria
-- [ ] LLM calls succeed without 404 errors
-- [ ] Intent classification works for ambiguous messages
-- [ ] Diet Q&A can generate responses from diet text
+- [x] LLM calls succeed without 404 errors
+- [x] Intent classification works for ambiguous messages
+- [x] Diet Q&A can generate responses from diet text
 
 ---
 
