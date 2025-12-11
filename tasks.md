@@ -374,12 +374,14 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 9: Deployment
 
 ### 9.1 Vercel Setup
-- [ ] Connect GitHub repo to Vercel
-- [ ] Configure environment variables
-- [ ] Set up production branch
+- [X] Connect GitHub repo to Vercel
+- [X] Configure environment variables
+- [X] Set up production branch
+- [X] Create vercel.json configuration
 
 ### 9.2 Production Database
-- [ ] Review Supabase RLS policies
+- [X] Review Supabase RLS policies
+- [X] Create production RLS migration (002_production_rls.sql)
 - [ ] Enable email confirmation (if adding auth)
 - [ ] Set up database backups
 
@@ -388,7 +390,9 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 - [ ] Verify SSL certificate
 
 ### 9.4 Monitoring
-- [ ] Set up Vercel Analytics
+- [X] Set up Vercel Analytics
+- [X] Set up Speed Insights
+- [X] Create deployment documentation (DEPLOYMENT.md)
 - [ ] Monitor error rates
 - [ ] Monitor API response times
 
