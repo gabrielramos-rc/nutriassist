@@ -1,6 +1,7 @@
 import { chat } from "@/lib/openrouter";
 import { runGuardrails } from "./guardrails";
-import { classifyIntent, classifySchedulingSubIntent, matchFAQKey } from "./intents";
+import { classifyIntent, matchFAQKey } from "./intents";
+import { handleScheduling } from "./scheduling";
 import {
   NINA_SYSTEM_PROMPT,
   DIET_QA_PROMPT,
@@ -93,62 +94,6 @@ function handleGreeting(
   };
 }
 
-/**
- * Handle scheduling-related messages
- */
-async function handleScheduling(
-  message: string,
-  nutritionist: Nutritionist,
-  patient?: Patient | null
-): Promise<NinaResponse> {
-  const subIntent = await classifySchedulingSubIntent(message);
-
-  // For MVP, we'll return a placeholder response
-  // Full implementation will be in Phase 4
-  switch (subIntent) {
-    case "book":
-    case "check_availability":
-      return {
-        content: `Vou verificar os horários disponíveis da ${nutritionist.name}. Um momento! 📅
-
-(Funcionalidade de agendamento será implementada em breve)`,
-        intent: "scheduling",
-        subIntent,
-        metadata: {
-          availableSlots: [],
-        },
-      };
-
-    case "reschedule":
-      return {
-        content: `Entendi que você quer remarcar sua consulta. Deixa eu verificar...
-
-(Funcionalidade de remarcação será implementada em breve)`,
-        intent: "scheduling",
-        subIntent,
-      };
-
-    case "cancel":
-      return {
-        content: `Entendi que você quer cancelar sua consulta. Posso confirmar o cancelamento?
-
-(Funcionalidade de cancelamento será implementada em breve)`,
-        intent: "scheduling",
-        subIntent,
-      };
-
-    default:
-      return {
-        content: `Posso te ajudar com agendamentos! O que você precisa?
-- Agendar uma nova consulta
-- Remarcar uma consulta existente
-- Cancelar uma consulta
-- Ver horários disponíveis`,
-        intent: "scheduling",
-        subIntent: "check_availability",
-      };
-  }
-}
 
 /**
  * Handle diet-related questions
@@ -258,3 +203,4 @@ function handleOffTopic(): NinaResponse {
 // Re-export for convenience
 export { runGuardrails } from "./guardrails";
 export { classifyIntent, classifySchedulingSubIntent, matchFAQKey } from "./intents";
+export { handleScheduling, processSlotSelection, processCancellation } from "./scheduling";

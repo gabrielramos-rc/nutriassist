@@ -169,42 +169,42 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 4: Scheduling System
 
 ### 4.1 Appointment Service
-- [ ] Create `src/services/appointments.ts`
-- [ ] Implement `getAvailableSlots()`:
-  - [ ] Parse nutritionist business_hours
-  - [ ] Get existing appointments for date range
-  - [ ] Calculate available slots
-  - [ ] Return next N available slots
-- [ ] Implement `createAppointment()`:
-  - [ ] Validate slot is still available
-  - [ ] Create appointment record
-  - [ ] Return confirmation
-- [ ] Implement `rescheduleAppointment()`:
-  - [ ] Find existing appointment
-  - [ ] Update to new time
-  - [ ] Return confirmation
-- [ ] Implement `cancelAppointment()`:
-  - [ ] Find existing appointment
-  - [ ] Update status to cancelled
-  - [ ] Return confirmation
+- [X] Create `src/services/appointments.ts`
+- [X] Implement `getAvailableSlots()`:
+  - [X] Parse nutritionist business_hours
+  - [X] Get existing appointments for date range
+  - [X] Calculate available slots
+  - [X] Return next N available slots
+- [X] Implement `createAppointment()`:
+  - [X] Validate slot is still available
+  - [X] Create appointment record
+  - [X] Return confirmation
+- [X] Implement `rescheduleAppointment()`:
+  - [X] Find existing appointment
+  - [X] Update to new time
+  - [X] Return confirmation
+- [X] Implement `cancelAppointment()`:
+  - [X] Find existing appointment
+  - [X] Update status to cancelled
+  - [X] Return confirmation
 
 ### 4.2 Scheduling Flow Handler
-- [ ] Create `src/services/nina/scheduling.ts`
-- [ ] Implement `handleScheduling()` function
-- [ ] Detect sub-intent:
-  - [ ] `book` - Show available slots, wait for selection
-  - [ ] `reschedule` - Find appointment, show new slots
-  - [ ] `cancel` - Find appointment, confirm cancellation
-  - [ ] `check` - Show next appointment
-- [ ] Manage conversation state for multi-turn booking
-- [ ] Generate human-friendly slot display
+- [X] Create `src/services/nina/scheduling.ts`
+- [X] Implement `handleScheduling()` function
+- [X] Detect sub-intent:
+  - [X] `book` - Show available slots, wait for selection
+  - [X] `reschedule` - Find appointment, show new slots
+  - [X] `cancel` - Find appointment, confirm cancellation
+  - [X] `check` - Show next appointment
+- [X] Manage conversation state for multi-turn booking
+- [X] Generate human-friendly slot display
 
 ### 4.3 Appointment API
-- [ ] Create `src/app/api/appointments/route.ts`
-- [ ] GET - List appointments (with filters)
-- [ ] POST - Create appointment
-- [ ] PATCH - Update appointment
-- [ ] DELETE - Cancel appointment
+- [X] Create `src/app/api/appointments/route.ts`
+- [X] GET - List appointments (with filters)
+- [X] POST - Create appointment
+- [X] PATCH - Update appointment
+- [X] DELETE - Cancel appointment
 
 ---
 
