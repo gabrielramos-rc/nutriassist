@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ConversationList } from "@/components/dashboard/ConversationList";
 import { ConversationView } from "@/components/dashboard/ConversationView";
 import { MessageSquare } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
 
@@ -49,6 +50,7 @@ export default function ConversationsPage() {
   const [selectedConversation, setSelectedConversation] = useState<ConversationDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const supabaseRef = useRef(createClient());
 
   // Fetch conversations list
   const fetchConversations = useCallback(async () => {
@@ -103,12 +105,50 @@ export default function ConversationsPage() {
     }
   }, [selectedId, fetchConversationDetail]);
 
+  // Subscribe to real-time messages for the selected conversation
+  useEffect(() => {
+    if (!selectedId) return;
+
+    const supabase = supabaseRef.current;
+    const channelName = `messages:session:${selectedId}`;
+
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `chat_session_id=eq.${selectedId}`,
+        },
+        (payload) => {
+          const newMessage = payload.new as Message;
+          setSelectedConversation((prev) => {
+            if (!prev) return null;
+            // Avoid duplicates (in case message was already added optimistically)
+            const exists = prev.messages.some((m) => m.id === newMessage.id);
+            if (exists) return prev;
+            return {
+              ...prev,
+              messages: [...prev.messages, newMessage],
+            };
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedId]);
+
   // Handle sending message
   const handleSendMessage = async (message: string) => {
     if (!selectedId) return;
 
     try {
-      const res = await fetch("/api/conversations", {
+      await fetch("/api/conversations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -116,11 +156,7 @@ export default function ConversationsPage() {
           content: message,
         }),
       });
-
-      if (res.ok) {
-        // Refresh conversation
-        await fetchConversationDetail(selectedId);
-      }
+      // Message will appear via Realtime subscription
     } catch (error) {
       console.error("Error sending message:", error);
     }
