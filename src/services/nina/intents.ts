@@ -7,25 +7,40 @@ import {
 import type { NinaIntent, SchedulingSubIntent } from "@/types";
 
 // Keyword patterns for fast classification
+// IMPORTANT: Order matters! More specific patterns (faq) should be checked before broader ones (scheduling)
 const INTENT_KEYWORDS: Record<NinaIntent, RegExp[]> = {
   greeting: [
     /^(oi|olá|ola|hey|hi|hello|e aí|eai|boa tarde|bom dia|boa noite|tudo bem|tudo bom)[\s!?.,]*$/i,
     /^(oi|olá|ola)[\s!?,.]*(tudo bem|tudo bom|como vai)?[\s!?.,]*$/i,
   ],
+  faq: [
+    // Price-related (check before scheduling since "consulta" might appear)
+    /\b(preço|preco|valor|quanto custa|custo)\b/i,
+    /quanto é/i,
+    // Location-related
+    /\b(endereço|endereco|onde fica|localização|localizacao)\b/i,
+    // Preparation-related
+    /\b(preparo|preparação|preparacao)\b.*\b(consulta)?\b/i,
+    /\b(o que|que).*(levar|trazer)\b/i,
+    // Duration-related
+    /\b(duração|duracao)\b.*\b(consulta)?\b/i,
+    /\b(quanto tempo).*(dura|leva|demora)\b/i,
+    // Online consultation
+    /\b(atende|consulta).*(online|remoto|videochamada|à distância|a distancia)\b/i,
+    /\b(online|videochamada|remoto)\b/i,
+  ],
   scheduling: [
-    /\b(agendar|marcar|remarcar|desmarcar|cancelar|consulta|horário|horario|disponibilidade|agenda)\b/i,
+    // Scheduling actions (without "consulta" alone to avoid false positives)
+    /\b(agendar|marcar|remarcar|desmarcar|cancelar)\b/i,
+    /\b(horário|horario|disponibilidade|agenda)\b/i,
+    // "quero/preciso consulta" is scheduling, but "quanto custa consulta" is FAQ (handled above)
+    /\b(quero|preciso|gostaria)\s*(de)?\s*(uma)?\s*consulta\b/i,
+    /\b(próxima|proxima)\s*consulta\b/i,
   ],
   diet_question: [
     /\b(comer|comida|refeição|refeicao|almoço|almoco|jantar|café|cafe|lanche|dieta|plano alimentar)\b/i,
     /\b(trocar|substituir|substituição|substituicao|porção|porcao|quantidade|gramas|ml)\b/i,
     /\b(pode|posso|devo|preciso).*(comer|tomar|beber)/i,
-  ],
-  faq: [
-    /\b(preço|preco|valor|quanto custa|quanto é|custo)\b/i,
-    /\b(endereço|endereco|onde fica|localização|localizacao|local)\b/i,
-    /\b(preparo|preparação|preparacao|levar|trazer)\b/i,
-    /\b(duração|duracao|quanto tempo|demora)\b/i,
-    /\b(online|videochamada|remoto|à distância|a distancia)\b/i,
   ],
   handoff: [
     /\b(falar com|conversar com|humano|pessoa|atendente|nutricionista)\b/i,
@@ -36,17 +51,29 @@ const INTENT_KEYWORDS: Record<NinaIntent, RegExp[]> = {
   dangerous: [],
 };
 
+// Explicit order for intent checking (more specific first)
+const INTENT_CHECK_ORDER: NinaIntent[] = [
+  "greeting",    // Check greetings first (exact matches)
+  "faq",         // Check FAQ before scheduling (more specific patterns)
+  "diet_question",
+  "handoff",
+  "scheduling",  // Broader patterns, check later
+  "off_topic",
+  "dangerous",
+];
+
 /**
  * Try to classify intent using keyword matching (fast path)
  */
 function classifyByKeywords(message: string): NinaIntent | null {
   const normalizedMessage = message.toLowerCase().trim();
 
-  // Check each intent's keywords
-  for (const [intent, patterns] of Object.entries(INTENT_KEYWORDS)) {
+  // Check intents in explicit order (more specific patterns first)
+  for (const intent of INTENT_CHECK_ORDER) {
+    const patterns = INTENT_KEYWORDS[intent];
     for (const pattern of patterns) {
       if (pattern.test(normalizedMessage)) {
-        return intent as NinaIntent;
+        return intent;
       }
     }
   }
