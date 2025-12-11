@@ -115,11 +115,27 @@ export default function SettingsPage() {
     }
   };
 
-  const handleCopyEmbed = () => {
+  const handleCopyEmbed = async () => {
     const chatUrl = `${window.location.origin}/chat/${TEST_NUTRITIONIST_ID}`;
-    navigator.clipboard.writeText(chatUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(chatUrl);
+      } else {
+        // Fallback for non-HTTPS contexts
+        const textArea = document.createElement("textarea");
+        textArea.value = chatUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
   };
 
   const updateBusinessHour = (day: string, field: "start" | "end" | "enabled", value: string | boolean) => {

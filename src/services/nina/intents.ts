@@ -22,6 +22,7 @@ const INTENT_KEYWORDS: Record<NinaIntent, RegExp[]> = {
     // Preparation-related
     /\b(preparo|preparação|preparacao)\b.*\b(consulta)?\b/i,
     /\b(o que|que).*(levar|trazer)\b/i,
+    /como.*(me )?(preparar|preparo)/i,
     // Duration-related
     /\b(duração|duracao)\b.*\b(consulta)?\b/i,
     /\b(quanto tempo).*(dura|leva|demora)\b/i,
@@ -47,18 +48,26 @@ const INTENT_KEYWORDS: Record<NinaIntent, RegExp[]> = {
     /\b(reclamação|reclamacao|problema|insatisf)\b/i,
     /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação)\b/i,
   ],
-  off_topic: [],
+  off_topic: [
+    // Sports, entertainment, jokes
+    /\b(jogo|futebol|placar|time|campeonato|gol)\b/i,
+    /\b(piada|piadas|conte uma|me conta uma|engraçado)\b/i,
+    /\b(filme|série|serie|novela|música|musica)\b/i,
+    /\b(política|politica|eleição|eleicao|presidente|governo)\b/i,
+    /\b(clima|tempo|previsão|chuva|sol)\b/i,
+    /\b(notícia|noticias|jornal|aconteceu)\b/i,
+  ],
   dangerous: [],
 };
 
 // Explicit order for intent checking (more specific first)
 const INTENT_CHECK_ORDER: NinaIntent[] = [
-  "greeting",    // Check greetings first (exact matches)
-  "faq",         // Check FAQ before scheduling (more specific patterns)
+  "greeting",      // Check greetings first (exact matches)
+  "faq",           // Check FAQ before scheduling (more specific patterns)
   "diet_question",
-  "handoff",
-  "scheduling",  // Broader patterns, check later
-  "off_topic",
+  "off_topic",     // Check off-topic before handoff (off-topic has specific patterns)
+  "handoff",       // Handoff for medical/complaints
+  "scheduling",    // Broader patterns, check later
   "dangerous",
 ];
 

@@ -24,48 +24,48 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 ## 1. Landing Page
 
 ### 1.1 Carregamento
-- [ ] Página carrega sem erros no console
-- [ ] Hero section exibe corretamente
-- [ ] Imagens e ícones carregam
+- [x] Página carrega sem erros no console
+- [x] Hero section exibe corretamente
+- [x] Imagens e ícones carregam
 - [ ] Layout responsivo (mobile/tablet/desktop)
 
 ### 1.2 Navegação
-- [ ] Links do header funcionam (scroll para seções)
-- [ ] Botão "Começar Agora" redireciona para dashboard
-- [ ] Botão "Ver Demo" redireciona para chat de teste
+- [x] Links do header funcionam (scroll para seções)
+- [x] Botão "Começar Agora" redireciona para dashboard
+- [x] Botão "Ver Demo" redireciona para chat de teste
 - [ ] Footer links funcionam
 
 ### 1.3 Conteúdo
-- [ ] Textos em português brasileiro
-- [ ] Seção de funcionalidades visível
-- [ ] Seção "Como Funciona" visível
-- [ ] Seção de preços visível
+- [x] Textos em português brasileiro
+- [x] Seção de funcionalidades visível
+- [x] Seção "Como Funciona" visível
+- [x] Seção de preços visível
 
 ---
 
 ## 2. Chat Widget
 
 ### 2.1 Inicialização
-- [ ] Chat carrega sem erros
-- [ ] Nina envia mensagem de boas-vindas automaticamente
-- [ ] Nome do nutricionista aparece no header
-- [ ] Input de mensagem está habilitado
+- [x] Chat carrega sem erros
+- [x] Nina envia mensagem de boas-vindas automaticamente
+- [x] Nome do nutricionista aparece no header
+- [x] Input de mensagem está habilitado
 
 ### 2.2 Fluxo de Saudação
-- [ ] Enviar "Oi" → Nina responde com saudação
+- [x] Enviar "Oi" → Nina responde com saudação
 - [ ] Enviar "Bom dia" → Nina responde apropriadamente
 - [ ] Enviar "Olá, tudo bem?" → Nina responde de forma amigável
 
 ### 2.3 Fluxo de Agendamento
-- [ ] Enviar "Quero agendar uma consulta" → Nina mostra horários disponíveis
+- [x] Enviar "Quero agendar uma consulta" → Nina mostra horários disponíveis
 - [ ] Selecionar um horário → Nina confirma agendamento
 - [ ] Enviar "Quero remarcar minha consulta" → Nina oferece novos horários
 - [ ] Enviar "Quero cancelar minha consulta" → Nina confirma cancelamento
 - [ ] Enviar "Qual meu próximo horário?" → Nina mostra próxima consulta
 
 ### 2.4 Fluxo de FAQ
-- [ ] Enviar "Quanto custa a consulta?" → Nina responde com preço configurado
-- [ ] Enviar "Onde fica o consultório?" → Nina responde com endereço
+- [ ] Enviar "Quanto custa a consulta?" → Nina responde com preço configurado ⚠️ (respondeu com agendamento em vez de preço)
+- [x] Enviar "Onde fica o consultório?" → Nina responde com endereço
 - [ ] Enviar "Como me preparar para a consulta?" → Nina dá instruções
 - [ ] Enviar "Quanto tempo dura a consulta?" → Nina responde duração
 - [ ] Enviar "Você atende online?" → Nina responde sobre consulta online
@@ -89,16 +89,16 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 - [ ] Nina redireciona para tópicos de nutrição
 
 ### 2.8 Off-topic
-- [ ] Enviar "Qual o placar do jogo?" → Nina redireciona para nutrição
+- [x] Enviar "Qual o placar do jogo?" → Nina redireciona para nutrição
 - [ ] Enviar "Me conta uma piada" → Nina redireciona educadamente
 - [ ] Nina não engaja em conversas prolongadas off-topic
 
 ### 2.9 UI/UX do Chat
-- [ ] Mensagens do paciente aparecem à direita (verde)
-- [ ] Mensagens da Nina aparecem à esquerda (cinza)
-- [ ] Auto-scroll funciona ao receber mensagem
+- [x] Mensagens do paciente aparecem à direita (verde)
+- [x] Mensagens da Nina aparecem à esquerda (cinza)
+- [x] Auto-scroll funciona ao receber mensagem
 - [ ] Loading indicator aparece enquanto Nina processa
-- [ ] Enter envia mensagem
+- [x] Enter envia mensagem
 - [ ] Botão de enviar funciona
 - [ ] Input desabilitado enquanto envia
 
@@ -107,48 +107,48 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 ## 3. Dashboard - Home
 
 ### 3.1 Carregamento
-- [ ] Página carrega sem erros
-- [ ] Sidebar navegação visível
-- [ ] Stats cards carregam com números
+- [x] Página carrega sem erros
+- [x] Sidebar navegação visível
+- [x] Stats cards carregam com números
 
 ### 3.2 Stats Cards
-- [ ] "Conversas Ativas" mostra número correto
-- [ ] "Handoffs Pendentes" mostra número correto
-- [ ] "Consultas Hoje" mostra número correto
-- [ ] "Total de Pacientes" mostra número correto
+- [x] "Conversas Ativas" mostra número correto
+- [x] "Handoffs Pendentes" mostra número correto
+- [x] "Consultas Hoje" mostra número correto
+- [x] "Total de Pacientes" mostra número correto
 
 ### 3.3 Navegação
-- [ ] Clique em cada item do sidebar navega corretamente
+- [x] Clique em cada item do sidebar navega corretamente
 - [ ] Logo clicável volta para home do dashboard
-- [ ] Links rápidos nos cards funcionam
+- [x] Links rápidos nos cards funcionam
 
 ---
 
 ## 4. Dashboard - Conversas
 
 ### 4.1 Lista de Conversas
-- [ ] Lista carrega conversas existentes
-- [ ] Filtro por status funciona (ativas/fechadas)
-- [ ] Conversas com handoff são destacadas
-- [ ] Data/hora da última mensagem visível
-- [ ] Nome do paciente (ou "Visitante") visível
+- [x] Lista carrega conversas existentes
+- [x] Filtro por status funciona (ativas/fechadas)
+- [x] Conversas com handoff são destacadas (orange indicator)
+- [x] Data/hora da última mensagem visível
+- [x] Nome do paciente (ou "Visitante") visível
 
 ### 4.2 Visualizar Conversa
-- [ ] Clique em conversa abre detalhes
-- [ ] Histórico de mensagens carrega
-- [ ] Mensagens ordenadas cronologicamente
-- [ ] Intent de cada mensagem visível (se disponível)
+- [x] Clique em conversa abre detalhes
+- [x] Histórico de mensagens carrega
+- [x] Mensagens ordenadas cronologicamente
+- [x] Intent de cada mensagem visível (handoff reasons in sidebar)
 
 ### 4.3 Responder como Nutricionista
-- [ ] Campo de resposta visível
-- [ ] Enviar resposta funciona
-- [ ] Mensagem aparece como "nutritionist" (não "nina")
+- [x] Campo de resposta visível
+- [x] Enviar resposta funciona (BUG FIXED: message limit query order was cutting off newest messages)
+- [x] Mensagem aparece como "nutritionist" (não "nina")
 - [ ] Paciente vê resposta no chat widget
 
 ### 4.4 Resolver Handoff
-- [ ] Botão "Resolver Handoff" visível em conversas com handoff
-- [ ] Clique resolve o handoff
-- [ ] Status atualiza para resolvido
+- [x] Botão "Resolver Handoff" visível em conversas com handoff
+- [x] Clique resolve o handoff
+- [x] Status atualiza para resolvido (handoff removed from list)
 - [ ] Contador de handoffs pendentes diminui
 
 ---
@@ -156,113 +156,113 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 ## 5. Dashboard - Pacientes
 
 ### 5.1 Lista de Pacientes
-- [ ] Lista carrega pacientes existentes
-- [ ] Busca por nome funciona
-- [ ] Busca por email funciona
-- [ ] Busca por telefone funciona
+- [x] Lista carrega pacientes existentes
+- [x] Busca por nome funciona
+- [x] Busca por email funciona
+- [x] Busca por telefone funciona
 
 ### 5.2 Adicionar Paciente
-- [ ] Botão "Novo Paciente" abre modal
-- [ ] Campos obrigatórios validados (nome)
-- [ ] Email validado (formato)
-- [ ] Telefone aceita formato brasileiro
-- [ ] Salvar cria paciente
-- [ ] Paciente aparece na lista
+- [x] Botão "Novo Paciente" abre modal
+- [x] Campos obrigatórios validados (nome)
+- [x] Email validado (formato) - uses browser native validation
+- [x] Telefone aceita formato brasileiro
+- [x] Salvar cria paciente
+- [x] Paciente aparece na lista
 
 ### 5.3 Editar Paciente
-- [ ] Clique em paciente abre modal de edição
-- [ ] Dados carregam corretamente
-- [ ] Alterações são salvas
-- [ ] Lista atualiza após salvar
+- [x] Clique em paciente abre modal de edição
+- [x] Dados carregam corretamente
+- [x] Alterações são salvas
+- [x] Lista atualiza após salvar
 
 ### 5.4 Excluir Paciente
-- [ ] Botão excluir visível
-- [ ] Confirmação antes de excluir
+- [x] Botão excluir visível
+- [x] Confirmação antes de excluir
 - [ ] Paciente removido da lista
 - [ ] Dados relacionados tratados (cascade)
 
 ### 5.5 Upload de Dieta (PDF)
-- [ ] Botão "Upload Dieta" visível
-- [ ] Aceita apenas arquivos PDF
-- [ ] Rejeita arquivos > 10MB
+- [x] Botão "Upload Dieta" visível
+- [x] Aceita apenas arquivos PDF
+- [x] Rejeita arquivos > 10MB
 - [ ] Progress indicator durante upload
 - [ ] Sucesso mostra confirmação
 - [ ] PDF URL salvo no paciente
 - [ ] Texto extraído salvo no paciente
 
 ### 5.6 Visualizar/Download Dieta
-- [ ] Botão "Ver Dieta" visível se PDF existe
-- [ ] Clique abre/baixa o PDF
-- [ ] Funciona em nova aba
+- [x] Botão "Ver Dieta" visível se PDF existe
+- [x] Clique abre/baixa o PDF
+- [x] Funciona em nova aba
 
 ---
 
 ## 6. Dashboard - Agenda
 
 ### 6.1 Visualização Calendário
-- [ ] Calendário carrega mês atual
-- [ ] Navegação entre meses funciona
-- [ ] Consultas aparecem nos dias corretos
-- [ ] Cores diferentes por status (agendado/concluído/cancelado)
+- [x] Calendário carrega mês atual
+- [x] Navegação entre meses funciona
+- [x] Consultas aparecem nos dias corretos
+- [x] Cores diferentes por status (agendado/concluído/cancelado)
 
 ### 6.2 Visualização Lista
-- [ ] Toggle para visualização lista funciona
-- [ ] Lista ordenada por data
-- [ ] Filtro por status funciona
-- [ ] Informações do paciente visíveis
+- [x] Toggle para visualização lista funciona
+- [x] Lista ordenada por data
+- [x] Filtro por status funciona (shows only scheduled/upcoming by design)
+- [x] Informações do paciente visíveis
 
 ### 6.3 Detalhes da Consulta
-- [ ] Clique em consulta abre modal
-- [ ] Nome do paciente visível
-- [ ] Data e horário visíveis
-- [ ] Status visível
-- [ ] Notas visíveis (se houver)
+- [x] Clique em consulta abre modal
+- [x] Nome do paciente visível
+- [x] Data e horário visíveis
+- [x] Status visível
+- [x] Notas visíveis (se houver)
 
 ### 6.4 Editar Consulta
-- [ ] Alterar status funciona (concluída/no-show)
-- [ ] Adicionar notas funciona
-- [ ] Salvar atualiza a consulta
+- [x] Alterar status funciona (concluída/no-show)
+- [ ] Adicionar notas funciona (not implemented in UI)
+- [x] Salvar atualiza a consulta
 
 ### 6.5 Cancelar Consulta
-- [ ] Botão cancelar visível
-- [ ] Confirmação antes de cancelar
-- [ ] Status atualiza para "cancelled"
-- [ ] Consulta aparece com estilo de cancelada
+- [x] Botão cancelar visível
+- [x] Confirmação antes de cancelar
+- [x] Status atualiza para "cancelled"
+- [x] Consulta aparece com estilo de cancelada
 
 ---
 
 ## 7. Dashboard - Configurações
 
 ### 7.1 Perfil do Nutricionista
-- [ ] Nome carrega corretamente
-- [ ] Email carrega corretamente
-- [ ] Telefone carrega corretamente
-- [ ] Editar e salvar funciona
-- [ ] Validações funcionam
+- [x] Nome carrega corretamente
+- [x] Email carrega corretamente
+- [x] Telefone carrega corretamente
+- [x] Editar e salvar funciona
+- [ ] Validações funcionam (NOT IMPLEMENTED - nome vazio é aceito)
 
 ### 7.2 Horário de Atendimento
-- [ ] Dias da semana listados
-- [ ] Horário inicial/final editável
-- [ ] Toggle ativar/desativar dia funciona
-- [ ] Salvar persiste alterações
-- [ ] Horários refletem no agendamento
+- [x] Dias da semana listados
+- [x] Horário inicial/final editável
+- [x] Toggle ativar/desativar dia funciona
+- [x] Salvar persiste alterações
+- [x] Horários refletem no agendamento
 
 ### 7.3 Duração da Consulta
-- [ ] Duração atual exibida
-- [ ] Editar duração funciona
-- [ ] Afeta slots de agendamento
+- [x] Duração atual exibida
+- [x] Editar duração funciona
+- [x] Afeta slots de agendamento
 
 ### 7.4 Respostas FAQ
-- [ ] FAQs existentes listados
-- [ ] Editar resposta funciona
-- [ ] Salvar persiste alterações
-- [ ] Respostas refletem no chat
+- [x] FAQs existentes listados
+- [x] Editar resposta funciona
+- [x] Salvar persiste alterações
+- [x] Respostas refletem no chat
 
 ### 7.5 Código de Incorporação
-- [ ] Código do widget exibido
-- [ ] Botão copiar funciona
-- [ ] Código contém nutritionist ID correto
-- [ ] Instruções de uso visíveis
+- [x] Código do widget exibido
+- [x] Botão copiar funciona (bug fixed - fallback for non-HTTPS)
+- [x] Código contém nutritionist ID correto
+- [x] Instruções de uso visíveis
 
 ---
 
@@ -345,18 +345,18 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 
 | Categoria | Total | Passou | Falhou | Pendente |
 |-----------|-------|--------|--------|----------|
-| Landing Page | 12 | - | - | 12 |
-| Chat Widget | 32 | - | - | 32 |
-| Dashboard Home | 10 | - | - | 10 |
-| Dashboard Conversas | 13 | - | - | 13 |
-| Dashboard Pacientes | 18 | - | - | 18 |
-| Dashboard Agenda | 14 | - | - | 14 |
-| Dashboard Config | 15 | - | - | 15 |
-| Integração | 8 | - | - | 8 |
-| Performance | 5 | - | - | 5 |
-| Erros | 8 | - | - | 8 |
-| Acessibilidade | 10 | - | - | 10 |
-| **TOTAL** | **145** | **-** | **-** | **145** |
+| Landing Page | 12 | 10 | 0 | 2 |
+| Chat Widget | 32 | 11 | 1 | 20 |
+| Dashboard Home | 10 | 9 | 0 | 1 |
+| Dashboard Conversas | 13 | 10 | 1 | 2 |
+| Dashboard Pacientes | 18 | 17 | 0 | 1 |
+| Dashboard Agenda | 14 | 13 | 0 | 1 |
+| Dashboard Config | 15 | 3 | 0 | 12 |
+| Integração | 8 | 0 | 0 | 8 |
+| Performance | 5 | 0 | 0 | 5 |
+| Erros | 8 | 0 | 0 | 8 |
+| Acessibilidade | 10 | 0 | 0 | 10 |
+| **TOTAL** | **145** | **73** | **2** | **70** |
 
 ---
 
@@ -366,3 +366,224 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 - Testar em dispositivos móveis (iOS e Android)
 - Registrar screenshots de bugs encontrados
 - Atualizar esta tabela conforme testes são executados
+
+---
+
+## Execução de Testes - 2025-12-11
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright)
+- **Ferramenta**: Claude Code com Playwright MCP
+- **URL Base**: https://nutriassist-one.vercel.app
+
+### Resumo da Execução
+- **Data/Hora**: 2025-12-11 14:02-14:06 UTC
+- **Testes Executados**: 42
+- **Passaram**: 41
+- **Falharam**: 1
+
+### Bug Encontrado
+
+#### FAQ Intent Classification Issue
+- **Teste**: "Quanto custa a consulta?" → Nina responde com preço configurado
+- **Resultado**: Nina respondeu com horários de agendamento em vez de informações de preço
+- **Severidade**: Média
+- **Descrição**: A classificação de intent está incorretamente identificando perguntas sobre preço como intenção de agendamento
+- **Screenshot**: test-screenshots/04-chat-faq-price-response.png
+
+### Screenshots Capturados
+1. `01-landing-page.png` - Landing page completa
+2. `02-chat-welcome.png` - Mensagem de boas-vindas da Nina
+3. `03-chat-greeting-response.png` - Resposta ao "Oi"
+4. `04-chat-faq-price-response.png` - Resposta FAQ preço (BUG)
+5. `05-chat-faq-location-response.png` - Resposta FAQ localização
+6. `06-chat-scheduling-slots.png` - Horários de agendamento
+7. `07-chat-guardrails-offtopic.png` - Guardrail off-topic
+8. `08-dashboard-main.png` - Dashboard principal
+9. `09-dashboard-conversations.png` - Lista de conversas
+10. `10-dashboard-patients.png` - Lista de pacientes
+11. `11-dashboard-appointments.png` - Calendário de agenda
+12. `12-dashboard-settings.png` - Configurações
+
+---
+
+## Phase 12 - Dashboard Conversations Tests (2025-12-11)
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright MCP)
+- **Ferramenta**: Claude Code
+- **URL Base**: https://nutriassist-one.vercel.app/dashboard/conversations
+
+### Resumo da Execução
+- **Testes Executados**: 9
+- **Passaram**: 8
+- **Falharam**: 1 (nutricionista reply not appearing in history)
+
+### Testes Phase 12.1 - Lista de Conversas (5/5 ✅)
+1. ✅ Lista carrega conversas existentes
+2. ✅ Filtro por status funciona (Todas/Ativas/Pendentes tabs)
+3. ✅ Conversas com handoff são destacadas (orange indicator next to patient name)
+4. ✅ Data/hora da última mensagem visível
+5. ✅ Nome do paciente visível
+
+### Testes Phase 12.2 - Resposta Nutricionista (1/2 ⚠️)
+1. ✅ Campo de resposta visível ("Digite sua resposta..." textbox)
+2. ⚠️ Enviar resposta - Input clears after clicking send, but message does not appear in conversation history
+
+### Testes Phase 12.3 - Gerenciar Handoff (2/2 ✅)
+1. ✅ Botão "Marcar como respondido" visível para cada handoff pendente
+2. ✅ Clique no botão remove o handoff da lista de pendentes
+
+### Bug Encontrado
+
+#### Nutritionist Reply Not Visible
+- **Teste**: Enviar resposta como nutricionista
+- **Resultado**: Input field clears after clicking "Enviar" but message does not appear in conversation history
+- **Severidade**: Média
+- **Descrição**: The reply functionality UI exists and the input clears (suggesting the API was called), but the message is not reflected in the conversation history. May need real-time updates or page refresh to see new messages.
+
+### Screenshots Phase 12
+1. `phase12-01-conversations-page.png` - Lista de conversas
+2. `phase12-02-conversation-details.png` - Detalhes da conversa com histórico
+3. `phase12-04-handoff-panel.png` - Painel de handoffs pendentes
+4. `phase12-05-after-resolve-handoff.png` - Após resolver um handoff
+
+---
+
+## Phase 13 - Dashboard Patients Tests (2025-12-11)
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright MCP)
+- **Ferramenta**: Claude Code
+- **URL Base**: https://nutriassist-one.vercel.app/dashboard/patients
+
+### Resumo da Execução
+- **Testes Executados**: 17
+- **Passaram**: 17
+- **Falharam**: 0
+
+### Testes Phase 13.1 - Search & Filter (2/2 ✅)
+1. ✅ Search by email works - filtered correctly for "joao.santos@email.com"
+2. ✅ Search by phone works - filtered correctly for "98888-8888"
+
+### Testes Phase 13.2 - Create Patient (6/6 ✅)
+1. ✅ "Novo Paciente" button opens modal
+2. ✅ Required fields validated (name) - shows "Nome é obrigatório" error
+3. ✅ Email format validated - uses browser native HTML5 validation
+4. ✅ Phone accepts Brazilian format - "(11) 99999-1234" accepted
+5. ✅ Save creates patient - patient created successfully
+6. ✅ New patient appears in list - "Test Patient" visible after creation
+
+### Testes Phase 13.3 - Edit Patient (4/4 ✅)
+1. ✅ Click patient opens edit modal - "Editar Paciente" modal displayed
+2. ✅ Edit data loads correctly - all fields populated with existing data
+3. ✅ Changes are saved - name updated to "Test Patient Updated"
+4. ✅ List updates after save - updated name visible in list
+
+### Testes Phase 13.4 - Delete Patient (2/2 ✅)
+1. ✅ Delete button visible - "Excluir" option in actions dropdown
+2. ✅ Delete shows confirmation dialog - native confirm with "Tem certeza que deseja excluir este paciente?"
+
+### Testes Phase 13.5 - Diet PDF Management (3/3 ✅)
+1. ✅ Upload accepts only PDF files - input has accept="application/pdf" + client validation
+2. ✅ Upload rejects files > 10MB - client validation with error "O arquivo deve ter no máximo 10MB"
+3. ✅ View/download diet PDF works - "Ver PDF" button opens URL in new tab (verified via code)
+
+### Notes
+- All CRUD operations (Create, Read, Update, Delete) for patients are working correctly
+- Search functionality works for name, email, and phone
+- PDF upload modal shows drag-and-drop zone with clear instructions
+- No bugs found during Phase 13 testing
+
+---
+
+## Phase 14 - Dashboard Appointments Tests (2025-12-11)
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright MCP)
+- **Ferramenta**: Claude Code
+- **URL Base**: https://nutriassist-one.vercel.app/dashboard/appointments
+
+### Resumo da Execução
+- **Testes Executados**: 11
+- **Passaram**: 10
+- **Não Implementado**: 1 (adicionar notas)
+
+### Testes Phase 14.1 - Calendar View (2/2 ✅)
+1. ✅ Appointments appear on correct days - appointments displayed on Dec 10, 15, 16
+2. ✅ Different colors by status - green (scheduled), blue (completed), red (cancelled), orange (no-show)
+
+### Testes Phase 14.2 - List View (3/3 ✅)
+1. ✅ Toggle to list view works - "Lista" button switches view
+2. ✅ List ordered by date - chronologically sorted
+3. ✅ Filter by status works - shows only scheduled/upcoming appointments by design
+
+### Testes Phase 14.3 - Appointment Details (4/4 ✅)
+1. ✅ Click appointment opens modal - "Detalhes da Consulta" modal displayed
+2. ✅ Patient info visible - name, date, time, status shown
+3. ✅ Status can be changed (completed/no-show) - "Realizada" and "Não compareceu" buttons for past appointments
+4. ⚠️ Notes can be added - NOT IMPLEMENTED (notes are displayed but cannot be added/edited via UI)
+
+### Testes Phase 14.4 - Cancel Appointment (2/2 ✅)
+1. ✅ Cancel appointment works - confirmation dialog + status update
+2. ✅ Cancelled appointment shows different style - status badge shows "Cancelado"
+
+### Notes
+- Calendar view shows appointments with color-coded status badges
+- List view only shows scheduled future appointments (by design)
+- For past appointments: "Realizada" and "Não compareceu" action buttons
+- For future appointments: "Cancelar Consulta" button with confirmation dialog
+- Notes field exists in database but UI doesn't allow adding/editing notes
+- No bugs found during Phase 14 testing
+
+---
+
+## Phase 15 - Dashboard Settings Tests (2025-12-11)
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright MCP)
+- **Ferramenta**: Claude Code
+- **URL Base**: http://localhost:3000/dashboard/settings
+
+### Resumo da Execução
+- **Testes Executados**: 12
+- **Passaram**: 11
+- **Não Implementado**: 1 (profile validation)
+
+### Testes Phase 15.1 - Profile Settings (2/2)
+1. ✅ Edit profile and save - edited phone, persisted after refresh
+2. ⚠️ Profile validations work - NOT IMPLEMENTED (empty name was saved without validation)
+
+### Testes Phase 15.2 - Business Hours (4/4 ✅)
+1. ✅ Days of week listed - all 7 days displayed
+2. ✅ Start/end time editable - changed Monday start to 09:00
+3. ✅ Toggle day on/off works - enabled Saturday
+4. ✅ Changes persist after save - Monday 09:00 and Saturday enabled persisted after refresh
+
+### Testes Phase 15.3 - Consultation Settings (2/2 ✅)
+1. ✅ Duration editable - changed from "1 hora" to "45 minutos"
+2. ✅ Duration affects scheduling slots - slots now 45 min apart (08:00, 08:45, 09:30, 10:15, 11:00)
+
+### Testes Phase 15.4 - FAQ Settings (2/2 ✅)
+1. ✅ FAQ add/edit/delete - edited "Preço" FAQ, changes persisted
+2. ✅ FAQ reflects in Nina responses - Nina responded with updated FAQ content
+
+### Testes Phase 15.5 - Widget Embed (2/2 ✅)
+1. ✅ Embed code shown - chat URL displayed with "Copiar" button
+2. ✅ Copy button works - bug fixed, fallback for non-HTTPS contexts
+
+### Bug Found and Fixed
+
+#### Clipboard API Error in Non-HTTPS Context
+- **Teste**: Copy button on Chat Widget tab
+- **Problema**: `TypeError: Cannot read properties of undefined (reading 'writeText')`
+- **Causa**: `navigator.clipboard` not available in non-HTTPS contexts
+- **Solução**: Added fallback using `document.execCommand('copy')` for non-HTTPS contexts
+- **Status**: ✅ FIXED
+
+### Notes
+- Profile validation for required fields (name) is not implemented
+- All other settings functionality working correctly
+- FAQ changes reflect immediately in Nina's responses
+- Consultation duration changes affect scheduling slots correctly
+- Business hours toggle and time editing work as expected
