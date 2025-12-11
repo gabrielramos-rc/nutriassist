@@ -6,8 +6,23 @@
 
 **Recommended Stack:**
 - **Unit/Integration:** Vitest (fast, ESM native)
-- **E2E:** Playwright (already used for manual testing)
+- **E2E:** Playwright MCP (available in Claude Code)
 - **API Testing:** Vitest + fetch/supertest
+
+## Vercel Protection Bypass
+
+To test Vercel preview deployments, append the bypass secret to URLs:
+
+```
+https://nutriassist-xxx.vercel.app?x-vercel-protection-bypass=SECRET
+```
+
+**Secret location:** `VERCEL_AUTOMATION_BYPASS_SECRET` in Vercel project settings
+
+**Using with Playwright MCP:**
+```
+browser_navigate → url with ?x-vercel-protection-bypass=SECRET
+```
 
 ## Test Types
 
