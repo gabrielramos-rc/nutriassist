@@ -1,6 +1,20 @@
 # NutriAssist - Architectural Issues & Limitations
 
-This document captures critical architectural issues discovered during Phase 16 Integration Testing (2025-12-11). These issues need to be addressed before the application can be considered production-ready.
+This document captures all issues and limitations discovered during testing phases (10-16). Issues are categorized by priority and include suggested solutions.
+
+**Last Updated**: 2025-12-11
+
+---
+
+## Table of Contents
+
+1. [Issue #1: Scheduling Flow State Management](#issue-1-scheduling-flow-state-management) - HIGH
+2. [Issue #2: OpenRouter Model Unavailable](#issue-2-openrouter-model-unavailable) - HIGH
+3. [Issue #3: Chat Widget Session Persistence](#issue-3-chat-widget-session-persistence) - MEDIUM
+4. [Issue #4: Quick Reply Buttons Send Wrong Format](#issue-4-quick-reply-buttons-send-wrong-format) - LOW
+5. [Issue #5: Profile Validation Missing](#issue-5-profile-validation-missing) - LOW
+6. [Issue #6: Appointment Notes Not Editable](#issue-6-appointment-notes-not-editable) - LOW
+7. [Issue #7: Dashboard Reply Not Visible in Real-time](#issue-7-dashboard-reply-not-visible-in-real-time) - MEDIUM
 
 ---
 
@@ -250,14 +264,178 @@ onClick={() => sendMessage(reply.value)}
 
 ---
 
+## Issue #5: Profile Validation Missing
+
+### Priority: LOW
+
+### Problem
+The profile settings form accepts empty values for required fields like the nutritionist's name. Users can save a profile with an empty name, which could cause display issues throughout the application.
+
+### Technical Details
+- **Location**: `src/app/dashboard/settings/page.tsx`
+- **Discovered**: Phase 15 - Dashboard Settings Testing
+- **Current Behavior**: Form submits successfully even with empty name field
+- **Expected Behavior**: Form should validate required fields and show error messages
+
+### Suggested Solution
+```typescript
+// Add validation before save
+const handleSaveProfile = async () => {
+  // Validate required fields
+  if (!profile.name?.trim()) {
+    setError('Nome é obrigatório');
+    return;
+  }
+
+  // Continue with save...
+};
+
+// Or use a validation library like zod
+const profileSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  email: z.string().email('Email inválido').optional(),
+  phone: z.string().optional(),
+});
+```
+
+### Files to Modify
+- `src/app/dashboard/settings/page.tsx` - Add form validation
+
+### Acceptance Criteria
+- [ ] Empty name field shows validation error
+- [ ] Form doesn't submit with invalid data
+- [ ] Clear error messages displayed to user
+
+---
+
+## Issue #6: Appointment Notes Not Editable
+
+### Priority: LOW
+
+### Problem
+When editing an existing appointment, there is no way to add or modify notes. The notes field is not exposed in the edit appointment UI, even though the database schema supports storing notes.
+
+### Technical Details
+- **Location**: `src/app/dashboard/appointments/page.tsx`
+- **Discovered**: Phase 14 - Dashboard Appointments Testing
+- **Database Column**: `appointments.notes` (exists in schema)
+- **Current Behavior**: Edit modal doesn't include notes field
+- **Expected Behavior**: Edit modal should allow viewing and editing notes
+
+### Suggested Solution
+```typescript
+// In the appointment edit modal, add notes field
+<div className="mb-4">
+  <label className="block text-sm font-medium mb-1">Notas</label>
+  <textarea
+    value={editingAppointment?.notes || ''}
+    onChange={(e) => setEditingAppointment({
+      ...editingAppointment,
+      notes: e.target.value
+    })}
+    className="w-full p-2 border rounded"
+    rows={3}
+    placeholder="Observações sobre a consulta..."
+  />
+</div>
+```
+
+### Files to Modify
+- `src/app/dashboard/appointments/page.tsx` - Add notes field to edit modal
+- `src/app/api/appointments/route.ts` - Ensure PUT handler accepts notes
+
+### Acceptance Criteria
+- [ ] Notes field visible in appointment edit modal
+- [ ] Notes can be added to new appointments
+- [ ] Notes can be edited on existing appointments
+- [ ] Notes persist after save
+
+---
+
+## Issue #7: Dashboard Reply Not Visible in Real-time
+
+### Priority: MEDIUM
+
+### Problem
+When a nutritionist replies to a patient message from the dashboard conversations page, the reply is stored in the database but doesn't appear immediately in the conversation view. The nutritionist must refresh the page to see their own reply.
+
+### Technical Details
+- **Location**: `src/app/dashboard/conversations/page.tsx`
+- **Discovered**: Phase 12 - Dashboard Conversations Testing
+- **Root Cause**: After sending a reply, the local state isn't updated to include the new message
+- **Current Flow**:
+  1. Nutritionist types reply and clicks send
+  2. Message is saved to database via API
+  3. UI shows success but message list doesn't update
+  4. Page refresh shows the message correctly
+
+### Suggested Solutions
+
+#### Option A: Optimistic Update (Recommended)
+Add the new message to local state immediately after successful send:
+```typescript
+const handleSendReply = async () => {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    body: JSON.stringify({ sessionId, message: replyText, sender: 'nutritionist' })
+  });
+
+  if (response.ok) {
+    const newMessage = await response.json();
+    // Update local state with new message
+    setMessages(prev => [...prev, newMessage]);
+    setReplyText('');
+  }
+};
+```
+
+#### Option B: Refetch Messages
+Reload the message list after successful send:
+```typescript
+const handleSendReply = async () => {
+  await fetch('/api/chat', { /* ... */ });
+  // Refetch all messages for this session
+  await fetchMessages(sessionId);
+  setReplyText('');
+};
+```
+
+#### Option C: Real-time Subscription
+Use Supabase real-time to subscribe to new messages:
+```typescript
+useEffect(() => {
+  const subscription = supabase
+    .channel(`messages:session_id=eq.${sessionId}`)
+    .on('postgres_changes', { event: 'INSERT' }, (payload) => {
+      setMessages(prev => [...prev, payload.new]);
+    })
+    .subscribe();
+
+  return () => subscription.unsubscribe();
+}, [sessionId]);
+```
+
+### Files to Modify
+- `src/app/dashboard/conversations/page.tsx` - Add state update after reply
+
+### Acceptance Criteria
+- [ ] Nutritionist reply appears immediately in conversation view
+- [ ] No page refresh required to see sent messages
+- [ ] Message appears in correct chronological order
+
+---
+
 ## Implementation Priority
 
 | Issue | Priority | Effort | Impact | Suggested Order |
 |-------|----------|--------|--------|-----------------|
 | #2 OpenRouter Model | HIGH | Low | High | 1st - Quick fix |
 | #1 Scheduling State | HIGH | Medium | High | 2nd - Core functionality |
-| #4 Quick Reply Format | LOW | Low | Medium | 3rd - Easy fix |
-| #3 Session Persistence | MEDIUM | High | Medium | 4th - Requires design decisions |
+| #7 Dashboard Reply | MEDIUM | Low | Medium | 3rd - Easy fix |
+| #4 Quick Reply Format | LOW | Low | Medium | 4th - Easy fix |
+| #5 Profile Validation | LOW | Low | Low | 5th - Easy fix |
+| #6 Appointment Notes | LOW | Low | Low | 6th - Easy fix |
+| #3 Session Persistence | MEDIUM | High | Medium | 7th - Requires design decisions |
 
 ---
 
@@ -288,4 +466,4 @@ git checkout -b fix/architectural-issues
 ---
 
 *Document created: 2025-12-11*
-*Last updated: 2025-12-11*
+*Last updated: 2025-12-11 (added issues #5, #6, #7 from Phases 12-15)*
