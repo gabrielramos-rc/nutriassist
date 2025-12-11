@@ -163,7 +163,7 @@ Resposta:`;
 export const FAQ_KEYWORDS = {
   price: ["preço", "valor", "quanto custa", "quanto é", "custo", "pagamento", "pagar"],
   location: ["endereço", "onde fica", "localização", "local", "consultório", "clínica"],
-  preparation: ["preparo", "preparação", "levar", "trazer", "primeira consulta", "o que levar"],
+  preparation: ["preparo", "preparação", "preparar", "levar", "trazer", "primeira consulta", "o que levar"],
   duration: ["duração", "quanto tempo", "demora", "leva quanto tempo"],
   online: ["online", "videochamada", "remoto", "à distância", "atende online"],
 };
