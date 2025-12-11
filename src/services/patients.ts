@@ -100,3 +100,78 @@ export async function getPatientDietText(patientId: string): Promise<string | nu
 
   return (data as { diet_extracted_text: string | null } | null)?.diet_extracted_text || null;
 }
+
+/**
+ * Update patient's diet PDF URL and extracted text
+ */
+export async function updatePatientDiet(
+  patientId: string,
+  dietPdfUrl: string,
+  dietExtractedText: string
+): Promise<void> {
+  const supabase = getSupabase();
+
+  const { error } = await supabase
+    .from("patients")
+    .update({
+      diet_pdf_url: dietPdfUrl,
+      diet_extracted_text: dietExtractedText,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", patientId);
+
+  if (error) {
+    throw new Error(`Failed to update patient diet: ${error.message}`);
+  }
+}
+
+/**
+ * Get all patients for a nutritionist
+ */
+export async function getPatientsByNutritionist(
+  nutritionistId: string
+): Promise<Patient[]> {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from("patients")
+    .select("*")
+    .eq("nutritionist_id", nutritionistId)
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching patients:", error);
+    return [];
+  }
+
+  return (data || []) as Patient[];
+}
+
+/**
+ * Create a new patient
+ */
+export async function createPatient(
+  nutritionistId: string,
+  name: string,
+  email?: string,
+  phone?: string
+): Promise<Patient> {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from("patients")
+    .insert({
+      nutritionist_id: nutritionistId,
+      name,
+      email: email || null,
+      phone: phone || null,
+    })
+    .select()
+    .single();
+
+  if (error || !data) {
+    throw new Error(`Failed to create patient: ${error?.message}`);
+  }
+
+  return data as Patient;
+}
