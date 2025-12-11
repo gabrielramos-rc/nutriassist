@@ -1,9 +1,5 @@
 # NutriAssist Documentation
 
-This folder contains all project documentation organized by topic.
-
-## How to Use
-
 Read **only** the relevant `summary.md` for your current task. Load detail files only when deeper context is needed.
 
 ## Folder Structure
@@ -14,19 +10,19 @@ Read **only** the relevant `summary.md` for your current task. Load detail files
 ├── architecture/       # System design, tech stack, database, APIs
 ├── deployment/         # Vercel, environment, production setup
 ├── tasks/              # Development phases, current work, roadmap
-└── archived/           # Completed/historical docs (issues, test plans)
+└── archived/           # Completed/historical docs
 ```
 
 ## Quick Reference
 
 | Folder | When to Read | Entry Point |
 |--------|--------------|-------------|
-| `architecture/` | System design, how things work, tech decisions | `architecture/summary.md` |
-| `deployment/` | Deploy, env vars, production issues | `deployment/summary.md` |
-| `tasks/` | What to build, current status, priorities | `tasks/summary.md` |
+| `architecture/` | System design, how things work | `architecture/summary.md` |
+| `deployment/` | Deploy, env vars, production | `deployment/summary.md` |
+| `tasks/` | What to build, priorities | `tasks/summary.md` |
 | `archived/` | Historical reference only | Browse directly |
 
-## Root Files (Always Active)
+## Root Files
 
 - `/CLAUDE.md` - Project overview, Nina AI rules, git workflow
 - `/README.md` - GitHub project readme
