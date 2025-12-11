@@ -587,3 +587,56 @@ Este documento descreve os testes manuais e automatizados para validar o funcion
 - FAQ changes reflect immediately in Nina's responses
 - Consultation duration changes affect scheduling slots correctly
 - Business hours toggle and time editing work as expected
+
+---
+
+## Phase 16 - Integration Testing (2025-12-11)
+
+### Ambiente de Teste
+- **Browser**: Chromium (Playwright MCP)
+- **Ferramenta**: Claude Code
+- **URL Base**: http://localhost:3000
+
+### Resumo da Execução
+- **Testes Executados**: 7
+- **Passaram**: 2
+- **Limitações/Bloqueios**: 5
+
+### Testes Phase 16.1 - Chat ↔ Dashboard (3 tests)
+1. ✅ Chat message appears in Dashboard Conversations - message visible in conversation history
+2. ✅ Handoff in chat appears as pending in dashboard - orange indicator visible in "Pendentes" tab
+3. ⚠️ Nutritionist reply reaches chat widget - LIMITATION: Chat widget doesn't persist conversation history across sessions (no real-time updates or session continuity)
+
+### Testes Phase 16.2 - Scheduling End-to-End (2 tests)
+1. ⚠️ Patient books via chat → appears in calendar - BUG: Scheduling flow doesn't maintain conversation state; slot selection with number (e.g., "3") is not recognized
+2. ⚠️ Nutritionist cancels → patient notified - SKIP: Cannot test without successful booking
+
+### Testes Phase 16.3 - Diet Q&A End-to-End (2 tests)
+1. ⚠️ Upload PDF → patient can ask diet questions - BLOCKED: OpenRouter API error (model `meta-llama/llama-3.1-8b-instruct:free` no longer available)
+2. ⚠️ Diet question answered from PDF - BLOCKED: Same OpenRouter API issue
+
+### Issues Found
+
+#### 1. Scheduling Flow State Management
+- **Problem**: Multi-turn scheduling flow doesn't work - slot selection is not recognized
+- **Cause**: No conversation state management between messages
+- **Impact**: High - patients cannot complete appointment booking
+- **Suggested Fix**: Implement conversation state tracking using message metadata or session state
+
+#### 2. Chat Widget Session Persistence
+- **Problem**: Nutritionist replies are stored but not visible in chat widget
+- **Cause**: Chat widget creates new sessions without loading history
+- **Impact**: Medium - requires patient authentication to fix properly
+- **Suggested Fix**: Consider patient login or session persistence via cookies
+
+#### 3. OpenRouter Model Unavailable
+- **Problem**: `meta-llama/llama-3.1-8b-instruct:free` returns 404
+- **Cause**: Model deprecated or removed from OpenRouter
+- **Impact**: High - blocks all LLM-powered features (intent classification, diet Q&A)
+- **Suggested Fix**: Update OPENROUTER_MODEL to a currently available model
+
+### Notes
+- Integration tests reveal architectural limitations in the MVP
+- Core chat-to-dashboard flow works (messages visible in dashboard)
+- Multi-turn conversations need state management to work properly
+- OpenRouter model needs to be updated to restore LLM functionality
