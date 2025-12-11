@@ -227,3 +227,90 @@ export async function resolveHandoff(handoffId: string): Promise<void> {
     throw new Error(`Failed to resolve handoff: ${error.message}`);
   }
 }
+
+/**
+ * Get a handoff by ID with full conversation context
+ */
+export async function getHandoffWithContext(handoffId: string) {
+  const supabase = getSupabase();
+
+  const { data: handoff, error: handoffError } = await supabase
+    .from("handoffs")
+    .select(`
+      *,
+      chat_sessions (
+        id,
+        nutritionist_id,
+        patient_id,
+        channel,
+        status,
+        created_at,
+        patients (
+          id,
+          name,
+          email,
+          phone
+        )
+      )
+    `)
+    .eq("id", handoffId)
+    .single();
+
+  if (handoffError || !handoff) {
+    return null;
+  }
+
+  // Get the last 20 messages for context
+  const { data: messages } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("chat_session_id", handoff.chat_sessions.id)
+    .order("created_at", { ascending: true })
+    .limit(20);
+
+  return {
+    ...handoff,
+    messages: messages || [],
+  };
+}
+
+/**
+ * Check if a session has any pending handoffs
+ */
+export async function hasActiveHandoff(sessionId: string): Promise<boolean> {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from("handoffs")
+    .select("id")
+    .eq("chat_session_id", sessionId)
+    .eq("status", "pending")
+    .limit(1);
+
+  if (error) {
+    console.error("Error checking for active handoff:", error);
+    return false;
+  }
+
+  return (data?.length || 0) > 0;
+}
+
+/**
+ * Get handoff count for a nutritionist (for dashboard stats)
+ */
+export async function getHandoffCount(nutritionistId: string): Promise<number> {
+  const supabase = getSupabase();
+
+  const { count, error } = await supabase
+    .from("handoffs")
+    .select("id, chat_sessions!inner(nutritionist_id)", { count: "exact", head: true })
+    .eq("chat_sessions.nutritionist_id", nutritionistId)
+    .eq("status", "pending");
+
+  if (error) {
+    console.error("Error counting handoffs:", error);
+    return 0;
+  }
+
+  return count || 0;
+}

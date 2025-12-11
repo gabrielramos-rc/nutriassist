@@ -256,26 +256,26 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 6: Handoff System
 
 ### 6.1 Handoff Service
-- [ ] Create handoff functions in `src/services/conversations.ts`
-- [ ] Implement `createHandoff()`:
-  - [ ] Create handoff record
-  - [ ] Link to chat session
-  - [ ] Set status to pending
-- [ ] Implement `getHandoffs()`:
-  - [ ] Get pending handoffs for nutritionist
-  - [ ] Include patient and conversation info
-- [ ] Implement `resolveHandoff()`:
-  - [ ] Mark as resolved
-  - [ ] Set resolved_at timestamp
+- [X] Create handoff functions in `src/services/conversations.ts`
+- [X] Implement `createHandoff()`:
+  - [X] Create handoff record
+  - [X] Link to chat session
+  - [X] Set status to pending
+- [X] Implement `getHandoffs()`:
+  - [X] Get pending handoffs for nutritionist
+  - [X] Include patient and conversation info
+- [X] Implement `resolveHandoff()`:
+  - [X] Mark as resolved
+  - [X] Set resolved_at timestamp
 
 ### 6.2 Handoff Trigger Logic
-- [ ] Update Nina service to detect handoff scenarios:
-  - [ ] Question not in diet PDF
-  - [ ] Medical/symptom questions
-  - [ ] Complaints
-  - [ ] Explicit request for human
-- [ ] Create handoff record when triggered
-- [ ] Send appropriate response to patient
+- [X] Update Nina service to detect handoff scenarios:
+  - [X] Question not in diet PDF
+  - [X] Medical/symptom questions
+  - [X] Complaints
+  - [X] Explicit request for human
+- [X] Create handoff record when triggered
+- [X] Send appropriate response to patient
 
 ---
 

@@ -82,6 +82,26 @@ Como posso te ajudar hoje?`,
 
 Enquanto isso, posso te ajudar com algo sobre seu plano alimentar ou agendamento?`,
 
+  handoffMedical: (nutritionistName: string) =>
+    `Entendo sua preocupação! Questões sobre sintomas e saúde precisam ser avaliadas pela ${nutritionistName} diretamente.
+
+Vou encaminhar sua mensagem para ela te responder o mais rápido possível. Se for algo urgente, por favor entre em contato por telefone.`,
+
+  handoffComplaint: (nutritionistName: string) =>
+    `Lamento que você esteja passando por isso. A ${nutritionistName} vai ver sua mensagem e te responder pessoalmente.
+
+Agradeço o feedback - é muito importante para melhorarmos o atendimento!`,
+
+  handoffDietNotFound: (nutritionistName: string) =>
+    `Não encontrei essa informação específica no seu plano alimentar. Vou encaminhar sua pergunta para a ${nutritionistName} te dar uma resposta mais completa.
+
+Tem alguma outra dúvida sobre o que está no seu plano?`,
+
+  handoffHumanRequest: (nutritionistName: string) =>
+    `Claro! Vou avisar a ${nutritionistName} que você quer falar com ela. Ela te responde assim que possível.
+
+Enquanto isso, estou aqui se precisar de algo!`,
+
   offTopicHarmless: () =>
     `Haha, entendo! Mas voltando ao que importa, posso te ajudar com alguma dúvida sobre seu plano alimentar ou agendamento? 😄`,
 

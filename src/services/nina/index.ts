@@ -57,7 +57,7 @@ export async function processMessage(
       return handleFAQ(userMessage, nutritionist);
 
     case "handoff":
-      return handleHandoff(nutritionist);
+      return handleHandoff(nutritionist, userMessage);
 
     case "off_topic":
       return handleOffTopic();
@@ -69,7 +69,7 @@ export async function processMessage(
       };
 
     default:
-      return handleHandoff(nutritionist);
+      return handleHandoff(nutritionist, userMessage);
   }
 }
 
@@ -119,14 +119,61 @@ function handleFAQ(message: string, nutritionist: Nutritionist): NinaResponse {
 
 /**
  * Handle messages that need human intervention
+ * Detects specific handoff reasons and returns appropriate responses
  */
-function handleHandoff(nutritionist: Nutritionist): NinaResponse {
+function handleHandoff(
+  nutritionist: Nutritionist,
+  message?: string
+): NinaResponse {
+  // Detect specific handoff reason for better response
+  const normalizedMessage = (message || "").toLowerCase();
+
+  // Medical/symptom questions
+  const medicalPatterns = /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação|tontura|febre|alergia|reação)\b/i;
+  if (medicalPatterns.test(normalizedMessage)) {
+    return {
+      content: RESPONSE_TEMPLATES.handoffMedical(nutritionist.name),
+      intent: "handoff",
+      metadata: {
+        requiresHandoff: true,
+        handoffReason: "medical_symptom_question",
+      },
+    };
+  }
+
+  // Complaints
+  const complaintPatterns = /\b(reclamação|reclamacao|insatisf|problema com|não gostei|nao gostei|péssimo|pessimo|horrível|horrivel|decepcion)\b/i;
+  if (complaintPatterns.test(normalizedMessage)) {
+    return {
+      content: RESPONSE_TEMPLATES.handoffComplaint(nutritionist.name),
+      intent: "handoff",
+      metadata: {
+        requiresHandoff: true,
+        handoffReason: "complaint",
+      },
+    };
+  }
+
+  // Explicit request for human
+  const humanRequestPatterns = /\b(falar com|conversar com|quero.*humano|quero.*pessoa|atendente|falar.*nutricionista|preciso.*nutricionista)\b/i;
+  if (humanRequestPatterns.test(normalizedMessage)) {
+    return {
+      content: RESPONSE_TEMPLATES.handoffHumanRequest(nutritionist.name),
+      intent: "handoff",
+      metadata: {
+        requiresHandoff: true,
+        handoffReason: "human_request",
+      },
+    };
+  }
+
+  // Default handoff response
   return {
     content: RESPONSE_TEMPLATES.handoff(nutritionist.name),
     intent: "handoff",
     metadata: {
       requiresHandoff: true,
-      handoffReason: "user_request_or_complex_question",
+      handoffReason: "complex_question",
     },
   };
 }
