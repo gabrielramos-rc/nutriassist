@@ -289,3 +289,25 @@ git commit -m "feat(scope): description"
 git push -u origin feature/phase-X-description
 gh pr create --base dev --title "Phase X: Description"
 ```
+
+### Release Strategy (dev → main)
+
+Merge `dev` to `main` at **milestones** when features are production-ready:
+
+| Milestone | Phases | Version | Description |
+|-----------|--------|---------|-------------|
+| Chat MVP | 0, 1, 2 | v0.1.0 | Basic chat with Nina works |
+| Scheduling | 3, 4 | v0.2.0 | Appointment booking works |
+| Diet Q&A | 5, 6 | v0.3.0 | Diet questions + handoffs work |
+| Full MVP | 7, 8, 9 | v1.0.0 | Dashboard + polish complete |
+
+```bash
+# When milestone is complete:
+git checkout main
+git pull origin main
+git merge dev
+git tag -a v0.1.0 -m "Chat MVP release"
+git push origin main --tags
+```
+
+**Current Status:** Phase 1 complete → merge to main after Phase 2
