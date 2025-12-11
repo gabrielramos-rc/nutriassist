@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
-import { QuickReplies } from "./QuickReplies";
+import { QuickReplies, QuickReplyOption } from "./QuickReplies";
 import type { ChatMessage, ChatResponse, NinaResponse } from "@/types";
 
 interface ChatWidgetProps {
@@ -23,7 +23,7 @@ export function ChatWidget({
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [quickReplies, setQuickReplies] = useState<string[]>([]);
+  const [quickReplies, setQuickReplies] = useState<QuickReplyOption[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom
@@ -98,7 +98,12 @@ export function ChatWidget({
       // Set quick replies if available
       if (data.response.metadata?.availableSlots) {
         const slots = data.response.metadata.availableSlots;
-        setQuickReplies(slots.map((s) => s.formatted));
+        setQuickReplies(
+          slots.map((slot, index) => ({
+            label: slot.formatted,
+            value: String(index + 1), // Send "1", "2", "3"... as Nina expects
+          }))
+        );
       }
     } catch (err) {
       console.error("Error sending message:", err);

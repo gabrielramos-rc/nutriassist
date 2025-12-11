@@ -2,9 +2,14 @@
 
 import { cn } from "@/lib/utils";
 
+export interface QuickReplyOption {
+  label: string;
+  value: string;
+}
+
 interface QuickRepliesProps {
-  options: string[];
-  onSelect: (option: string) => void;
+  options: QuickReplyOption[];
+  onSelect: (value: string) => void;
   disabled?: boolean;
 }
 
@@ -20,7 +25,7 @@ export function QuickReplies({
       {options.map((option, index) => (
         <button
           key={index}
-          onClick={() => onSelect(option)}
+          onClick={() => onSelect(option.value)}
           disabled={disabled}
           className={cn(
             "px-3 py-1.5 text-sm rounded-full border border-green-600 text-green-600",
@@ -28,7 +33,7 @@ export function QuickReplies({
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         >
-          {option}
+          {option.label}
         </button>
       ))}
     </div>
