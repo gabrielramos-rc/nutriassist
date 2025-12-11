@@ -28,11 +28,22 @@
 | 19 | Accessibility | Pending |
 | 20 | Responsive Design | Pending |
 
+## Known Limitations
+
+| Feature | Limitation | Workaround/Future Fix |
+|---------|------------|----------------------|
+| Session persistence | Chat sessions don't persist across devices | Requires Supabase Auth |
+| Patient identification | Anonymous web users only | Add login flow |
+| Manual appointment creation | Not available in dashboard | Use chat or direct DB |
+| Profile validation | Basic validation only | Add comprehensive validation |
+| Test framework | Not configured | Setup Vitest + Playwright |
+| Authentication | No auth - dashboard open | Implement Supabase Auth |
+
 ## Future Work (Post-MVP)
 
 - WhatsApp integration
 - Google Calendar sync
-- Supabase Auth
+- Supabase Auth (fixes session + auth limitations)
 - Multi-tenant support
 
 ## Deep Dive

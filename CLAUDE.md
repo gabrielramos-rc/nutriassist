@@ -142,7 +142,7 @@ Detailed docs in `.claude/` folder:
 ```
 CLAUDE.md (auto-loaded)
     ↓
-.claude/tasks/summary.md → Know current status and pending work
+.claude/tasks/summary.md → Know current status, limitations, pending work
 ```
 
 ### 2. Before Coding (Load if relevant to task)
@@ -151,6 +151,7 @@ Nina/intents work    → .claude/architecture/nina-service.md
 Database/queries     → .claude/architecture/database.md
 Bug fix/debugging    → .claude/tasks/changelog.md (check Gotchas)
 Deploy/env issues    → .claude/deployment/guide.md
+Writing tests        → .claude/testing/guide.md
 ```
 
 ### 3. Do the Work
@@ -158,7 +159,41 @@ Deploy/env issues    → .claude/deployment/guide.md
 - Apply Nina AI rules from this file
 - Check changelog gotchas before touching known problem areas
 
-### 4. After Work (Update docs if applicable)
+### 4. Write & Run Tests
+After coding, always:
+1. **Write tests** for the code changed (unit, integration, or E2E)
+2. **Run tests** to verify they pass
+3. **Include test results** in PR description
+
+```bash
+npm run test        # Unit + Integration (when configured)
+npm run test:e2e    # E2E tests (when configured)
+npm run build       # Always verify build passes
+```
+
+> See `.claude/testing/` for test patterns and examples.
+
+### 5. Code Review Checklist
+Before committing, verify:
+
+**Functionality**
+- [ ] Feature works as expected
+- [ ] Edge cases handled
+- [ ] Error states handled
+
+**Security**
+- [ ] No secrets in code
+- [ ] Server-side validation for user input
+- [ ] Supabase service role only used server-side
+
+**Code Quality**
+- [ ] No `any` types
+- [ ] No console.log left in code
+- [ ] Functions have single responsibility
+
+> Full checklist in `.claude/testing/guide.md`
+
+### 6. Update Docs (if applicable)
 | What happened | Update |
 |---------------|--------|
 | Bug fix (significant) | `changelog.md` → Add Problem/Solution/File |
@@ -169,7 +204,8 @@ Deploy/env issues    → .claude/deployment/guide.md
 
 > Only update changelog for changes that impact future coding sessions.
 
-### 5. Git Commit
-- Follow commit format below
+### 7. Git Commit & PR
+- Create feature/fix branch from `dev`
+- Follow commit format (see Git Workflow above)
 - Include test plan in PR description
 - Reference issue number if applicable

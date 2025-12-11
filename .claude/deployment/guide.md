@@ -1,17 +1,61 @@
 # NutriAssist - Guia de Deploy
 
-Este documento descreve o processo de deploy do NutriAssist para produção.
-
-## Visão Geral
-
-- **Hospedagem**: Vercel
-- **Banco de Dados**: Supabase (PostgreSQL)
-- **Storage**: Supabase Storage (PDFs)
-- **LLM**: OpenRouter
+Este documento descreve o setup local e deploy para produção.
 
 ---
 
-## 1. Pré-requisitos
+## 0. Local Development Setup
+
+### 0.1 Clone e Instalar
+```bash
+git clone https://github.com/gabrielramos-rc/nutriassist.git
+cd nutriassist
+npm install
+```
+
+### 0.2 Configurar Ambiente
+```bash
+cp .env.example .env.local
+```
+
+Edite `.env.local` com suas credenciais:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xeckvimqbosmmzjivxjp.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+OPENROUTER_API_KEY=your_openrouter_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 0.3 Banco de Dados
+Se usando o Supabase compartilhado (dev), as migrações já estão aplicadas.
+
+Para um novo projeto Supabase:
+```bash
+# Execute no SQL Editor do Supabase:
+# 1. supabase/migrations/001_initial_schema.sql
+# 2. supabase/migrations/002_production_rls.sql
+# 3. supabase/migrations/003_enable_realtime.sql
+```
+
+### 0.4 Rodar o Projeto
+```bash
+npm run dev
+```
+
+Acesse:
+- Landing: http://localhost:3000
+- Chat teste: http://localhost:3000/chat/11111111-1111-1111-1111-111111111111
+- Dashboard: http://localhost:3000/dashboard
+
+### 0.5 Dados de Teste
+O banco já tem dados seed:
+- Nutritionist ID: `11111111-1111-1111-1111-111111111111`
+- Patient ID: `22222222-2222-2222-2222-222222222222`
+
+---
+
+## 1. Pré-requisitos (Produção)
 
 ### 1.1 Contas Necessárias
 - [Vercel](https://vercel.com) - Hospedagem

@@ -8,8 +8,9 @@ Read **only** the relevant `summary.md` for your current task. Load detail files
 .claude/
 ├── summary.md          # You are here
 ├── architecture/       # System design, tech stack, database, APIs
-├── deployment/         # Vercel, environment, production setup
-├── tasks/              # Development phases, current work, roadmap
+├── deployment/         # Local setup, Vercel, production
+├── testing/            # Test patterns, code review, security
+├── tasks/              # Current work, changelog, roadmap
 └── archived/           # Completed/historical docs
 ```
 
@@ -18,7 +19,8 @@ Read **only** the relevant `summary.md` for your current task. Load detail files
 | Folder | When to Read | Entry Point |
 |--------|--------------|-------------|
 | `architecture/` | System design, how things work | `architecture/summary.md` |
-| `deployment/` | Deploy, env vars, production | `deployment/summary.md` |
+| `deployment/` | Local setup, deploy, env vars | `deployment/summary.md` |
+| `testing/` | Writing tests, code review | `testing/summary.md` |
 | `tasks/` | What to build, priorities | `tasks/summary.md` |
 | `archived/` | Historical reference only | Browse directly |
 
