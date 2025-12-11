@@ -131,5 +131,45 @@ Detailed docs in `.claude/` folder:
 - `.claude/summary.md` - Documentation index
 - `.claude/architecture/` - System design, Nina service, database
 - `.claude/deployment/` - Vercel, environment setup
-- `.claude/tasks/` - Development phases, roadmap
+- `.claude/tasks/` - Current work, changelog, roadmap
 - `.claude/archived/` - Historical reference
+
+---
+
+## Claude Workflow
+
+### 1. Session Start (Always)
+```
+CLAUDE.md (auto-loaded)
+    ↓
+.claude/tasks/summary.md → Know current status and pending work
+```
+
+### 2. Before Coding (Load if relevant to task)
+```
+Nina/intents work    → .claude/architecture/nina-service.md
+Database/queries     → .claude/architecture/database.md
+Bug fix/debugging    → .claude/tasks/changelog.md (check Gotchas)
+Deploy/env issues    → .claude/deployment/guide.md
+```
+
+### 3. Do the Work
+- Follow existing patterns in codebase
+- Apply Nina AI rules from this file
+- Check changelog gotchas before touching known problem areas
+
+### 4. After Work (Update docs if applicable)
+| What happened | Update |
+|---------------|--------|
+| Bug fix (significant) | `changelog.md` → Add Problem/Solution/File |
+| Architectural decision | `changelog.md` → Add to Decisions section |
+| Found a gotcha | `changelog.md` → Add to Gotchas section |
+| Task completed | `tasks/full.md` → Check off item |
+| System changed | Relevant architecture doc |
+
+> Only update changelog for changes that impact future coding sessions.
+
+### 5. Git Commit
+- Follow commit format below
+- Include test plan in PR description
+- Reference issue number if applicable
