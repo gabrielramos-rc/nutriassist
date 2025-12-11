@@ -149,20 +149,20 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 3: FAQ Handler
 
 ### 3.1 FAQ Service
-- [ ] Create `src/services/nina/faq.ts`
-- [ ] Implement `handleFAQ()` function
-- [ ] Match question to FAQ keys:
-  - [ ] price / valor / preço / quanto custa
-  - [ ] location / endereço / onde fica / localização
-  - [ ] preparation / preparo / preparação
-  - [ ] duration / duração / quanto tempo
-  - [ ] online / atende online / consulta online
-- [ ] Return nutritionist's configured response
-- [ ] Fallback to handoff if no match
+- [X] Create `src/services/nina/faq.ts`
+- [X] Implement `handleFAQ()` function
+- [X] Match question to FAQ keys:
+  - [X] price / valor / preço / quanto custa
+  - [X] location / endereço / onde fica / localização
+  - [X] preparation / preparo / preparação
+  - [X] duration / duração / quanto tempo
+  - [X] online / atende online / consulta online
+- [X] Return nutritionist's configured response
+- [X] Fallback to handoff if no match
 
 ### 3.2 Nutritionist FAQ Settings
 - [ ] Add FAQ management to dashboard settings (later)
-- [ ] For MVP: seed default FAQ responses in database
+- [X] For MVP: seed default FAQ responses in database
 
 ---
 
