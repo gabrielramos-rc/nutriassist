@@ -37,4 +37,5 @@
 
 ## Deep Dive
 
-- `full.md` - Full task breakdown with all phases
+- `full.md` - Pending tasks and future roadmap
+- `changelog.md` - Bugs fixed, decisions, gotchas
