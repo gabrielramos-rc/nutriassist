@@ -37,4 +37,4 @@
 
 ## Deep Dive
 
-- `../archived/tasks.md` - Full task breakdown with all phases
+- `full.md` - Full task breakdown with all phases

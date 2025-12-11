@@ -38,4 +38,4 @@ git push origin main
 
 ## Deep Dive
 
-- `../archived/DEPLOYMENT.md` - Full deployment guide with troubleshooting
+- `guide.md` - Full deployment guide with troubleshooting
