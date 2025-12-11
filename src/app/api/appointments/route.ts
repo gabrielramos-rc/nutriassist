@@ -5,6 +5,7 @@ import {
   cancelAppointment,
   rescheduleAppointment,
   getAppointment,
+  updateAppointmentStatus,
 } from "@/services/appointments";
 import { getNutritionist } from "@/services/patients";
 
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
       patientId: searchParams.get("patientId") || undefined,
     });
 
-    return NextResponse.json({ appointments });
+    return NextResponse.json(appointments);
   } catch (error) {
     console.error("Error listing appointments:", error);
     return NextResponse.json(
@@ -95,26 +96,46 @@ export async function POST(request: NextRequest) {
 
 /**
  * PATCH /api/appointments
- * Reschedule an appointment
+ * Reschedule an appointment or update status
  */
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { appointmentId, newStartsAt, duration } = body;
+    const { appointmentId, newStartsAt, duration, status } = body;
 
-    if (!appointmentId || !newStartsAt) {
+    if (!appointmentId) {
       return NextResponse.json(
-        { error: "appointmentId and newStartsAt are required" },
+        { error: "appointmentId is required" },
         { status: 400 }
       );
     }
 
-    // Get existing appointment to determine duration
+    // Get existing appointment
     const existing = await getAppointment(appointmentId);
     if (!existing) {
       return NextResponse.json(
         { error: "Appointment not found" },
         { status: 404 }
+      );
+    }
+
+    // If status is provided, update status
+    if (status) {
+      const result = await updateAppointmentStatus(appointmentId, status);
+      if (!result.success) {
+        return NextResponse.json(
+          { error: result.error },
+          { status: 400 }
+        );
+      }
+      return NextResponse.json({ success: true });
+    }
+
+    // Otherwise, reschedule
+    if (!newStartsAt) {
+      return NextResponse.json(
+        { error: "newStartsAt or status is required" },
+        { status: 400 }
       );
     }
 
@@ -133,9 +154,9 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ appointment: result.appointment });
   } catch (error) {
-    console.error("Error rescheduling appointment:", error);
+    console.error("Error updating appointment:", error);
     return NextResponse.json(
-      { error: "Failed to reschedule appointment" },
+      { error: "Failed to update appointment" },
       { status: 500 }
     );
   }

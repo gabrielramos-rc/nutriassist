@@ -282,53 +282,53 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 ## Phase 7: Nutritionist Dashboard
 
 ### 7.1 Dashboard Layout
-- [ ] Create `src/app/dashboard/layout.tsx`
-- [ ] Create `src/components/dashboard/Sidebar.tsx`
-  - [ ] Navigation links
-  - [ ] Logo
-  - [ ] Nutritionist name
-- [ ] Protected route (auth later, skip for MVP)
+- [X] Create `src/app/dashboard/layout.tsx`
+- [X] Create `src/components/dashboard/Sidebar.tsx`
+  - [X] Navigation links
+  - [X] Logo
+  - [X] Nutritionist name
+- [X] Protected route (auth later, skip for MVP)
 
 ### 7.2 Dashboard Home
-- [ ] Create `src/app/dashboard/page.tsx`
-- [ ] Show summary stats:
-  - [ ] Active conversations
-  - [ ] Pending handoffs
-  - [ ] Today's appointments
-  - [ ] Total patients
+- [X] Create `src/app/dashboard/page.tsx`
+- [X] Show summary stats:
+  - [X] Active conversations
+  - [X] Pending handoffs
+  - [X] Today's appointments
+  - [X] Total patients
 
 ### 7.3 Conversations Page
-- [ ] Create `src/app/dashboard/conversations/page.tsx`
-- [ ] Create `src/components/dashboard/ConversationList.tsx`
-- [ ] List active chat sessions
-- [ ] Highlight sessions with pending handoffs
-- [ ] Click to view conversation
-- [ ] Reply as nutritionist (sends as nutritionist, not Nina)
+- [X] Create `src/app/dashboard/conversations/page.tsx`
+- [X] Create `src/components/dashboard/ConversationList.tsx`
+- [X] List active chat sessions
+- [X] Highlight sessions with pending handoffs
+- [X] Click to view conversation
+- [X] Reply as nutritionist (sends as nutritionist, not Nina)
 
 ### 7.4 Patients Page
-- [ ] Create `src/app/dashboard/patients/page.tsx`
-- [ ] Create `src/components/dashboard/PatientList.tsx`
-- [ ] List all patients
-- [ ] Search/filter patients
-- [ ] Click to view patient details
-- [ ] Upload diet PDF button
-- [ ] View/download current diet PDF
+- [X] Create `src/app/dashboard/patients/page.tsx`
+- [X] Create `src/components/dashboard/PatientList.tsx`
+- [X] List all patients
+- [X] Search/filter patients
+- [X] Click to view patient details
+- [X] Upload diet PDF button
+- [X] View/download current diet PDF
 
 ### 7.5 Appointments Page
-- [ ] Create `src/app/dashboard/appointments/page.tsx`
-- [ ] Create `src/components/dashboard/AppointmentCalendar.tsx`
-- [ ] Calendar view of appointments
-- [ ] List view option
+- [X] Create `src/app/dashboard/appointments/page.tsx`
+- [X] Create `src/components/dashboard/AppointmentCalendar.tsx`
+- [X] Calendar view of appointments
+- [X] List view option
 - [ ] Create appointment manually
-- [ ] Edit/cancel appointments
+- [X] Edit/cancel appointments
 
 ### 7.6 Settings Page
-- [ ] Create `src/app/dashboard/settings/page.tsx`
-- [ ] Edit nutritionist profile
-- [ ] Configure business hours
-- [ ] Configure appointment duration
-- [ ] Edit FAQ responses
-- [ ] Get chat widget embed code
+- [X] Create `src/app/dashboard/settings/page.tsx`
+- [X] Edit nutritionist profile
+- [X] Configure business hours
+- [X] Configure appointment duration
+- [X] Edit FAQ responses
+- [X] Get chat widget embed code
 
 ---
 

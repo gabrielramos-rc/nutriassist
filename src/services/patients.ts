@@ -87,6 +87,39 @@ export async function getNutritionist(nutritionistId: string): Promise<Nutrition
 }
 
 /**
+ * Update nutritionist profile
+ */
+export async function updateNutritionist(
+  nutritionistId: string,
+  data: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    business_hours?: Record<string, unknown>;
+    appointment_duration?: number;
+    faq_responses?: Record<string, string>;
+  }
+): Promise<Nutritionist> {
+  const supabase = getSupabase();
+
+  const { data: updated, error } = await supabase
+    .from("nutritionists")
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", nutritionistId)
+    .select()
+    .single();
+
+  if (error || !updated) {
+    throw new Error(`Failed to update nutritionist: ${error?.message}`);
+  }
+
+  return updated as Nutritionist;
+}
+
+/**
  * Get patient's diet text for Q&A
  */
 export async function getPatientDietText(patientId: string): Promise<string | null> {
@@ -174,4 +207,69 @@ export async function createPatient(
   }
 
   return data as Patient;
+}
+
+/**
+ * Get patient count for a nutritionist
+ */
+export async function getPatientCount(nutritionistId: string): Promise<number> {
+  const supabase = getSupabase();
+
+  const { count, error } = await supabase
+    .from("patients")
+    .select("id", { count: "exact", head: true })
+    .eq("nutritionist_id", nutritionistId);
+
+  if (error) {
+    console.error("Error counting patients:", error);
+    return 0;
+  }
+
+  return count || 0;
+}
+
+/**
+ * Update a patient
+ */
+export async function updatePatient(
+  patientId: string,
+  data: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  }
+): Promise<Patient> {
+  const supabase = getSupabase();
+
+  const { data: updated, error } = await supabase
+    .from("patients")
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", patientId)
+    .select()
+    .single();
+
+  if (error || !updated) {
+    throw new Error(`Failed to update patient: ${error?.message}`);
+  }
+
+  return updated as Patient;
+}
+
+/**
+ * Delete a patient
+ */
+export async function deletePatient(patientId: string): Promise<void> {
+  const supabase = getSupabase();
+
+  const { error } = await supabase
+    .from("patients")
+    .delete()
+    .eq("id", patientId);
+
+  if (error) {
+    throw new Error(`Failed to delete patient: ${error.message}`);
+  }
 }

@@ -314,3 +314,121 @@ export async function getHandoffCount(nutritionistId: string): Promise<number> {
 
   return count || 0;
 }
+
+/**
+ * Get active conversation count for a nutritionist
+ */
+export async function getActiveConversationCount(nutritionistId: string): Promise<number> {
+  const supabase = getSupabase();
+
+  const { count, error } = await supabase
+    .from("chat_sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("nutritionist_id", nutritionistId)
+    .eq("status", "active");
+
+  if (error) {
+    console.error("Error counting conversations:", error);
+    return 0;
+  }
+
+  return count || 0;
+}
+
+/**
+ * Get all chat sessions for a nutritionist with patient info
+ */
+export async function getConversations(
+  nutritionistId: string,
+  options: {
+    status?: "active" | "closed";
+    limit?: number;
+  } = {}
+) {
+  const supabase = getSupabase();
+
+  let query = supabase
+    .from("chat_sessions")
+    .select(`
+      *,
+      patients (
+        id,
+        name,
+        email,
+        phone
+      )
+    `)
+    .eq("nutritionist_id", nutritionistId)
+    .order("updated_at", { ascending: false });
+
+  if (options.status) {
+    query = query.eq("status", options.status);
+  }
+
+  if (options.limit) {
+    query = query.limit(options.limit);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching conversations:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Get conversation with messages
+ */
+export async function getConversationWithMessages(sessionId: string, messageLimit: number = 50) {
+  const supabase = getSupabase();
+
+  const { data: session, error: sessionError } = await supabase
+    .from("chat_sessions")
+    .select(`
+      *,
+      patients (
+        id,
+        name,
+        email,
+        phone
+      ),
+      nutritionists (
+        id,
+        name
+      )
+    `)
+    .eq("id", sessionId)
+    .single();
+
+  if (sessionError || !session) {
+    return null;
+  }
+
+  const { data: messages, error: messagesError } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("chat_session_id", sessionId)
+    .order("created_at", { ascending: true })
+    .limit(messageLimit);
+
+  if (messagesError) {
+    console.error("Error fetching messages:", messagesError);
+    return { ...session, messages: [] };
+  }
+
+  // Check for pending handoffs
+  const { data: handoffs } = await supabase
+    .from("handoffs")
+    .select("*")
+    .eq("chat_session_id", sessionId)
+    .eq("status", "pending");
+
+  return {
+    ...session,
+    messages: messages || [],
+    pendingHandoffs: handoffs || [],
+  };
+}
