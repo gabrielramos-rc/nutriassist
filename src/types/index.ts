@@ -50,6 +50,7 @@ export interface NinaResponse {
     availableSlots?: AppointmentSlot[];
     requiresHandoff?: boolean;
     handoffReason?: string;
+    faqKey?: string;
   };
 }
 
