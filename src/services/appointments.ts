@@ -378,3 +378,21 @@ export async function updateAppointmentStatus(
 
   return { success: true };
 }
+
+export async function updateAppointmentNotes(
+  appointmentId: string,
+  notes: string | null
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabase();
+
+  const { error } = await supabase
+    .from("appointments")
+    .update({ notes })
+    .eq("id", appointmentId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}

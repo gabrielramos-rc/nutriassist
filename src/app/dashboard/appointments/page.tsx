@@ -102,6 +102,22 @@ export default function AppointmentsPage() {
     }
   };
 
+  const handleUpdateNotes = async (appointmentId: string, notes: string) => {
+    try {
+      await fetch("/api/appointments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId,
+          notes,
+        }),
+      });
+      await fetchAppointments();
+    } catch (error) {
+      console.error("Error updating notes:", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -135,6 +151,7 @@ export default function AppointmentsPage() {
         onCancel={handleCancelAppointment}
         onComplete={handleCompleteAppointment}
         onNoShow={handleNoShowAppointment}
+        onUpdateNotes={handleUpdateNotes}
       />
     </div>
   );

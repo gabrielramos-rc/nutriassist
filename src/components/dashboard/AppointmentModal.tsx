@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { X, Calendar, Clock, User, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { X, Calendar, Clock, User, Trash2, CheckCircle, XCircle, Edit2, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Patient {
@@ -27,6 +27,7 @@ interface AppointmentModalProps {
   onCancel: (appointmentId: string) => Promise<void>;
   onComplete: (appointmentId: string) => Promise<void>;
   onNoShow: (appointmentId: string) => Promise<void>;
+  onUpdateNotes: (appointmentId: string, notes: string) => Promise<void>;
 }
 
 export function AppointmentModal({
@@ -36,8 +37,19 @@ export function AppointmentModal({
   onCancel,
   onComplete,
   onNoShow,
+  onUpdateNotes,
 }: AppointmentModalProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+
+  // Sync notes state with appointment
+  useEffect(() => {
+    if (appointment) {
+      setNotes(appointment.notes || "");
+      setIsEditingNotes(false);
+    }
+  }, [appointment]);
 
   if (!isOpen || !appointment) return null;
 
@@ -137,12 +149,61 @@ export function AppointmentModal({
           </div>
 
           {/* Notes */}
-          {appointment.notes && (
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500 mb-1">Observações</p>
-              <p className="text-gray-900">{appointment.notes}</p>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm text-gray-500">Observações</p>
+              {canEdit && !isEditingNotes && (
+                <button
+                  onClick={() => setIsEditingNotes(true)}
+                  className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
-          )}
+            {isEditingNotes ? (
+              <div className="space-y-2">
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                  placeholder="Adicione observações sobre a consulta..."
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    onClick={() => {
+                      setNotes(appointment.notes || "");
+                      setIsEditingNotes(false);
+                    }}
+                    className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setIsLoading(true);
+                      try {
+                        await onUpdateNotes(appointment.id, notes);
+                        setIsEditingNotes(false);
+                      } finally {
+                        setIsLoading(false);
+                      }
+                    }}
+                    disabled={isLoading}
+                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-300 transition-colors"
+                  >
+                    <Save className="w-3 h-3" />
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-900 text-sm">
+                {notes || <span className="text-gray-400 italic">Nenhuma observação</span>}
+              </p>
+            )}
+          </div>
 
           {/* Actions */}
           {canEdit && (
