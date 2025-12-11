@@ -58,6 +58,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"profile" | "schedule" | "faq" | "embed">("profile");
   const [copied, setCopied] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
 
   // Form state
   const [name, setName] = useState("");
@@ -91,7 +92,29 @@ export default function SettingsPage() {
     fetchNutritionist();
   }, [fetchNutritionist]);
 
+  const validateForm = (): boolean => {
+    const newErrors: { name?: string; email?: string } = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Nome é obrigatório";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "E-mail é obrigatório";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "E-mail inválido";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = async () => {
+    if (!validateForm()) {
+      setActiveTab("profile"); // Switch to profile tab to show errors
+      return;
+    }
+
     setIsSaving(true);
     try {
       await fetch("/api/nutritionists", {
@@ -99,9 +122,9 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nutritionistId: TEST_NUTRITIONIST_ID,
-          name,
-          email,
-          phone: phone || null,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || null,
           appointment_duration: appointmentDuration,
           business_hours: businessHours,
           faq_responses: faqResponses,
@@ -205,26 +228,44 @@ export default function SettingsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6 max-w-2xl">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nome
+              Nome <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
+              className={cn(
+                "w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent",
+                errors.name ? "border-red-500" : "border-gray-300"
+              )}
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              E-mail
+              E-mail <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+              }}
+              className={cn(
+                "w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent",
+                errors.email ? "border-red-500" : "border-gray-300"
+              )}
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+            )}
           </div>
 
           <div>
