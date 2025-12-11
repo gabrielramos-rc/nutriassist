@@ -316,4 +316,4 @@ git tag -a v0.1.0 -m "Chat MVP release"
 git push origin main --tags
 ```
 
-**Current Status:** v0.1.0 released (Phases 0-2) → next milestone v0.2.0 after Phase 4
+**Current Status:** v0.2.0 released (Phases 0-4) → next milestone v0.3.0 after Phase 6
