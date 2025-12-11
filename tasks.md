@@ -54,9 +54,14 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 | Phase | Description | Tests | Status |
 |-------|-------------|-------|--------|
-| 16 | End-to-End Flows | 7 | Pending |
+| 16 | End-to-End Flows | 7 | ⚠️ Partial (2/7) |
 
 **Why separate:** Integration tests validate that v1.0.1 (chat) and v1.0.2 (dashboard) work together. Should only run after both are stable.
+
+**Issues Found:**
+- Scheduling flow lacks conversation state management (can't complete bookings)
+- Chat widget doesn't persist sessions (nutritionist replies not visible)
+- OpenRouter API model unavailable (blocks LLM features)
 
 ---
 
@@ -232,20 +237,20 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 ---
 
-### Phase 16: Integration Testing
+### Phase 16: Integration Testing ⚠️ PARTIAL (2/7 tests, 5 blocked/limited)
 
 #### 16.1 Chat ↔ Dashboard (3 tests)
-- [ ] Chat message appears in Dashboard Conversations
-- [ ] Handoff in chat appears as pending in dashboard
-- [ ] Nutritionist reply reaches chat widget
+- [x] Chat message appears in Dashboard Conversations
+- [x] Handoff in chat appears as pending in dashboard
+- [ ] Nutritionist reply reaches chat widget (LIMITATION: no session persistence)
 
 #### 16.2 Scheduling End-to-End (2 tests)
-- [ ] Patient books via chat → appears in calendar
-- [ ] Nutritionist cancels → patient notified (next interaction)
+- [ ] Patient books via chat → appears in calendar (BUG: no conversation state management)
+- [ ] Nutritionist cancels → patient notified (SKIP: booking doesn't work)
 
 #### 16.3 Diet Q&A End-to-End (2 tests)
-- [ ] Upload PDF in dashboard → patient can ask diet questions
-- [ ] Diet question answered correctly from uploaded PDF
+- [ ] Upload PDF in dashboard → patient can ask diet questions (BLOCKED: OpenRouter API 404)
+- [ ] Diet question answered correctly from uploaded PDF (BLOCKED: OpenRouter API 404)
 
 ---
 
