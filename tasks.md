@@ -4,6 +4,302 @@
 
 This document contains all tasks needed to build NutriAssist MVP. Tasks are organized by phase and should be completed in order.
 
+**Current Status:** v1.0.0 (Full MVP Complete) - Testing Phase
+
+---
+
+## Current Sprint: Testing & Bug Fixes
+
+---
+
+## Release Plan
+
+| Release | Phases | Focus | Tests | Branch |
+|---------|--------|-------|-------|--------|
+| **v1.0.1** | 10, 11, 12 | Core Chat & Conversations | 29 | `release/v1.0.1-chat-fixes` |
+| **v1.0.2** | 13, 14, 15 | Dashboard CRUD | 40 | `release/v1.0.2-dashboard-crud` |
+| **v1.0.3** | 16 | Integration (End-to-End) | 7 | `release/v1.0.3-integration` |
+| **v1.0.4** | 17, 18, 19, 20 | Quality (Perf, Errors, A11y, Responsive) | 27 | `release/v1.0.4-quality` |
+
+---
+
+### Release v1.0.1 - Core Chat & Conversations
+**Phases:** 10, 11, 12 | **Tests:** 29
+
+| Phase | Description | Tests | Status |
+|-------|-------------|-------|--------|
+| 10 | Bug Fixes (FAQ intent) | 3 | ✅ Complete |
+| 11 | Chat Widget Testing | 20 | ✅ Complete |
+| 12 | Dashboard Conversations | 9 | Pending |
+
+**Why together:** These phases validate the core chat experience - the primary user-facing feature. Phase 10 fixes a bug that affects Phase 11 FAQ tests.
+
+---
+
+### Release v1.0.2 - Dashboard CRUD
+**Phases:** 13, 14, 15 | **Tests:** 40
+
+| Phase | Description | Tests | Status |
+|-------|-------------|-------|--------|
+| 13 | Patients CRUD | 17 | Pending |
+| 14 | Appointments CRUD | 11 | Pending |
+| 15 | Settings CRUD | 12 | Pending |
+
+**Why together:** All dashboard data management features. Can be tested independently of chat. May require code fixes for CRUD operations.
+
+---
+
+### Release v1.0.3 - Integration
+**Phases:** 16 | **Tests:** 7
+
+| Phase | Description | Tests | Status |
+|-------|-------------|-------|--------|
+| 16 | End-to-End Flows | 7 | Pending |
+
+**Why separate:** Integration tests validate that v1.0.1 (chat) and v1.0.2 (dashboard) work together. Should only run after both are stable.
+
+---
+
+### Release v1.0.4 - Quality
+**Phases:** 17, 18, 19, 20 | **Tests:** 27
+
+| Phase | Description | Tests | Status |
+|-------|-------------|-------|--------|
+| 17 | Performance | 5 | Pending |
+| 18 | Error Handling | 8 | Pending |
+| 19 | Accessibility | 10 | Pending |
+| 20 | Responsive Design | 2 | Pending |
+
+**Why together:** Non-functional quality requirements. These often require code changes (a11y fixes, error handling improvements) but don't affect core functionality.
+
+---
+
+### Phase 10: Bug Fixes (Priority) ✅ COMPLETE
+
+#### 10.1 FAQ Intent Classification Bug
+- [x] **Fix FAQ Intent Misrouting** - Nina responds with scheduling slots instead of price when asked "Quanto custa a consulta?"
+  - **File:** `src/services/nina/intents.ts`
+  - **Fix:** Added explicit `INTENT_CHECK_ORDER` to check FAQ patterns before scheduling
+  - **PR:** https://github.com/gabrielramos-rc/nutriassist/pull/10
+- [x] Add unit tests for FAQ intent keywords (preço, valor, quanto custa)
+- [x] Verify fix works for all price-related variations (20 test cases passed)
+
+---
+
+### Phase 11: Chat Widget Testing ✅ COMPLETE
+
+#### 11.1 Scheduling Flow (4 tests)
+- [x] Select slot → confirm appointment
+- [x] Reschedule existing appointment
+- [x] Cancel appointment
+- [x] Check next appointment ("Qual meu próximo horário?")
+
+#### 11.2 FAQ Flow (3 tests)
+- [x] "Como me preparar para a consulta?" → preparation instructions
+- [x] "Quanto tempo dura a consulta?" → duration response
+- [x] "Você atende online?" → online consultation info
+
+#### 11.3 Diet Q&A Flow (4 tests)
+- [x] "O que posso comer no café da manhã?" → answer from PDF
+- [x] "Posso trocar frango por peixe?" → substitution info
+- [x] "Quantas calorias tem minha dieta?" → calorie info
+- [x] Question not found in PDF → suggest handoff
+
+#### 11.4 Handoff Flow (4 tests)
+- [x] Medical symptom triggers handoff ("Estou sentindo dor de estômago")
+- [x] Explicit request for nutritionist ("Quero falar com a nutricionista")
+- [x] Complaint triggers handoff ("Tenho uma reclamação")
+- [x] Handoff appears in dashboard
+
+#### 11.5 Guardrails (4 tests)
+- [x] Block dangerous content: drugs
+- [x] Block dangerous content: weapons
+- [x] Block dangerous content: self-harm
+- [x] Off-topic joke request → redirect to nutrition
+
+#### 11.6 UI/UX (1 test)
+- [x] Loading indicator appears while Nina processes
+
+**Bugs Fixed During Testing:**
+- Added off-topic keyword patterns (sports, jokes, politics, weather, news)
+- Added "preparar" to FAQ preparation keywords
+- Reordered intent check to process off-topic before handoff
+
+---
+
+### Phase 12: Dashboard Conversations Testing
+
+#### 12.1 Conversation List (5 tests)
+- [ ] Conversations with handoff are highlighted
+- [ ] Click conversation opens details
+- [ ] Message history loads correctly
+- [ ] Messages ordered chronologically
+- [ ] Intent visible on messages
+
+#### 12.2 Nutritionist Reply (2 tests)
+- [ ] Nutritionist can reply to conversation
+- [ ] Reply appears as "nutritionist" not "nina"
+
+#### 12.3 Handoff Management (2 tests)
+- [ ] Resolve handoff button works
+- [ ] Handoff counter decreases after resolve
+
+---
+
+### Phase 13: Dashboard Patients Testing
+
+#### 13.1 Search & Filter (2 tests)
+- [ ] Search by email works
+- [ ] Search by phone works
+
+#### 13.2 Create Patient (6 tests)
+- [ ] "Novo Paciente" button opens modal
+- [ ] Required fields validated (name)
+- [ ] Email format validated
+- [ ] Phone accepts Brazilian format
+- [ ] Save creates patient
+- [ ] New patient appears in list
+
+#### 13.3 Edit Patient (4 tests)
+- [ ] Click patient opens edit modal
+- [ ] Edit data loads correctly
+- [ ] Changes are saved
+- [ ] List updates after save
+
+#### 13.4 Delete Patient (2 tests)
+- [ ] Delete button visible
+- [ ] Delete shows confirmation dialog
+
+#### 13.5 Diet PDF Management (3 tests)
+- [ ] Upload accepts only PDF files
+- [ ] Upload rejects files > 10MB
+- [ ] View/download diet PDF works
+
+---
+
+### Phase 14: Dashboard Appointments Testing
+
+#### 14.1 Calendar View (2 tests)
+- [ ] Appointments appear on correct days
+- [ ] Different colors by status (scheduled/completed/cancelled)
+
+#### 14.2 List View (3 tests)
+- [ ] Toggle to list view works
+- [ ] List ordered by date
+- [ ] Filter by status works
+
+#### 14.3 Appointment Details (4 tests)
+- [ ] Click appointment opens modal
+- [ ] Patient info visible
+- [ ] Status can be changed (completed/no-show)
+- [ ] Notes can be added
+
+#### 14.4 Cancel Appointment (2 tests)
+- [ ] Cancel appointment works
+- [ ] Cancelled appointment shows different style
+
+---
+
+### Phase 15: Dashboard Settings Testing
+
+#### 15.1 Profile Settings (2 tests)
+- [ ] Edit profile and save
+- [ ] Profile validations work
+
+#### 15.2 Business Hours (4 tests)
+- [ ] Days of week listed
+- [ ] Start/end time editable
+- [ ] Toggle day on/off works
+- [ ] Changes persist after save
+
+#### 15.3 Consultation Settings (2 tests)
+- [ ] Duration editable
+- [ ] Duration affects scheduling slots
+
+#### 15.4 FAQ Settings (2 tests)
+- [ ] FAQ responses listed
+- [ ] FAQ editing works
+
+#### 15.5 Widget Embed (2 tests)
+- [ ] Embed code displayed with correct nutritionist ID
+- [ ] Copy button works
+
+---
+
+### Phase 16: Integration Testing
+
+#### 16.1 Chat ↔ Dashboard (3 tests)
+- [ ] Chat message appears in Dashboard Conversations
+- [ ] Handoff in chat appears as pending in dashboard
+- [ ] Nutritionist reply reaches chat widget
+
+#### 16.2 Scheduling End-to-End (2 tests)
+- [ ] Patient books via chat → appears in calendar
+- [ ] Nutritionist cancels → patient notified (next interaction)
+
+#### 16.3 Diet Q&A End-to-End (2 tests)
+- [ ] Upload PDF in dashboard → patient can ask diet questions
+- [ ] Diet question answered correctly from uploaded PDF
+
+---
+
+### Phase 17: Performance Testing
+
+#### 17.1 Page Load Times (4 tests)
+- [ ] Landing page loads < 3s
+- [ ] Chat widget loads < 2s
+- [ ] Dashboard loads < 3s
+- [ ] Nina response < 5s
+
+#### 17.2 Lighthouse Audit (1 test)
+- [ ] Mobile Lighthouse score > 80
+
+---
+
+### Phase 18: Error Handling Testing
+
+#### 18.1 Network Errors (3 tests)
+- [ ] Chat shows error if API fails
+- [ ] Dashboard shows error if data doesn't load
+- [ ] Retry available on errors
+
+#### 18.2 Validation Errors (3 tests)
+- [ ] Form validation errors clear on fix
+- [ ] Invalid fields highlighted
+- [ ] Error messages in Portuguese
+
+#### 18.3 404 Handling (2 tests)
+- [ ] Invalid URL shows 404 page
+- [ ] Invalid nutritionist ID shows error
+
+---
+
+### Phase 19: Accessibility Testing
+
+#### 19.1 Keyboard Navigation (4 tests)
+- [ ] Tab navigates between elements
+- [ ] Enter activates buttons/links
+- [ ] Escape closes modals
+- [ ] Focus visible on all elements
+
+#### 19.2 Screen Reader Support (4 tests)
+- [ ] Images have alt text
+- [ ] Forms have labels
+- [ ] Buttons have descriptive text
+- [ ] Heading structure correct (h1 → h2 → h3)
+
+#### 19.3 Visual Accessibility (2 tests)
+- [ ] Text readable on all backgrounds
+- [ ] Links distinguishable from text
+
+---
+
+### Phase 20: Responsive Design Testing
+
+#### 20.1 Layout (2 tests)
+- [ ] Layout responsive on mobile/tablet/desktop
+- [ ] Footer links work on all screen sizes
+
 ---
 
 ## Phase 0: Project Setup
@@ -427,10 +723,29 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 ---
 
+## Recommended Next Steps
+
+### Immediate (This Sprint)
+1. **Fix FAQ Intent Bug** - Priority fix for intent classification
+2. **Run Integration Tests** - Verify end-to-end flows work
+3. **Test Responsive Design** - Mobile/tablet layouts
+
+### Short-term
+4. **Complete Accessibility Tests** - Keyboard navigation, screen readers
+5. **Performance Testing** - Lighthouse audits
+6. **Error Handling Review** - Ensure all edge cases covered
+
+### Before Production
+7. **Enable Production RLS** - Run `002_production_rls.sql` migration
+8. **Set Up Database Backups** - Configure Supabase backups
+9. **Monitor Error Rates** - Set up alerting
+
+---
+
 ## Notes for Claude Code
 
-1. **Start with Phase 0 and 1** - Get the foundation right
-2. **Test each phase before moving on** - Especially Nina service
+1. **MVP is complete** - Focus on testing and bug fixes
+2. **Fix bugs before new features** - The FAQ bug is priority
 3. **Use TypeScript strictly** - No `any` types
 4. **Follow the file structure in CLAUDE.md** - Keep it organized
 5. **Brazilian Portuguese for all user-facing text** - Nina speaks Portuguese
