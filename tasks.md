@@ -43,7 +43,7 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 |-------|-------------|-------|--------|
 | 13 | Patients CRUD | 17 | ✅ Complete |
 | 14 | Appointments CRUD | 11 | ✅ Complete |
-| 15 | Settings CRUD | 12 | Pending |
+| 15 | Settings CRUD | 12 | ✅ Complete |
 
 **Why together:** All dashboard data management features. Can be tested independently of chat. May require code fixes for CRUD operations.
 
@@ -206,29 +206,29 @@ This document contains all tasks needed to build NutriAssist MVP. Tasks are orga
 
 ---
 
-### Phase 15: Dashboard Settings Testing
+### Phase 15: Dashboard Settings Testing ✅ COMPLETE (11/12 tests)
 
 #### 15.1 Profile Settings (2 tests)
-- [ ] Edit profile and save
-- [ ] Profile validations work
+- [x] Edit profile and save
+- [ ] Profile validations work (NOT IMPLEMENTED)
 
 #### 15.2 Business Hours (4 tests)
-- [ ] Days of week listed
-- [ ] Start/end time editable
-- [ ] Toggle day on/off works
-- [ ] Changes persist after save
+- [x] Days of week listed
+- [x] Start/end time editable
+- [x] Toggle day on/off works
+- [x] Changes persist after save
 
 #### 15.3 Consultation Settings (2 tests)
-- [ ] Duration editable
-- [ ] Duration affects scheduling slots
+- [x] Duration editable
+- [x] Duration affects scheduling slots
 
 #### 15.4 FAQ Settings (2 tests)
-- [ ] FAQ responses listed
-- [ ] FAQ editing works
+- [x] FAQ responses listed
+- [x] FAQ editing works
 
 #### 15.5 Widget Embed (2 tests)
-- [ ] Embed code displayed with correct nutritionist ID
-- [ ] Copy button works
+- [x] Embed code displayed with correct nutritionist ID
+- [x] Copy button works (BUG FIXED: added fallback for non-HTTPS contexts)
 
 ---
 
