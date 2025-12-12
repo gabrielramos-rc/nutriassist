@@ -1,48 +1,30 @@
 # Testing Guide
 
-## Setup (TODO)
+## Current Status
 
-### Install Dependencies
+- **Test Framework**: Vitest (configured)
+- **Test Count**: 209 tests passing
+- **Coverage**: Unit + integration tests for services
+
+## Commands
 
 ```bash
-npm install -D vitest @testing-library/react @testing-library/jest-dom
-npm install -D playwright @playwright/test
+npm run test          # Watch mode
+npm run test:run      # Single run
+npm run test:coverage # With coverage report
 ```
 
-### Configure Vitest
+## Pre-commit Hooks
 
-```typescript
-// vitest.config.ts
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
-import path from "path";
+On every commit, the following checks run automatically:
 
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: "jsdom",
-    globals: true,
-    setupFiles: ["./src/test/setup.ts"],
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-});
-```
+1. **lint-staged**: ESLint + Prettier on staged files
+2. **secretlint**: Secret detection scan
+3. **pre-push**: Full test suite runs before push
 
-### Add Scripts to package.json
-
-```json
-{
-  "scripts": {
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:e2e": "playwright test",
-    "test:all": "vitest run && playwright test"
-  }
-}
+```bash
+# Manual secret scan
+npm run secrets:check
 ```
 
 ---

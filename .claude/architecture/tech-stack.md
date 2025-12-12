@@ -4,14 +4,37 @@ Version records and technical decisions.
 
 ## Current Versions
 
-| Package      | Version | Notes           |
-| ------------ | ------- | --------------- |
-| Next.js      | 16.0.8  | App Router      |
-| React        | 19.2.1  |                 |
-| TypeScript   | 5.x     |                 |
-| Tailwind CSS | 4.x     |                 |
-| Supabase JS  | 2.x     | SSR package     |
-| date-fns     | 4.1.0   | Date formatting |
+| Package      | Version | Notes                |
+| ------------ | ------- | -------------------- |
+| Next.js      | 16.0.10 | App Router           |
+| React        | 19.2.1  |                      |
+| TypeScript   | 5.x     |                      |
+| Tailwind CSS | 4.x     |                      |
+| Supabase JS  | 2.x     | SSR package          |
+| Zod          | 3.x     | API input validation |
+| date-fns     | 4.1.0   | Date formatting      |
+
+## Dev Tools
+
+| Tool        | Purpose                              |
+| ----------- | ------------------------------------ |
+| Vitest      | Unit/integration testing (209 tests) |
+| Prettier    | Code formatting                      |
+| ESLint      | Linting with strict rules            |
+| Husky       | Git hooks (pre-commit, pre-push)     |
+| lint-staged | Run linters on staged files          |
+| secretlint  | Pre-commit secret detection          |
+
+## Security
+
+| Feature          | Implementation                   |
+| ---------------- | -------------------------------- |
+| Input validation | Zod schemas on all API routes    |
+| Rate limiting    | In-memory sliding window         |
+| Security headers | CSP, HSTS, X-Frame-Options, etc. |
+| Secret detection | secretlint pre-commit hook       |
+| Dependency audit | GitHub Dependabot + npm audit    |
+| Static analysis  | CodeQL via GitHub Actions        |
 
 ## LLM Configuration
 
@@ -53,4 +76,4 @@ Version records and technical decisions.
 
 <!-- Add notes when upgrading major versions -->
 
-_Last updated: 2025-12-11_
+_Last updated: 2025-12-12_
