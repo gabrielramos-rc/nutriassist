@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { getNutritionist } from "@/services/patients";
 
