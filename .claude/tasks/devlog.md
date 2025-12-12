@@ -370,3 +370,24 @@ In-memory rate limiting resets on each cold start and doesn't share state across
 - UUID v4 requires 17th char = `8/9/a/b` (variant)
 
 Use regex pattern instead: `/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i`
+
+### Next.js Static Generation with Supabase
+
+Server components that fetch from Supabase will fail during `next build` static generation because env vars may not be available or the build tries to connect to the database.
+
+**Solution:** Add `export const dynamic = "force-dynamic"` to:
+
+- Pages that fetch data (`src/app/dashboard/page.tsx`)
+- Layouts that fetch data (`src/app/dashboard/layout.tsx`)
+- Dynamic routes (`src/app/chat/[nutritionistId]/page.tsx`)
+
+This tells Next.js to render at request time, not build time.
+
+### GitHub Actions Environment Variables
+
+The release workflow needs Supabase env vars for the build step. These must be set as **Repository Variables** (not Secrets, since they're public keys):
+
+1. Go to: Settings → Secrets and variables → Actions → Variables
+2. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+The workflow accesses them via `${{ vars.VARIABLE_NAME }}`
