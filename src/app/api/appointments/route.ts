@@ -9,25 +9,45 @@ import {
   updateAppointmentNotes,
 } from "@/services/appointments";
 import { getNutritionist } from "@/services/patients";
+import {
+  appointmentGetSchema,
+  appointmentCreateSchema,
+  appointmentUpdateSchema,
+  appointmentDeleteSchema,
+  getValidationError,
+} from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
  * GET /api/appointments
  * List appointments for a nutritionist
  */
 export async function GET(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
-    const nutritionistId = searchParams.get("nutritionistId");
-
-    if (!nutritionistId) {
-      return NextResponse.json({ error: "nutritionistId is required" }, { status: 400 });
-    }
-
-    const appointments = await listAppointments(nutritionistId, {
+    const params = {
+      nutritionistId: searchParams.get("nutritionistId") || "",
       status: searchParams.get("status") || undefined,
       startDate: searchParams.get("startDate") || undefined,
       endDate: searchParams.get("endDate") || undefined,
       patientId: searchParams.get("patientId") || undefined,
+    };
+
+    const validation = appointmentGetSchema.safeParse(params);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
+    }
+
+    const appointments = await listAppointments(validation.data.nutritionistId, {
+      status: validation.data.status,
+      startDate: validation.data.startDate,
+      endDate: validation.data.endDate,
+      patientId: validation.data.patientId,
     });
 
     return NextResponse.json(appointments);
@@ -41,16 +61,20 @@ export async function GET(request: NextRequest) {
  * Create a new appointment
  */
 export async function POST(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { nutritionistId, patientId, startsAt, duration } = body;
 
-    if (!nutritionistId || !patientId || !startsAt) {
-      return NextResponse.json(
-        { error: "nutritionistId, patientId, and startsAt are required" },
-        { status: 400 }
-      );
+    const validation = appointmentCreateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
+
+    const { nutritionistId, patientId, startsAt, duration } = validation.data;
 
     // Verify nutritionist exists
     const nutritionist = await getNutritionist(nutritionistId);
@@ -80,13 +104,20 @@ export async function POST(request: NextRequest) {
  * Reschedule an appointment, update status, or update notes
  */
 export async function PATCH(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { appointmentId, newStartsAt, duration, status, notes } = body;
 
-    if (!appointmentId) {
-      return NextResponse.json({ error: "appointmentId is required" }, { status: 400 });
+    const validation = appointmentUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
+
+    const { appointmentId, newStartsAt, duration, status, notes } = validation.data;
 
     // Get existing appointment
     const existing = await getAppointment(appointmentId);
@@ -113,14 +144,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Otherwise, reschedule
-    if (!newStartsAt) {
-      return NextResponse.json(
-        { error: "newStartsAt, status, or notes is required" },
-        { status: 400 }
-      );
-    }
-
-    const result = await rescheduleAppointment(appointmentId, newStartsAt, duration || 60);
+    const result = await rescheduleAppointment(appointmentId, newStartsAt!, duration || 60);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 409 });
@@ -143,15 +167,23 @@ export async function PATCH(request: NextRequest) {
  * Cancel an appointment
  */
 export async function DELETE(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
-    const appointmentId = searchParams.get("appointmentId");
+    const params = {
+      appointmentId: searchParams.get("appointmentId") || "",
+    };
 
-    if (!appointmentId) {
-      return NextResponse.json({ error: "appointmentId is required" }, { status: 400 });
+    const validation = appointmentDeleteSchema.safeParse(params);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
-    const result = await cancelAppointment(appointmentId);
+    const result = await cancelAppointment(validation.data.appointmentId);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 });

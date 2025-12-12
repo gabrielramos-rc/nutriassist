@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { extractTextFromPDF, isValidPDF, cleanExtractedText } from "@/lib/pdf";
 import { updatePatientDiet, getPatient } from "@/services/patients";
+import { uploadSchema, getValidationError } from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -19,6 +21,11 @@ function getSupabase() {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "upload");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -29,12 +36,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!patientId) {
-      return NextResponse.json({ error: "Patient ID is required" }, { status: 400 });
+    // Validate patientId with Zod
+    const validation = uploadSchema.safeParse({ patientId: patientId || "" });
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
     // Validate patient exists
-    const patient = await getPatient(patientId);
+    const patient = await getPatient(validation.data.patientId);
     if (!patient) {
       return NextResponse.json({ error: "Patient not found" }, { status: 404 });
     }
@@ -71,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Supabase Storage
     const supabase = getSupabase();
-    const fileName = `${patientId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    const fileName = `${validation.data.patientId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
 
     const { error: uploadError } = await supabase.storage
       .from("diet-pdfs")
@@ -90,7 +99,7 @@ export async function POST(request: NextRequest) {
     const publicUrl = urlData.publicUrl;
 
     // Update patient record with diet PDF URL and extracted text
-    await updatePatientDiet(patientId, publicUrl, cleanedText);
+    await updatePatientDiet(validation.data.patientId, publicUrl, cleanedText);
 
     return NextResponse.json({
       success: true,
