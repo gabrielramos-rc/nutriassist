@@ -2,73 +2,52 @@
 
 ## Current Version
 
-**beta-v0.1.0** - MVP Complete (Phases 0-15)
+**beta-v0.2.0** - Quality, Security & UX (Phases 16-22)
+
+- Code quality improvements (Prettier, Husky, lint-staged)
+- Security hardening (headers, rate limiting, input validation)
+- Error handling with user-friendly messages
+- Full accessibility support (keyboard, screen readers)
+- Responsive design (mobile/tablet/desktop)
+- 209 automated tests
+
+---
+
+## Completed Releases
+
+### beta-v0.2.0 - Quality, Security & UX ✅
+
+**Released:** 2025-12-12
+
+**Phases completed:** 16-22
+
+| Task                                 | Phase | Status |
+| ------------------------------------ | ----- | ------ |
+| Integration testing                  | 16    | ✅     |
+| Performance testing                  | 17    | ✅     |
+| Error handling                       | 18    | ✅     |
+| Accessibility                        | 19    | ✅     |
+| Responsive design                    | 20    | ✅     |
+| Code quality (Prettier, Husky, etc.) | 21    | ✅     |
+| Security (headers, rate limit, Zod)  | 22    | ✅     |
+
+---
+
+### beta-v0.1.0 - MVP ✅
+
+**Released:** 2025-12-11
+
+**Phases completed:** 0-15
 
 - Core chat functionality with Nina AI
 - Appointment scheduling via chat
 - Diet Q&A from PDF
 - Dashboard for nutritionists
-- Basic testing coverage (57%)
+- Basic testing coverage
 
 ---
 
 ## Upcoming Releases
-
-### beta-v0.2.0 - Code Quality & Security Foundation
-
-**Goal:** Establish development best practices and security baseline.
-
-**Phases:** 21, 22 (partial)
-
-| Task                                 | Phase | Priority |
-| ------------------------------------ | ----- | -------- |
-| Fix lint warnings (13)               | 21.1  | High     |
-| Fix Next.js vulnerability            | 22.1  | High     |
-| Add Prettier                         | 21.2  | Medium   |
-| Add Husky + lint-staged              | 21.3  | Medium   |
-| Add GitHub Dependabot                | 22.2  | Medium   |
-| Add GitHub Actions security workflow | 22.3  | Medium   |
-| Add security headers                 | 22.5  | Medium   |
-| Stricter ESLint rules                | 21.4  | Low      |
-| Pre-commit secret detection          | 22.4  | Low      |
-| TypeScript strict rules              | 21.6  | Low      |
-
-**Excludes:** 22.6 (API Security) and 22.7 (Production RLS) - require Auth
-
----
-
-### beta-v0.3.0 - Testing & Reliability
-
-**Goal:** Complete integration testing and improve error handling.
-
-**Phases:** 16 (complete), 17, 18, 21.5
-
-| Task                                     | Phase | Priority |
-| ---------------------------------------- | ----- | -------- |
-| Complete integration tests (5 remaining) | 16    | High     |
-| Increase test coverage to 80%            | 21.5  | High     |
-| Page load time testing                   | 17.1  | Medium   |
-| Lighthouse audit (score > 80)            | 17.2  | Medium   |
-| Network error handling                   | 18.1  | Medium   |
-| Validation error handling                | 18.2  | Medium   |
-| 404 page handling                        | 18.3  | Low      |
-
----
-
-### beta-v0.4.0 - Accessibility & UX
-
-**Goal:** Ensure app is accessible and responsive across devices.
-
-**Phases:** 19, 20
-
-| Task                                      | Phase | Priority |
-| ----------------------------------------- | ----- | -------- |
-| Keyboard navigation                       | 19.1  | High     |
-| Screen reader support                     | 19.2  | High     |
-| Visual accessibility                      | 19.3  | Medium   |
-| Responsive design (mobile/tablet/desktop) | 20    | High     |
-
----
 
 ### beta-v0.5.0 - Authentication & Production Ready
 
@@ -124,15 +103,11 @@
 ## Release Timeline
 
 ```
-beta-v0.1.0 (current)
+beta-v0.1.0 ── MVP ✅
      │
-beta-v0.2.0 ── Foundation (Code Quality + Security)
+beta-v0.2.0 ── Quality, Security & UX ✅ (current)
      │
-beta-v0.3.0 ── Testing & Reliability
-     │
-beta-v0.4.0 ── Accessibility & UX
-     │
-beta-v0.5.0 ── Authentication
+beta-v0.5.0 ── Authentication (next)
      │
 beta-v0.6.0 ── Integrations
      │
@@ -141,12 +116,10 @@ beta-v0.6.0 ── Integrations
 
 ## Quick Reference
 
-| Release     | Focus                   | Phases                |
-| ----------- | ----------------------- | --------------------- |
-| beta-v0.1.0 | MVP                     | 0-15 ✅               |
-| beta-v0.2.0 | Code Quality & Security | 21, 22 (partial)      |
-| beta-v0.3.0 | Testing & Reliability   | 16, 17, 18, 21.5      |
-| beta-v0.4.0 | Accessibility & UX      | 19, 20                |
-| beta-v0.5.0 | Authentication          | 22.6, 22.7, Auth      |
-| beta-v0.6.0 | Integrations            | WhatsApp, Calendar    |
-| v1.0.0      | GA                      | Multi-tenant, Billing |
+| Release     | Focus                  | Phases             | Status |
+| ----------- | ---------------------- | ------------------ | ------ |
+| beta-v0.1.0 | MVP                    | 0-15               | ✅     |
+| beta-v0.2.0 | Quality, Security & UX | 16-22              | ✅     |
+| beta-v0.5.0 | Authentication         | Auth, RLS          | Next   |
+| beta-v0.6.0 | Integrations           | WhatsApp, Calendar |        |
+| v1.0.0      | GA                     | Multi-tenant       |        |
