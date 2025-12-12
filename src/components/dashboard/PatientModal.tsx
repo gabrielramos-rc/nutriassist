@@ -17,12 +17,19 @@ interface PatientModalProps {
   patient?: Patient | null;
 }
 
+interface FieldErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
 export function PatientModal({ isOpen, onClose, onSave, patient }: PatientModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const isEditing = !!patient;
 
@@ -37,14 +44,38 @@ export function PatientModal({ isOpen, onClose, onSave, patient }: PatientModalP
       setPhone("");
     }
     setError(null);
+    setFieldErrors({});
   }, [patient, isOpen]);
+
+  const validateForm = (): boolean => {
+    const newErrors: FieldErrors = {};
+
+    // Name validation
+    if (!name.trim()) {
+      newErrors.name = "Nome e obrigatorio";
+    } else if (name.trim().length < 2) {
+      newErrors.name = "Nome deve ter pelo menos 2 caracteres";
+    }
+
+    // Email validation (optional but must be valid if provided)
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      newErrors.email = "E-mail invalido";
+    }
+
+    // Phone validation (optional but must be valid if provided)
+    if (phone.trim() && !/^[\d\s()+-]{8,}$/.test(phone.trim())) {
+      newErrors.phone = "Telefone invalido";
+    }
+
+    setFieldErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!name.trim()) {
-      setError("Nome é obrigatório");
+    if (!validateForm()) {
       return;
     }
 
@@ -91,10 +122,18 @@ export function PatientModal({ isOpen, onClose, onSave, patient }: PatientModalP
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              onChange={(e) => {
+                setName(e.target.value);
+                if (fieldErrors.name) {
+                  setFieldErrors((prev) => ({ ...prev, name: undefined }));
+                }
+              }}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                fieldErrors.name ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Nome do paciente"
             />
+            {fieldErrors.name && <p className="mt-1 text-sm text-red-500">{fieldErrors.name}</p>}
           </div>
 
           <div>
@@ -102,10 +141,18 @@ export function PatientModal({ isOpen, onClose, onSave, patient }: PatientModalP
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email) {
+                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                }
+              }}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                fieldErrors.email ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="email@exemplo.com"
             />
+            {fieldErrors.email && <p className="mt-1 text-sm text-red-500">{fieldErrors.email}</p>}
           </div>
 
           <div>
@@ -113,10 +160,18 @@ export function PatientModal({ isOpen, onClose, onSave, patient }: PatientModalP
             <input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              onChange={(e) => {
+                setPhone(e.target.value);
+                if (fieldErrors.phone) {
+                  setFieldErrors((prev) => ({ ...prev, phone: undefined }));
+                }
+              }}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                fieldErrors.phone ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="(11) 99999-9999"
             />
+            {fieldErrors.phone && <p className="mt-1 text-sm text-red-500">{fieldErrors.phone}</p>}
           </div>
 
           {/* Actions */}

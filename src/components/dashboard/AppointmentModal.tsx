@@ -3,7 +3,18 @@
 import { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { X, Calendar, Clock, User, Trash2, CheckCircle, XCircle, Edit2, Save } from "lucide-react";
+import {
+  X,
+  Calendar,
+  Clock,
+  User,
+  Trash2,
+  CheckCircle,
+  XCircle,
+  Edit2,
+  Save,
+  AlertCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Patient {
@@ -42,12 +53,14 @@ export function AppointmentModal({
   const [isLoading, setIsLoading] = useState(false);
   const [notes, setNotes] = useState("");
   const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Sync notes state with appointment
   useEffect(() => {
     if (appointment) {
       setNotes(appointment.notes || "");
       setIsEditingNotes(false);
+      setError(null);
     }
   }, [appointment]);
 
@@ -55,9 +68,13 @@ export function AppointmentModal({
 
   const handleAction = async (action: () => Promise<void>) => {
     setIsLoading(true);
+    setError(null);
     try {
       await action();
       onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao realizar acao";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -99,6 +116,14 @@ export function AppointmentModal({
 
         {/* Content */}
         <div className="p-4 space-y-4">
+          {/* Error */}
+          {error && (
+            <div className="flex items-center gap-2 p-3 bg-red-50 text-red-600 text-sm rounded-lg">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              {error}
+            </div>
+          )}
+
           {/* Status */}
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-500">Status</span>

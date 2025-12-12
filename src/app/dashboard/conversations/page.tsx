@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ConversationList } from "@/components/dashboard/ConversationList";
 import { ConversationView } from "@/components/dashboard/ConversationView";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, AlertCircle, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/ui/Toast";
 
 const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
 
@@ -49,16 +50,23 @@ export default function ConversationsPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedConversation, setSelectedConversation] = useState<ConversationDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const supabaseRef = useRef(createClient());
+  const toast = useToast();
 
   // Fetch conversations list
   const fetchConversations = useCallback(async () => {
+    setError(null);
     try {
       const [conversationsRes, handoffsRes] = await Promise.all([
         fetch(`/api/conversations?nutritionistId=${TEST_NUTRITIONIST_ID}`),
         fetch(`/api/handoffs?nutritionistId=${TEST_NUTRITIONIST_ID}`),
       ]);
+
+      if (!conversationsRes.ok || !handoffsRes.ok) {
+        throw new Error("Erro ao carregar conversas");
+      }
 
       const conversationsData = await conversationsRes.json();
       const handoffsData = await handoffsRes.json();
@@ -74,26 +82,34 @@ export default function ConversationsPage() {
       }));
 
       setConversations(enrichedConversations);
-    } catch {
-      // Failed to fetch conversations
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao carregar conversas";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   // Fetch conversation detail
-  const fetchConversationDetail = useCallback(async (sessionId: string) => {
-    setIsLoadingDetail(true);
-    try {
-      const res = await fetch(`/api/conversations?sessionId=${sessionId}`);
-      const data = await res.json();
-      setSelectedConversation(data);
-    } catch {
-      // Failed to fetch conversation
-    } finally {
-      setIsLoadingDetail(false);
-    }
-  }, []);
+  const fetchConversationDetail = useCallback(
+    async (sessionId: string) => {
+      setIsLoadingDetail(true);
+      try {
+        const res = await fetch(`/api/conversations?sessionId=${sessionId}`);
+        if (!res.ok) {
+          throw new Error("Erro ao carregar conversa");
+        }
+        const data = await res.json();
+        setSelectedConversation(data);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Erro ao carregar conversa";
+        toast.error(message);
+      } finally {
+        setIsLoadingDetail(false);
+      }
+    },
+    [toast]
+  );
 
   useEffect(() => {
     fetchConversations();
@@ -148,7 +164,7 @@ export default function ConversationsPage() {
     if (!selectedId) return;
 
     try {
-      await fetch("/api/conversations", {
+      const res = await fetch("/api/conversations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -156,9 +172,13 @@ export default function ConversationsPage() {
           content: message,
         }),
       });
+      if (!res.ok) {
+        throw new Error("Erro ao enviar mensagem");
+      }
       // Message will appear via Realtime subscription
-    } catch {
-      // Failed to send message
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Erro ao enviar mensagem";
+      toast.error(errorMsg);
     }
   };
 
@@ -171,15 +191,16 @@ export default function ConversationsPage() {
         body: JSON.stringify({ handoffId }),
       });
 
-      if (res.ok) {
-        // Refresh both list and detail
-        await Promise.all([
-          fetchConversations(),
-          selectedId && fetchConversationDetail(selectedId),
-        ]);
+      if (!res.ok) {
+        throw new Error("Erro ao resolver handoff");
       }
-    } catch {
-      // Failed to resolve handoff
+
+      // Refresh both list and detail
+      await Promise.all([fetchConversations(), selectedId && fetchConversationDetail(selectedId)]);
+      toast.success("Handoff resolvido!");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Erro ao resolver handoff";
+      toast.error(errorMsg);
     }
   };
 
@@ -196,6 +217,22 @@ export default function ConversationsPage() {
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+              <AlertCircle className="w-10 h-10 text-red-500 mb-3" />
+              <p className="text-gray-900 font-medium text-sm mb-2">Erro ao carregar</p>
+              <p className="text-gray-500 text-xs mb-3">{error}</p>
+              <button
+                onClick={() => {
+                  setIsLoading(true);
+                  fetchConversations();
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <RefreshCw className="w-3 h-3" />
+                Tentar novamente
+              </button>
             </div>
           ) : (
             <ConversationList
