@@ -16,6 +16,8 @@
 | 18 | Error Handling Testing | Pending |
 | 19 | Accessibility Testing | Pending |
 | 20 | Responsive Design Testing | Pending |
+| 21 | Code Quality | Pending |
+| 22 | Security | Pending |
 
 ---
 
@@ -93,6 +95,86 @@
 
 - [ ] Layout responsive on mobile/tablet/desktop
 - [ ] Footer links work on all screen sizes
+
+---
+
+## Phase 21: Code Quality
+
+### 21.1 Fix Lint Warnings
+- [ ] Remove unused imports/variables (13 warnings)
+- [ ] Replace `<img>` with `next/image` in Avatar component
+- [ ] Add coverage folder to ESLint ignore
+
+### 21.2 Add Prettier
+- [ ] Install prettier + eslint-config-prettier
+- [ ] Create .prettierrc config
+- [ ] Add format script to package.json
+- [ ] Format existing codebase
+
+### 21.3 Add Pre-commit Hooks
+- [ ] Install husky + lint-staged
+- [ ] Configure lint-staged for .ts/.tsx files
+- [ ] Add pre-commit hook: lint + type-check
+- [ ] Add pre-push hook: run tests
+
+### 21.4 Stricter ESLint Rules
+- [ ] Add `no-console` rule (warn in dev, error in prod)
+- [ ] Add `complexity` rule (max 10)
+- [ ] Add `max-lines-per-function` rule (max 50)
+- [ ] Add explicit-function-return-type for services
+
+### 21.5 Increase Test Coverage
+- [ ] appointments.ts service (currently 12%)
+- [ ] API route tests (chat, appointments, patients)
+- [ ] React component tests (ChatWidget, Dashboard)
+- [ ] Target: 80% overall coverage
+
+### 21.6 TypeScript Strict Rules
+- [ ] Enable `noUncheckedIndexedAccess`
+- [ ] Enable `noImplicitReturns`
+- [ ] Fix any resulting type errors
+
+---
+
+## Phase 22: Security
+
+### 22.1 Fix Vulnerabilities (Quick Win)
+- [ ] Run `npm audit fix --force` to fix Next.js vulnerability
+- [ ] Verify build still works after update
+- [ ] Remove console.log statements from production code (30 occurrences)
+
+### 22.2 GitHub Dependabot
+- [ ] Create `.github/dependabot.yml` config
+- [ ] Enable npm ecosystem scanning
+- [ ] Set weekly update schedule
+
+### 22.3 GitHub Actions Security Workflow
+- [ ] Create `.github/workflows/security.yml`
+- [ ] Add `npm audit` check on PRs
+- [ ] Add CodeQL static analysis
+- [ ] Add secret scanning step
+
+### 22.4 Pre-commit Secret Detection
+- [ ] Install gitleaks or detect-secrets
+- [ ] Add to Husky pre-commit hook
+- [ ] Document in CLAUDE.md
+
+### 22.5 Security Headers
+- [ ] Add Content-Security-Policy (CSP) header
+- [ ] Add Strict-Transport-Security (HSTS) header
+- [ ] Add X-Frame-Options header
+- [ ] Add X-Content-Type-Options header
+- [ ] Configure in next.config.ts
+
+### 22.6 API Security
+- [ ] Add rate limiting to API routes
+- [ ] Add input validation with Zod
+- [ ] Sanitize user inputs
+
+### 22.7 Enable Production RLS
+- [ ] Implement Supabase Auth (prerequisite)
+- [ ] Apply 002_production_rls.sql migration
+- [ ] Test all RLS policies
 
 ---
 

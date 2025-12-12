@@ -1,6 +1,6 @@
-# Changelog & Decisions Log
+# Development Log
 
-Technical decisions, bugs fixed, and lessons learned.
+Technical decisions, bugs fixed, and lessons learned during development.
 
 ---
 
