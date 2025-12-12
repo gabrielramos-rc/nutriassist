@@ -105,12 +105,23 @@ export function AppointmentModal({
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div
+        className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="appointment-modal-title"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Detalhes da Consulta</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+          <h2 id="appointment-modal-title" className="text-lg font-semibold text-gray-900">
+            Detalhes da Consulta
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Fechar"
+          >
+            <X className="w-5 h-5 text-gray-500" aria-hidden="true" />
           </button>
         </div>
 
@@ -118,8 +129,11 @@ export function AppointmentModal({
         <div className="p-4 space-y-4">
           {/* Error */}
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 text-red-600 text-sm rounded-lg">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div
+              className="flex items-center gap-2 p-3 bg-red-50 text-red-600 text-sm rounded-lg"
+              role="alert"
+            >
+              <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               {error}
             </div>
           )}
@@ -135,7 +149,7 @@ export function AppointmentModal({
           {/* Patient */}
           <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-              <User className="w-5 h-5 text-green-600" />
+              <User className="w-5 h-5 text-green-600" aria-hidden="true" />
             </div>
             <div>
               <p className="font-medium text-gray-900">
@@ -147,7 +161,7 @@ export function AppointmentModal({
 
           {/* Date */}
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-gray-400" />
+            <Calendar className="w-5 h-5 text-gray-400" aria-hidden="true" />
             <div>
               <p className="font-medium text-gray-900">
                 {format(parseISO(appointment.starts_at), "EEEE, dd 'de' MMMM 'de' yyyy", {
@@ -159,7 +173,7 @@ export function AppointmentModal({
 
           {/* Time */}
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-gray-400" />
+            <Clock className="w-5 h-5 text-gray-400" aria-hidden="true" />
             <div>
               <p className="font-medium text-gray-900">
                 {format(parseISO(appointment.starts_at), "HH:mm")} -{" "}
@@ -176,8 +190,9 @@ export function AppointmentModal({
                 <button
                   onClick={() => setIsEditingNotes(true)}
                   className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Editar observacoes"
                 >
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="w-4 h-4" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -187,6 +202,7 @@ export function AppointmentModal({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
+                  aria-label="Observacoes da consulta"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                   placeholder="Adicione observações sobre a consulta..."
                 />
@@ -213,7 +229,7 @@ export function AppointmentModal({
                     disabled={isLoading}
                     className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-300 transition-colors"
                   >
-                    <Save className="w-3 h-3" />
+                    <Save className="w-3 h-3" aria-hidden="true" />
                     Salvar
                   </button>
                 </div>
@@ -237,7 +253,7 @@ export function AppointmentModal({
                     disabled={isLoading}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 transition-colors"
                   >
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircle className="w-4 h-4" aria-hidden="true" />
                     Realizada
                   </button>
                   <button
@@ -245,8 +261,8 @@ export function AppointmentModal({
                     disabled={isLoading}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-300 transition-colors"
                   >
-                    <XCircle className="w-4 h-4" />
-                    Não compareceu
+                    <XCircle className="w-4 h-4" aria-hidden="true" />
+                    Nao compareceu
                   </button>
                 </div>
               ) : (
@@ -259,7 +275,7 @@ export function AppointmentModal({
                   disabled={isLoading}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:bg-gray-100 transition-colors"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" aria-hidden="true" />
                   Cancelar Consulta
                 </button>
               )}

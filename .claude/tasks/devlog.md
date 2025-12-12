@@ -4,6 +4,47 @@ Technical decisions, bugs fixed, and lessons learned during development.
 
 ---
 
+## Bug Fixes (PR #35)
+
+### PR #35: UUID Validation Fix (Phase 16 Re-test)
+
+- **Problem:** Phase 22.6 `z.uuid()` validation rejected test UUIDs like `11111111-1111-1111-1111-111111111111`
+- **Root cause:** `z.uuid()` validates UUID v4 version/variant bits, which test UUIDs don't have
+- **Solution:** Changed to regex pattern that validates format without v4 bits requirement
+- **File:** `src/lib/validations.ts`
+- **Impact:** Fixed API routes blocking integration tests
+
+---
+
+## Performance Testing (Phase 17)
+
+### Page Load Times (Dec 2025)
+
+All tests run against production (nutriassist-one.vercel.app) using curl:
+
+| Page        | Target | Result    | Notes             |
+| ----------- | ------ | --------- | ----------------- |
+| Landing     | < 3s   | 0.16s avg | ✅                |
+| Chat widget | < 2s   | 0.21s avg | ✅ Cold start ~2s |
+| Dashboard   | < 3s   | 0.13s avg | ✅                |
+
+### Nina Response Times
+
+| Intent     | Target | Result  |
+| ---------- | ------ | ------- |
+| Greeting   | < 5s   | 2.3s ✅ |
+| FAQ        | < 5s   | 0.8s ✅ |
+| Scheduling | < 5s   | 0.8s ✅ |
+| Diet Q&A   | < 5s   | 3.8s ✅ |
+
+**Observations:**
+
+- Cold starts on Vercel can add 1-2s latency
+- Diet Q&A is slowest due to LLM call with PDF context
+- Lighthouse audit requires manual testing (no Chrome CLI)
+
+---
+
 ## Security Phase (PRs #28-34)
 
 ### PR #34: API Input Validation & Rate Limiting (Phase 22.6)
@@ -320,3 +361,12 @@ The `gitleaks` npm package does NOT include the binary. It's just a wrapper that
 ### Rate Limiting in Serverless
 
 In-memory rate limiting resets on each cold start and doesn't share state across instances. For production with multiple instances, use Upstash Redis or similar distributed store.
+
+### Zod UUID Validation
+
+`z.uuid()` validates UUID v4 version/variant bits strictly. Test UUIDs like `11111111-1111-1111-1111-111111111111` fail because:
+
+- UUID v4 requires 13th char = `4` (version)
+- UUID v4 requires 17th char = `8/9/a/b` (variant)
+
+Use regex pattern instead: `/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i`

@@ -54,6 +54,7 @@ export function MessageInput({
         placeholder={placeholder}
         disabled={disabled}
         rows={1}
+        aria-label="Mensagem"
         className={cn(
           "flex-1 resize-none rounded-2xl border border-gray-300 px-4 py-2.5",
           "text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent",
@@ -64,13 +65,14 @@ export function MessageInput({
       <button
         onClick={handleSubmit}
         disabled={disabled || !message.trim()}
+        aria-label="Enviar mensagem"
         className={cn(
           "p-2.5 rounded-full transition-colors",
           "bg-green-600 text-white hover:bg-green-700",
           "disabled:bg-gray-300 disabled:cursor-not-allowed"
         )}
       >
-        <Send className="w-5 h-5" />
+        <Send className="w-5 h-5" aria-hidden="true" />
       </button>
     </div>
   );

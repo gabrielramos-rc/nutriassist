@@ -60,6 +60,7 @@ export function Sidebar({ nutritionistName }: SidebarProps) {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors",
                     isActive
@@ -67,7 +68,7 @@ export function Sidebar({ nutritionistName }: SidebarProps) {
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-5 h-5" aria-hidden="true" />
                   {item.label}
                 </Link>
               </li>

@@ -125,8 +125,9 @@ export function AppointmentCalendar({
           <button
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Mes anterior"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
           </button>
           <h2 className="text-lg font-semibold text-gray-900 min-w-[200px] text-center">
             {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
@@ -134,14 +135,20 @@ export function AppointmentCalendar({
           <button
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Proximo mes"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+        <div
+          className="flex items-center gap-2 bg-gray-100 rounded-lg p-1"
+          role="group"
+          aria-label="Visualizacao"
+        >
           <button
             onClick={() => setView("calendar")}
+            aria-pressed={view === "calendar"}
             className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
               view === "calendar"
@@ -149,11 +156,12 @@ export function AppointmentCalendar({
                 : "text-gray-600 hover:text-gray-900"
             )}
           >
-            <Calendar className="w-4 h-4" />
-            Calendário
+            <Calendar className="w-4 h-4" aria-hidden="true" />
+            Calendario
           </button>
           <button
             onClick={() => setView("list")}
+            aria-pressed={view === "list"}
             className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
               view === "list"
@@ -161,7 +169,7 @@ export function AppointmentCalendar({
                 : "text-gray-600 hover:text-gray-900"
             )}
           >
-            <List className="w-4 h-4" />
+            <List className="w-4 h-4" aria-hidden="true" />
             Lista
           </button>
         </div>
