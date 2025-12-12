@@ -81,7 +81,6 @@ export async function POST(request: NextRequest) {
       });
 
     if (uploadError) {
-      console.error("Storage upload error:", uploadError);
       return NextResponse.json({ error: "Failed to upload file to storage" }, { status: 500 });
     }
 
@@ -102,8 +101,7 @@ export async function POST(request: NextRequest) {
         textLength: cleanedText.length,
       },
     });
-  } catch (error) {
-    console.error("Upload API error:", error);
+  } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

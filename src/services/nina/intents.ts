@@ -117,8 +117,7 @@ async function classifyByLLM(message: string): Promise<NinaIntent> {
 
     // Default to off_topic if LLM returns invalid intent
     return "off_topic";
-  } catch (error) {
-    console.error("Error classifying intent with LLM:", error);
+  } catch {
     // Default to handoff on error to be safe
     return "handoff";
   }

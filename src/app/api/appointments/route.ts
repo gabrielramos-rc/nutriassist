@@ -31,8 +31,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(appointments);
-  } catch (error) {
-    console.error("Error listing appointments:", error);
+  } catch {
     return NextResponse.json({ error: "Failed to list appointments" }, { status: 500 });
   }
 }
@@ -71,8 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ appointment: result.appointment }, { status: 201 });
-  } catch (error) {
-    console.error("Error creating appointment:", error);
+  } catch {
     return NextResponse.json({ error: "Failed to create appointment" }, { status: 500 });
   }
 }
@@ -130,7 +128,6 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ appointment: result.appointment });
   } catch (error) {
-    console.error("Error updating appointment:", error);
     return NextResponse.json(
       {
         error: "Failed to update appointment",
@@ -161,8 +158,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error cancelling appointment:", error);
+  } catch {
     return NextResponse.json({ error: "Failed to cancel appointment" }, { status: 500 });
   }
 }

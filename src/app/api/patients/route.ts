@@ -44,8 +44,7 @@ export async function POST(request: NextRequest) {
 
     const patient = await createPatient(nutritionistId, name, email, phone);
     return NextResponse.json(patient, { status: 201 });
-  } catch (error) {
-    console.error("Error creating patient:", error);
+  } catch {
     return NextResponse.json({ error: "Erro ao criar paciente" }, { status: 500 });
   }
 }
@@ -62,8 +61,7 @@ export async function PATCH(request: NextRequest) {
 
     const patient = await updatePatient(patientId, { name, email, phone });
     return NextResponse.json(patient);
-  } catch (error) {
-    console.error("Error updating patient:", error);
+  } catch {
     return NextResponse.json({ error: "Erro ao atualizar paciente" }, { status: 500 });
   }
 }
@@ -80,8 +78,7 @@ export async function DELETE(request: NextRequest) {
   try {
     await deletePatient(patientId);
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error deleting patient:", error);
+  } catch {
     return NextResponse.json({ error: "Erro ao excluir paciente" }, { status: 500 });
   }
 }

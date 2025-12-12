@@ -38,8 +38,8 @@ export default function AppointmentsPage() {
       );
       const data = await res.json();
       setAppointments(data);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
+    } catch {
+      // Failed to fetch appointments
     } finally {
       setIsLoading(false);
     }
@@ -54,9 +54,8 @@ export default function AppointmentsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSelectDate = (date: Date) => {
+  const handleSelectDate = (_date: Date) => {
     // Could open a modal to create appointment for that date
-    console.log("Selected date:", date);
   };
 
   const handleCancelAppointment = async (appointmentId: string) => {
@@ -65,8 +64,8 @@ export default function AppointmentsPage() {
         method: "DELETE",
       });
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error cancelling appointment:", error);
+    } catch {
+      // Failed to cancel appointment
     }
   };
 
@@ -81,8 +80,8 @@ export default function AppointmentsPage() {
         }),
       });
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error completing appointment:", error);
+    } catch {
+      // Failed to complete appointment
     }
   };
 
@@ -97,8 +96,8 @@ export default function AppointmentsPage() {
         }),
       });
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error marking no-show:", error);
+    } catch {
+      // Failed to mark no-show
     }
   };
 
@@ -113,8 +112,8 @@ export default function AppointmentsPage() {
         }),
       });
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error updating notes:", error);
+    } catch {
+      // Failed to update notes
     }
   };
 

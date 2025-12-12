@@ -331,7 +331,6 @@ export async function getTodayAppointmentCount(nutritionistId: string): Promise<
     .lte("starts_at", endOfDay(today).toISOString());
 
   if (error) {
-    console.error("Error counting today's appointments:", error);
     return 0;
   }
 
@@ -355,7 +354,6 @@ export async function getTodayAppointments(nutritionistId: string): Promise<Appo
     .order("starts_at", { ascending: true });
 
   if (error) {
-    console.error("Error fetching today's appointments:", error);
     return [];
   }
 
