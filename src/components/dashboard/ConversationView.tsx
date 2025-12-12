@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { cn, formatDateTime } from "@/lib/utils";
-import { Send, AlertCircle, CheckCircle, User, Bot } from "lucide-react";
+import { Send, AlertCircle, CheckCircle, User, Bot, ArrowLeft } from "lucide-react";
 
 interface Message {
   id: string;
@@ -26,6 +26,7 @@ interface ConversationViewProps {
   pendingHandoffs: Handoff[];
   onSendMessage: (message: string) => Promise<void>;
   onResolveHandoff: (handoffId: string) => Promise<void>;
+  onBack?: () => void;
 }
 
 export function ConversationView({
@@ -35,6 +36,7 @@ export function ConversationView({
   pendingHandoffs,
   onSendMessage,
   onResolveHandoff,
+  onBack,
 }: ConversationViewProps) {
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -100,6 +102,16 @@ export function ConversationView({
       <div className="p-4 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {/* Mobile back button */}
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="p-2 -ml-2 hover:bg-gray-100 rounded-lg md:hidden"
+                aria-label="Voltar para lista"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
               <span className="text-green-700 font-medium">
                 {patientName.charAt(0).toUpperCase()}

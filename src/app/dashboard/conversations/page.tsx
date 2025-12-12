@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ConversationList } from "@/components/dashboard/ConversationList";
 import { ConversationView } from "@/components/dashboard/ConversationView";
 import { MessageSquare, AlertCircle, RefreshCw } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 
@@ -212,8 +213,13 @@ export default function ConversationsPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-[calc(100%-5rem)] flex">
-        {/* Conversation list */}
-        <div className="w-80 border-r border-gray-200 flex-shrink-0">
+        {/* Conversation list - hidden on mobile when conversation selected */}
+        <div
+          className={cn(
+            "w-full md:w-80 border-r border-gray-200 flex-shrink-0",
+            selectedId ? "hidden md:block" : "block"
+          )}
+        >
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
@@ -243,8 +249,8 @@ export default function ConversationsPage() {
           )}
         </div>
 
-        {/* Conversation detail */}
-        <div className="flex-1">
+        {/* Conversation detail - hidden on mobile when no conversation selected */}
+        <div className={cn("flex-1", !selectedId ? "hidden md:block" : "block")}>
           {isLoadingDetail ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
@@ -257,6 +263,10 @@ export default function ConversationsPage() {
               pendingHandoffs={selectedConversation.pendingHandoffs}
               onSendMessage={handleSendMessage}
               onResolveHandoff={handleResolveHandoff}
+              onBack={() => {
+                setSelectedId(null);
+                setSelectedConversation(null);
+              }}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center px-8">
