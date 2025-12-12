@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 // Common schemas
-const uuidSchema = z.string().uuid("Invalid UUID format");
+// Use regex pattern instead of z.uuid() to allow test UUIDs like 11111111-1111-1111-1111-111111111111
+// which don't have valid UUID v4 version/variant bits
+const uuidSchema = z
+  .string()
+  .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "Invalid UUID format");
 
 const trimmedString = (maxLength: number) =>
   z
