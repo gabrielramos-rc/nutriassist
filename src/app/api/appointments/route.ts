@@ -20,10 +20,7 @@ export async function GET(request: NextRequest) {
     const nutritionistId = searchParams.get("nutritionistId");
 
     if (!nutritionistId) {
-      return NextResponse.json(
-        { error: "nutritionistId is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "nutritionistId is required" }, { status: 400 });
     }
 
     const appointments = await listAppointments(nutritionistId, {
@@ -36,10 +33,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(appointments);
   } catch (error) {
     console.error("Error listing appointments:", error);
-    return NextResponse.json(
-      { error: "Failed to list appointments" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to list appointments" }, { status: 500 });
   }
 }
 
@@ -62,10 +56,7 @@ export async function POST(request: NextRequest) {
     // Verify nutritionist exists
     const nutritionist = await getNutritionist(nutritionistId);
     if (!nutritionist) {
-      return NextResponse.json(
-        { error: "Nutritionist not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Nutritionist not found" }, { status: 404 });
     }
 
     const result = await createAppointment(
@@ -76,22 +67,13 @@ export async function POST(request: NextRequest) {
     );
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 409 });
     }
 
-    return NextResponse.json(
-      { appointment: result.appointment },
-      { status: 201 }
-    );
+    return NextResponse.json({ appointment: result.appointment }, { status: 201 });
   } catch (error) {
     console.error("Error creating appointment:", error);
-    return NextResponse.json(
-      { error: "Failed to create appointment" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create appointment" }, { status: 500 });
   }
 }
 
@@ -105,29 +87,20 @@ export async function PATCH(request: NextRequest) {
     const { appointmentId, newStartsAt, duration, status, notes } = body;
 
     if (!appointmentId) {
-      return NextResponse.json(
-        { error: "appointmentId is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "appointmentId is required" }, { status: 400 });
     }
 
     // Get existing appointment
     const existing = await getAppointment(appointmentId);
     if (!existing) {
-      return NextResponse.json(
-        { error: "Appointment not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
     }
 
     // If status is provided, update status
     if (status) {
       const result = await updateAppointmentStatus(appointmentId, status);
       if (!result.success) {
-        return NextResponse.json(
-          { error: result.error },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: result.error }, { status: 400 });
       }
       return NextResponse.json({ success: true });
     }
@@ -136,10 +109,7 @@ export async function PATCH(request: NextRequest) {
     if (notes !== undefined) {
       const result = await updateAppointmentNotes(appointmentId, notes || null);
       if (!result.success) {
-        return NextResponse.json(
-          { error: result.error },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: result.error }, { status: 400 });
       }
       return NextResponse.json({ success: true });
     }
@@ -152,24 +122,20 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const result = await rescheduleAppointment(
-      appointmentId,
-      newStartsAt,
-      duration || 60
-    );
+    const result = await rescheduleAppointment(appointmentId, newStartsAt, duration || 60);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 409 });
     }
 
     return NextResponse.json({ appointment: result.appointment });
   } catch (error) {
     console.error("Error updating appointment:", error);
     return NextResponse.json(
-      { error: "Failed to update appointment", details: error instanceof Error ? error.message : String(error) },
+      {
+        error: "Failed to update appointment",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
@@ -185,27 +151,18 @@ export async function DELETE(request: NextRequest) {
     const appointmentId = searchParams.get("appointmentId");
 
     if (!appointmentId) {
-      return NextResponse.json(
-        { error: "appointmentId is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "appointmentId is required" }, { status: 400 });
     }
 
     const result = await cancelAppointment(appointmentId);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 400 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error cancelling appointment:", error);
-    return NextResponse.json(
-      { error: "Failed to cancel appointment" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to cancel appointment" }, { status: 500 });
   }
 }

@@ -5,7 +5,7 @@ import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { QuickReplies, QuickReplyOption } from "./QuickReplies";
 import { createClient } from "@/lib/supabase/client";
-import type { ChatMessage, ChatResponse, NinaResponse } from "@/types";
+import type { ChatMessage, ChatResponse } from "@/types";
 
 interface ChatWidgetProps {
   nutritionistId: string;
@@ -184,9 +184,7 @@ export function ChatWidget({
       {/* Header */}
       <div className="bg-green-600 text-white px-4 py-3">
         <h2 className="font-semibold">Nina</h2>
-        <p className="text-sm text-green-100">
-          Assistente da {nutritionistName}
-        </p>
+        <p className="text-sm text-green-100">Assistente da {nutritionistName}</p>
       </div>
 
       {/* Messages */}
@@ -201,31 +199,16 @@ export function ChatWidget({
         ))}
 
         {/* Typing indicator */}
-        {isLoading && (
-          <MessageBubble
-            content=""
-            sender="nina"
-            timestamp={new Date()}
-            isTyping
-          />
-        )}
+        {isLoading && <MessageBubble content="" sender="nina" timestamp={new Date()} isTyping />}
 
         <div ref={messagesEndRef} />
       </div>
 
       {/* Quick replies */}
-      <QuickReplies
-        options={quickReplies}
-        onSelect={handleQuickReply}
-        disabled={isLoading}
-      />
+      <QuickReplies options={quickReplies} onSelect={handleQuickReply} disabled={isLoading} />
 
       {/* Error message */}
-      {error && (
-        <div className="px-4 py-2 bg-red-50 text-red-600 text-sm">
-          {error}
-        </div>
-      )}
+      {error && <div className="px-4 py-2 bg-red-50 text-red-600 text-sm">{error}</div>}
 
       {/* Input */}
       <MessageInput onSend={sendMessage} disabled={isLoading} />

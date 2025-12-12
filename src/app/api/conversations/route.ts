@@ -16,20 +16,14 @@ export async function GET(request: NextRequest) {
     const conversation = await getConversationWithMessages(sessionId);
 
     if (!conversation) {
-      return NextResponse.json(
-        { error: "Conversa não encontrada" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Conversa não encontrada" }, { status: 404 });
     }
 
     return NextResponse.json(conversation);
   }
 
   if (!nutritionistId) {
-    return NextResponse.json(
-      { error: "nutritionistId é obrigatório" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
   }
 
   const status = searchParams.get("status") as "active" | "closed" | null;
@@ -50,26 +44,16 @@ export async function POST(request: NextRequest) {
     const { sessionId, content } = body;
 
     if (!sessionId || !content) {
-      return NextResponse.json(
-        { error: "sessionId e content são obrigatórios" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "sessionId e content são obrigatórios" }, { status: 400 });
     }
 
-    const message = await saveMessage(
-      sessionId,
-      "nutritionist",
-      content,
-      null,
-      { sentFromDashboard: true }
-    );
+    const message = await saveMessage(sessionId, "nutritionist", content, null, {
+      sentFromDashboard: true,
+    });
 
     return NextResponse.json(message);
   } catch (error) {
     console.error("Error sending message:", error);
-    return NextResponse.json(
-      { error: "Erro ao enviar mensagem" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao enviar mensagem" }, { status: 500 });
   }
 }

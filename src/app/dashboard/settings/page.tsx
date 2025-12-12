@@ -53,7 +53,7 @@ const DEFAULT_BUSINESS_HOURS: BusinessHours = {
 };
 
 export default function SettingsPage() {
-  const [nutritionist, setNutritionist] = useState<Nutritionist | null>(null);
+  const [_nutritionist, setNutritionist] = useState<Nutritionist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"profile" | "schedule" | "faq" | "embed">("profile");
@@ -161,14 +161,21 @@ export default function SettingsPage() {
     }
   };
 
-  const updateBusinessHour = (day: string, field: "start" | "end" | "enabled", value: string | boolean) => {
-    setBusinessHours((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [field]: value,
-      },
-    }));
+  const updateBusinessHour = (
+    day: string,
+    field: "start" | "end" | "enabled",
+    value: string | boolean
+  ) => {
+    setBusinessHours((prev) => {
+      const existing = prev[day] ?? { start: "08:00", end: "18:00", enabled: false };
+      return {
+        ...prev,
+        [day]: {
+          ...existing,
+          [field]: value,
+        },
+      };
+    });
   };
 
   if (isLoading) {
@@ -184,9 +191,7 @@ export default function SettingsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
-          <p className="text-gray-500 mt-1">
-            Gerencie seu perfil e preferências
-          </p>
+          <p className="text-gray-500 mt-1">Gerencie seu perfil e preferências</p>
         </div>
         <button
           onClick={handleSave}
@@ -242,9 +247,7 @@ export default function SettingsPage() {
                 errors.name ? "border-red-500" : "border-gray-300"
               )}
             />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-            )}
+            {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
           </div>
 
           <div>
@@ -263,15 +266,11 @@ export default function SettingsPage() {
                 errors.email ? "border-red-500" : "border-gray-300"
               )}
             />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-            )}
+            {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Telefone
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
             <input
               type="tel"
               value={phone}
@@ -304,7 +303,8 @@ export default function SettingsPage() {
       {activeTab === "schedule" && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
           <p className="text-sm text-gray-500 mb-6">
-            Configure seus horários de atendimento. A Nina usará esses horários para oferecer opções de agendamento.
+            Configure seus horários de atendimento. A Nina usará esses horários para oferecer opções
+            de agendamento.
           </p>
 
           <div className="space-y-4">
@@ -322,9 +322,7 @@ export default function SettingsPage() {
                   <input
                     type="checkbox"
                     checked={businessHours[day.key]?.enabled || false}
-                    onChange={(e) =>
-                      updateBusinessHour(day.key, "enabled", e.target.checked)
-                    }
+                    onChange={(e) => updateBusinessHour(day.key, "enabled", e.target.checked)}
                     className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
                   />
                   <span className="font-medium text-gray-900">{day.label}</span>
@@ -335,18 +333,14 @@ export default function SettingsPage() {
                     <input
                       type="time"
                       value={businessHours[day.key]?.start || "08:00"}
-                      onChange={(e) =>
-                        updateBusinessHour(day.key, "start", e.target.value)
-                      }
+                      onChange={(e) => updateBusinessHour(day.key, "start", e.target.value)}
                       className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     <span className="text-gray-500">até</span>
                     <input
                       type="time"
                       value={businessHours[day.key]?.end || "18:00"}
-                      onChange={(e) =>
-                        updateBusinessHour(day.key, "end", e.target.value)
-                      }
+                      onChange={(e) => updateBusinessHour(day.key, "end", e.target.value)}
                       className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                   </div>
@@ -370,9 +364,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               value={faqResponses.price || ""}
-              onChange={(e) =>
-                setFaqResponses((prev) => ({ ...prev, price: e.target.value }))
-              }
+              onChange={(e) => setFaqResponses((prev) => ({ ...prev, price: e.target.value }))}
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="Ex: A consulta custa R$ 200,00 e pode ser parcelada em até 3x."
@@ -385,9 +377,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               value={faqResponses.location || ""}
-              onChange={(e) =>
-                setFaqResponses((prev) => ({ ...prev, location: e.target.value }))
-              }
+              onChange={(e) => setFaqResponses((prev) => ({ ...prev, location: e.target.value }))}
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="Ex: Atendo na Rua das Flores, 123 - Centro, São Paulo."
@@ -415,9 +405,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               value={faqResponses.duration || ""}
-              onChange={(e) =>
-                setFaqResponses((prev) => ({ ...prev, duration: e.target.value }))
-              }
+              onChange={(e) => setFaqResponses((prev) => ({ ...prev, duration: e.target.value }))}
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="Ex: A primeira consulta dura cerca de 1 hora. Retornos duram 30 minutos."
@@ -430,9 +418,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               value={faqResponses.online || ""}
-              onChange={(e) =>
-                setFaqResponses((prev) => ({ ...prev, online: e.target.value }))
-              }
+              onChange={(e) => setFaqResponses((prev) => ({ ...prev, online: e.target.value }))}
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="Ex: Sim, atendo online via Google Meet. O link é enviado por e-mail."
@@ -445,9 +431,7 @@ export default function SettingsPage() {
       {activeTab === "embed" && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl space-y-6">
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Link do Chat
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Link do Chat</h3>
             <p className="text-sm text-gray-500 mb-4">
               Compartilhe este link com seus pacientes para que eles possam conversar com a Nina.
             </p>
@@ -479,9 +463,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Testar Chat
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Testar Chat</h3>
             <p className="text-sm text-gray-500 mb-4">
               Abra o chat em uma nova aba para testar a experiência do paciente.
             </p>

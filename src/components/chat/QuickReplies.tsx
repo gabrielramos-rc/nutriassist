@@ -13,11 +13,7 @@ interface QuickRepliesProps {
   disabled?: boolean;
 }
 
-export function QuickReplies({
-  options,
-  onSelect,
-  disabled = false,
-}: QuickRepliesProps) {
+export function QuickReplies({ options, onSelect, disabled = false }: QuickRepliesProps) {
   if (options.length === 0) return null;
 
   return (

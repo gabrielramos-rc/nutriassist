@@ -3,9 +3,9 @@ const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 // Default fallback chain: quality-based order (larger/better models first)
 // These are the best free models available on OpenRouter as of December 2025
 const DEFAULT_FALLBACK_MODELS = [
-  "deepseek/deepseek-chat-v3-0324:free",           // Best for dialogue/conversation
+  "deepseek/deepseek-chat-v3-0324:free", // Best for dialogue/conversation
   "mistralai/mistral-small-3.1-24b-instruct:free", // Great for structured output
-  "google/gemini-2.5-pro-exp-03-25:free",          // Excellent reasoning, huge context
+  "google/gemini-2.5-pro-exp-03-25:free", // Excellent reasoning, huge context
   "nousresearch/deephermes-3-llama-3-8b-preview:free", // Compact fallback
 ];
 
@@ -24,16 +24,16 @@ function getModelsToTry(): string[] {
   // Priority 1: Custom fallback chain from env
   const customChain = process.env.OPENROUTER_FALLBACK_MODELS;
   if (customChain) {
-    return customChain.split(",").map((m) => m.trim()).filter((m) => m.length > 0);
+    return customChain
+      .split(",")
+      .map((m) => m.trim())
+      .filter((m) => m.length > 0);
   }
 
   // Priority 2: Single preferred model + defaults
   const preferredModel = process.env.OPENROUTER_MODEL;
   if (preferredModel) {
-    return [
-      preferredModel,
-      ...DEFAULT_FALLBACK_MODELS.filter((m) => m !== preferredModel),
-    ];
+    return [preferredModel, ...DEFAULT_FALLBACK_MODELS.filter((m) => m !== preferredModel)];
   }
 
   // Priority 3: Use defaults
@@ -97,32 +97,28 @@ async function callOpenRouter(
 
   if (!response.ok) {
     const errorText = await response.text();
-    const error = new Error(
-      `OpenRouter API error: ${response.status} - ${errorText}`
-    ) as Error & { status: number };
+    const error = new Error(`OpenRouter API error: ${response.status} - ${errorText}`) as Error & {
+      status: number;
+    };
     error.status = response.status;
     throw error;
   }
 
   const data: OpenRouterResponse = await response.json();
 
-  if (!data.choices || data.choices.length === 0) {
+  const firstChoice = data.choices?.[0];
+  if (!firstChoice) {
     throw new Error("No response from OpenRouter");
   }
 
-  return data.choices[0].message.content;
+  return firstChoice.message.content;
 }
 
 export async function generateResponse(
   messages: Message[],
   options: GenerateOptions = {}
 ): Promise<string> {
-  const {
-    model: explicitModel,
-    temperature = 0.7,
-    maxTokens = 1024,
-    retries = 2,
-  } = options;
+  const { model: explicitModel, temperature = 0.7, maxTokens = 1024, retries = 2 } = options;
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
@@ -134,19 +130,11 @@ export async function generateResponse(
     let lastError: Error | null = null;
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        return await callOpenRouter(
-          explicitModel,
-          messages,
-          temperature,
-          maxTokens,
-          apiKey
-        );
+        return await callOpenRouter(explicitModel, messages, temperature, maxTokens, apiKey);
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         if (attempt < retries) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, Math.pow(2, attempt - 1) * 1000)
-          );
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
         }
       }
     }
@@ -161,16 +149,11 @@ export async function generateResponse(
   for (let i = 0; i < models.length; i++) {
     const index = (currentModelIndex + i) % models.length;
     const model = models[index];
+    if (!model) continue;
 
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        const result = await callOpenRouter(
-          model,
-          messages,
-          temperature,
-          maxTokens,
-          apiKey
-        );
+        const result = await callOpenRouter(model, messages, temperature, maxTokens, apiKey);
 
         // Success! Update sticky primary to this model
         if (currentModelIndex !== index) {
@@ -185,17 +168,13 @@ export async function generateResponse(
 
         // If 404 (model unavailable), skip to next model immediately
         if (status === 404) {
-          console.warn(
-            `[OpenRouter] Model ${model} unavailable (404), trying next...`
-          );
+          console.warn(`[OpenRouter] Model ${model} unavailable (404), trying next...`);
           break;
         }
 
         // Other errors: retry with exponential backoff
         if (attempt < retries) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, Math.pow(2, attempt - 1) * 1000)
-          );
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
         }
       }
     }
@@ -221,10 +200,7 @@ export async function chat(
 }
 
 // Helper for simple single-turn completions
-export async function complete(
-  prompt: string,
-  options: GenerateOptions = {}
-): Promise<string> {
+export async function complete(prompt: string, options: GenerateOptions = {}): Promise<string> {
   return generateResponse([{ role: "user", content: prompt }], options);
 }
 
@@ -235,5 +211,5 @@ export function _resetModelIndex(): void {
 
 export function _getCurrentModel(): string {
   const models = getModelsToTry();
-  return models[currentModelIndex] || models[0];
+  return models[currentModelIndex] ?? models[0] ?? DEFAULT_FALLBACK_MODELS[0]!;
 }

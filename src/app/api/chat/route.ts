@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Validate request
     if (!body.message || typeof body.message !== "string") {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
     if (!body.nutritionistId && !body.sessionId) {
@@ -36,33 +33,22 @@ export async function POST(request: NextRequest) {
     if (body.sessionId) {
       session = await getSession(body.sessionId);
       if (!session) {
-        return NextResponse.json(
-          { error: "Session not found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Session not found" }, { status: 404 });
       }
       nutritionistId = session.nutritionist_id;
     } else {
       nutritionistId = body.nutritionistId!;
-      session = await getOrCreateSession(
-        nutritionistId,
-        body.patientId || null
-      );
+      session = await getOrCreateSession(nutritionistId, body.patientId || null);
     }
 
     // Load nutritionist
     const nutritionist = await getNutritionist(nutritionistId);
     if (!nutritionist) {
-      return NextResponse.json(
-        { error: "Nutritionist not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Nutritionist not found" }, { status: 404 });
     }
 
     // Load patient if available
-    const patient = session.patient_id
-      ? await getPatient(session.patient_id)
-      : null;
+    const patient = session.patient_id ? await getPatient(session.patient_id) : null;
 
     // Load conversation history
     const conversationHistory = await getSessionMessages(session.id);
@@ -88,10 +74,7 @@ export async function POST(request: NextRequest) {
 
     // Create handoff if needed
     if (ninaResponse.metadata?.requiresHandoff) {
-      await createHandoff(
-        session.id,
-        ninaResponse.metadata.handoffReason || "unknown"
-      );
+      await createHandoff(session.id, ninaResponse.metadata.handoffReason || "unknown");
     }
 
     // Return response
@@ -103,9 +86,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response);
   } catch (error) {
     console.error("Chat API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - GitHub Actions release workflow
 - CHANGELOG.md following Keep a Changelog format
 
 ### Changed
+
 - Renamed `.claude/tasks/changelog.md` to `devlog.md`
 
 ---
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [beta-v0.1.0] - 2025-12-11
 
 ### Added
+
 - **Nina AI Chat** - Conversational assistant for patients in Brazilian Portuguese
 - **Appointment Scheduling** - Book, reschedule, cancel appointments via chat
 - **Diet Q&A** - Answer questions from patient's uploaded diet PDF
@@ -30,12 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Vitest Test Suite** - 137 tests with 57% coverage
 
 ### Technical
+
 - Next.js 16 with App Router and TypeScript
 - Supabase for PostgreSQL database and Realtime
 - Tailwind CSS for styling
 - Vercel deployment with São Paulo region (gru1)
 
 ### Known Limitations
+
 - No authentication (dashboard is publicly accessible)
 - Anonymous chat sessions only (no cross-device persistence)
 - Manual appointment creation not available in dashboard

@@ -26,7 +26,7 @@ function getSupabase() {
   );
 }
 
-const DAYS_MAP: Record<string, number> = {
+const _DAYS_MAP: Record<string, number> = {
   sunday: 0,
   monday: 1,
   tuesday: 2,
@@ -70,9 +70,7 @@ export async function getAvailableSlots(
     .gte("starts_at", startDate.toISOString())
     .lte("starts_at", endDate.toISOString());
 
-  const bookedSlots = new Set(
-    (existingAppointments || []).map((apt) => apt.starts_at)
-  );
+  const bookedSlots = new Set((existingAppointments || []).map((apt) => apt.starts_at));
 
   const availableSlots: AppointmentSlot[] = [];
   let currentDate = startOfDay(addDays(startDate, 1)); // Start tomorrow
@@ -80,17 +78,27 @@ export async function getAvailableSlots(
   while (currentDate <= endDate && availableSlots.length < maxSlots) {
     const dayOfWeek = currentDate.getDay();
     const dayName = DAYS_REVERSE[dayOfWeek];
+    if (!dayName) {
+      currentDate = addDays(currentDate, 1);
+      continue;
+    }
     const dayConfig = businessHours[dayName];
 
     if (dayConfig?.enabled) {
-      const [startHour, startMin] = dayConfig.start.split(":").map(Number);
-      const [endHour, endMin] = dayConfig.end.split(":").map(Number);
+      const startParts = dayConfig.start.split(":").map(Number);
+      const endParts = dayConfig.end.split(":").map(Number);
+      const startHour = startParts[0] ?? 8;
+      const startMin = startParts[1] ?? 0;
+      const endHour = endParts[0] ?? 18;
+      const endMin = endParts[1] ?? 0;
 
       let slotTime = setMinutes(setHours(currentDate, startHour), startMin);
       const dayEnd = setMinutes(setHours(currentDate, endHour), endMin);
 
-      while (isBefore(addMinutes(slotTime, duration), dayEnd) ||
-             slotTime.getTime() + duration * 60000 === dayEnd.getTime()) {
+      while (
+        isBefore(addMinutes(slotTime, duration), dayEnd) ||
+        slotTime.getTime() + duration * 60000 === dayEnd.getTime()
+      ) {
         const slotIso = slotTime.toISOString();
 
         // Check if slot is not booked and is in the future
@@ -195,11 +203,7 @@ export async function getNextAppointment(
 export async function getAppointment(appointmentId: string): Promise<Appointment | null> {
   const supabase = getSupabase();
 
-  const { data } = await supabase
-    .from("appointments")
-    .select("*")
-    .eq("id", appointmentId)
-    .single();
+  const { data } = await supabase.from("appointments").select("*").eq("id", appointmentId).single();
 
   return data as Appointment | null;
 }
@@ -367,10 +371,7 @@ export async function updateAppointmentStatus(
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = getSupabase();
 
-  const { error } = await supabase
-    .from("appointments")
-    .update({ status })
-    .eq("id", appointmentId);
+  const { error } = await supabase.from("appointments").update({ status }).eq("id", appointmentId);
 
   if (error) {
     return { success: false, error: error.message };
@@ -385,10 +386,7 @@ export async function updateAppointmentNotes(
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = getSupabase();
 
-  const { error } = await supabase
-    .from("appointments")
-    .update({ notes })
-    .eq("id", appointmentId);
+  const { error } = await supabase.from("appointments").update({ notes }).eq("id", appointmentId);
 
   if (error) {
     return { success: false, error: error.message };

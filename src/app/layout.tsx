@@ -23,8 +23,7 @@ export const metadata: Metadata = {
   authors: [{ name: "NutriAssist" }],
   openGraph: {
     title: "NutriAssist - Assistente Virtual para Nutricionistas",
-    description:
-      "Automatize agendamentos e responda dúvidas dos pacientes 24/7 com a Nina.",
+    description: "Automatize agendamentos e responda dúvidas dos pacientes 24/7 com a Nina.",
     type: "website",
   },
 };
@@ -36,9 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />

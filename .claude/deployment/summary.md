@@ -2,11 +2,11 @@
 
 ## Services
 
-| Service | Purpose | Dashboard |
-|---------|---------|-----------|
-| Vercel | Hosting | [vercel.com/dashboard](https://vercel.com/dashboard) |
-| Supabase | Database, Storage | [app.supabase.com](https://app.supabase.com/project/xeckvimqbosmmzjivxjp) |
-| OpenRouter | LLM API | [openrouter.ai](https://openrouter.ai) |
+| Service    | Purpose           | Dashboard                                                                 |
+| ---------- | ----------------- | ------------------------------------------------------------------------- |
+| Vercel     | Hosting           | [vercel.com/dashboard](https://vercel.com/dashboard)                      |
+| Supabase   | Database, Storage | [app.supabase.com](https://app.supabase.com/project/xeckvimqbosmmzjivxjp) |
+| OpenRouter | LLM API           | [openrouter.ai](https://openrouter.ai)                                    |
 
 ## Environment Variables
 
@@ -20,11 +20,11 @@ NEXT_PUBLIC_APP_URL=https://nutriassist-one.vercel.app
 
 ## URLs
 
-| Resource | URL |
-|----------|-----|
-| Production | https://nutriassist-one.vercel.app |
-| Test Chat | https://nutriassist-one.vercel.app/chat/11111111-1111-1111-1111-111111111111 |
-| GitHub | https://github.com/gabrielramos-rc/nutriassist |
+| Resource   | URL                                                                          |
+| ---------- | ---------------------------------------------------------------------------- |
+| Production | https://nutriassist-one.vercel.app                                           |
+| Test Chat  | https://nutriassist-one.vercel.app/chat/11111111-1111-1111-1111-111111111111 |
+| GitHub     | https://github.com/gabrielramos-rc/nutriassist                               |
 
 ## Deploy Commands
 

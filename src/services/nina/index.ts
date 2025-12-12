@@ -95,9 +95,7 @@ async function checkPendingConversationState(
   patient: Patient | null | undefined
 ): Promise<NinaResponse | null> {
   // Find the last Nina message
-  const lastNinaMessage = [...conversationHistory]
-    .reverse()
-    .find((m) => m.sender === "nina");
+  const lastNinaMessage = [...conversationHistory].reverse().find((m) => m.sender === "nina");
 
   if (!lastNinaMessage?.metadata) {
     return null;
@@ -165,10 +163,7 @@ async function checkPendingConversationState(
 /**
  * Handle greeting messages
  */
-function handleGreeting(
-  nutritionist: Nutritionist,
-  patient?: Patient | null
-): NinaResponse {
+function handleGreeting(nutritionist: Nutritionist, patient?: Patient | null): NinaResponse {
   const content = patient?.name
     ? RESPONSE_TEMPLATES.greetingWithPatientName(patient.name, nutritionist.name)
     : RESPONSE_TEMPLATES.greeting(nutritionist.name);
@@ -178,8 +173,6 @@ function handleGreeting(
     intent: "greeting",
   };
 }
-
-
 
 /**
  * Handle FAQ questions
@@ -210,15 +203,13 @@ function handleFAQ(message: string, nutritionist: Nutritionist): NinaResponse {
  * Handle messages that need human intervention
  * Detects specific handoff reasons and returns appropriate responses
  */
-function handleHandoff(
-  nutritionist: Nutritionist,
-  message?: string
-): NinaResponse {
+function handleHandoff(nutritionist: Nutritionist, message?: string): NinaResponse {
   // Detect specific handoff reason for better response
   const normalizedMessage = (message || "").toLowerCase();
 
   // Medical/symptom questions
-  const medicalPatterns = /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação|tontura|febre|alergia|reação)\b/i;
+  const medicalPatterns =
+    /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação|tontura|febre|alergia|reação)\b/i;
   if (medicalPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffMedical(nutritionist.name),
@@ -231,7 +222,8 @@ function handleHandoff(
   }
 
   // Complaints
-  const complaintPatterns = /\b(reclamação|reclamacao|insatisf|problema com|não gostei|nao gostei|péssimo|pessimo|horrível|horrivel|decepcion)\b/i;
+  const complaintPatterns =
+    /\b(reclamação|reclamacao|insatisf|problema com|não gostei|nao gostei|péssimo|pessimo|horrível|horrivel|decepcion)\b/i;
   if (complaintPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffComplaint(nutritionist.name),
@@ -244,7 +236,8 @@ function handleHandoff(
   }
 
   // Explicit request for human
-  const humanRequestPatterns = /\b(falar com|conversar com|quero.*humano|quero.*pessoa|atendente|falar.*nutricionista|preciso.*nutricionista)\b/i;
+  const humanRequestPatterns =
+    /\b(falar com|conversar com|quero.*humano|quero.*pessoa|atendente|falar.*nutricionista|preciso.*nutricionista)\b/i;
   if (humanRequestPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffHumanRequest(nutritionist.name),

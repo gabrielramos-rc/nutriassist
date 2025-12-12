@@ -43,11 +43,16 @@ async function seed() {
           sunday: { start: "08:00", end: "12:00", enabled: false },
         },
         faq_responses: {
-          price: "O valor da consulta é R$ 280,00 (primeira consulta) e R$ 180,00 (retorno). Aceito PIX, cartão de crédito e débito.",
-          location: "Meu consultório fica na Av. Paulista, 1000 - Sala 501, Bela Vista, São Paulo/SP. Próximo ao metrô Trianon-MASP.",
-          preparation: "Para a primeira consulta, traga exames de sangue recentes (se tiver), lista de medicamentos que usa e venha com roupas leves para as medidas corporais.",
-          duration: "A primeira consulta dura aproximadamente 1 hora. Os retornos duram cerca de 30-40 minutos.",
-          online: "Sim! Atendo online por videochamada. A consulta online tem o mesmo valor e você recebe o plano alimentar por email.",
+          price:
+            "O valor da consulta é R$ 280,00 (primeira consulta) e R$ 180,00 (retorno). Aceito PIX, cartão de crédito e débito.",
+          location:
+            "Meu consultório fica na Av. Paulista, 1000 - Sala 501, Bela Vista, São Paulo/SP. Próximo ao metrô Trianon-MASP.",
+          preparation:
+            "Para a primeira consulta, traga exames de sangue recentes (se tiver), lista de medicamentos que usa e venha com roupas leves para as medidas corporais.",
+          duration:
+            "A primeira consulta dura aproximadamente 1 hora. Os retornos duram cerca de 30-40 minutos.",
+          online:
+            "Sim! Atendo online por videochamada. A consulta online tem o mesmo valor e você recebe o plano alimentar por email.",
         },
         appointment_duration: 60,
       },

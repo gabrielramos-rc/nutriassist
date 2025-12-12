@@ -29,7 +29,7 @@ interface ConversationViewProps {
 }
 
 export function ConversationView({
-  sessionId,
+  sessionId: _sessionId,
   patientName,
   messages,
   pendingHandoffs,
@@ -119,9 +119,7 @@ export function ConversationView({
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="font-medium text-orange-800">
-                Aguardando sua resposta
-              </p>
+              <p className="font-medium text-orange-800">Aguardando sua resposta</p>
               {pendingHandoffs.map((handoff) => (
                 <div
                   key={handoff.id}
@@ -159,8 +157,8 @@ export function ConversationView({
                   isNutritionist
                     ? "bg-blue-600 text-white"
                     : msg.sender === "nina"
-                    ? "bg-green-100 text-gray-900"
-                    : "bg-gray-100 text-gray-900"
+                      ? "bg-green-100 text-gray-900"
+                      : "bg-gray-100 text-gray-900"
                 )}
               >
                 {!isNutritionist && (

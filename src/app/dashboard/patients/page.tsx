@@ -108,9 +108,7 @@ export default function PatientsPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Pacientes</h1>
-        <p className="text-gray-500 mt-1">
-          Gerencie seus pacientes e planos alimentares
-        </p>
+        <p className="text-gray-500 mt-1">Gerencie seus pacientes e planos alimentares</p>
       </div>
 
       <PatientList

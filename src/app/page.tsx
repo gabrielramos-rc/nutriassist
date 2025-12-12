@@ -35,10 +35,7 @@ export default function Home() {
               </a>
             </nav>
             <div className="flex items-center gap-4">
-              <Link
-                href="/dashboard"
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
                 Entrar
               </Link>
               <Link
@@ -57,12 +54,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight">
-              Sua assistente virtual para{" "}
-              <span className="text-green-600">nutricionistas</span>
+              Sua assistente virtual para <span className="text-green-600">nutricionistas</span>
             </h1>
             <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-              Automatize agendamentos e responda dúvidas dos pacientes 24/7 com a Nina,
-              sua assistente de IA especializada em nutrição.
+              Automatize agendamentos e responda dúvidas dos pacientes 24/7 com a Nina, sua
+              assistente de IA especializada em nutrição.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -92,14 +88,12 @@ export default function Home() {
                 <div className="p-4 space-y-3">
                   <div className="bg-green-100 rounded-2xl rounded-tl-sm px-4 py-2 max-w-[80%]">
                     <p className="text-sm text-gray-900">
-                      Oi! Sou a Nina, assistente virtual. Posso te ajudar com agendamentos
-                      e dúvidas sobre seu plano alimentar.
+                      Oi! Sou a Nina, assistente virtual. Posso te ajudar com agendamentos e dúvidas
+                      sobre seu plano alimentar.
                     </p>
                   </div>
                   <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-2 max-w-[80%] ml-auto">
-                    <p className="text-sm text-gray-900">
-                      Quero marcar uma consulta
-                    </p>
+                    <p className="text-sm text-gray-900">Quero marcar uma consulta</p>
                   </div>
                   <div className="bg-green-100 rounded-2xl rounded-tl-sm px-4 py-2 max-w-[80%]">
                     <p className="text-sm text-gray-900">
@@ -131,12 +125,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Agendamento automático
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Agendamento automático</h3>
               <p className="text-gray-600">
-                Pacientes agendam, remarcam e cancelam consultas diretamente pelo chat,
-                24 horas por dia.
+                Pacientes agendam, remarcam e cancelam consultas diretamente pelo chat, 24 horas por
+                dia.
               </p>
             </div>
 
@@ -145,12 +137,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <FileText className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Dúvidas sobre o plano
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Dúvidas sobre o plano</h3>
               <p className="text-gray-600">
-                A Nina responde perguntas sobre o plano alimentar do paciente,
-                com base no PDF que você enviou.
+                A Nina responde perguntas sobre o plano alimentar do paciente, com base no PDF que
+                você enviou.
               </p>
             </div>
 
@@ -159,12 +149,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <MessageSquare className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                FAQ personalizado
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">FAQ personalizado</h3>
               <p className="text-gray-600">
-                Configure respostas automáticas para perguntas frequentes sobre preço,
-                localização e preparo.
+                Configure respostas automáticas para perguntas frequentes sobre preço, localização e
+                preparo.
               </p>
             </div>
 
@@ -173,12 +161,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Bot className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Handoff inteligente
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Handoff inteligente</h3>
               <p className="text-gray-600">
-                Quando a Nina não consegue responder, ela encaminha a conversa para
-                você responder manualmente.
+                Quando a Nina não consegue responder, ela encaminha a conversa para você responder
+                manualmente.
               </p>
             </div>
 
@@ -187,12 +173,9 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Disponível 24/7
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Disponível 24/7</h3>
               <p className="text-gray-600">
-                Atenda seus pacientes a qualquer hora, mesmo quando você não está
-                disponível.
+                Atenda seus pacientes a qualquer hora, mesmo quando você não está disponível.
               </p>
             </div>
 
@@ -201,12 +184,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Shield className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Seguro e confiável
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Seguro e confiável</h3>
               <p className="text-gray-600">
-                A Nina nunca dá conselhos médicos. Perguntas complexas são sempre
-                encaminhadas para você.
+                A Nina nunca dá conselhos médicos. Perguntas complexas são sempre encaminhadas para
+                você.
               </p>
             </div>
           </div>
@@ -217,9 +198,7 @@ export default function Home() {
       <section id="how-it-works" className="py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Como funciona
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Como funciona</h2>
             <p className="mt-4 text-xl text-gray-600">
               Configure em minutos e comece a automatizar seu atendimento
             </p>
@@ -230,12 +209,9 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 1
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Configure seu perfil
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Configure seu perfil</h3>
               <p className="text-gray-600">
-                Adicione seus horários de atendimento, preços e respostas para
-                perguntas frequentes.
+                Adicione seus horários de atendimento, preços e respostas para perguntas frequentes.
               </p>
             </div>
 
@@ -243,12 +219,10 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 2
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Cadastre seus pacientes
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cadastre seus pacientes</h3>
               <p className="text-gray-600">
-                Adicione pacientes e faça upload dos planos alimentares em PDF
-                para a Nina consultar.
+                Adicione pacientes e faça upload dos planos alimentares em PDF para a Nina
+                consultar.
               </p>
             </div>
 
@@ -256,12 +230,9 @@ export default function Home() {
               <div className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 3
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Compartilhe o link
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Compartilhe o link</h3>
               <p className="text-gray-600">
-                Envie o link do chat para seus pacientes e deixe a Nina cuidar
-                do resto.
+                Envie o link do chat para seus pacientes e deixe a Nina cuidar do resto.
               </p>
             </div>
           </div>
@@ -272,12 +243,8 @@ export default function Home() {
       <section id="pricing" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Simples e acessível
-            </h2>
-            <p className="mt-4 text-xl text-gray-600">
-              Comece grátis, sem cartão de crédito
-            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Simples e acessível</h2>
+            <p className="mt-4 text-xl text-gray-600">Comece grátis, sem cartão de crédito</p>
           </div>
 
           <div className="max-w-lg mx-auto">
@@ -290,9 +257,7 @@ export default function Home() {
                   <span className="text-5xl font-bold text-gray-900">R$ 0</span>
                   <span className="text-gray-500">/mês</span>
                 </p>
-                <p className="mt-2 text-gray-500">
-                  Durante a fase de testes
-                </p>
+                <p className="mt-2 text-gray-500">Durante a fase de testes</p>
               </div>
               <div className="p-8">
                 <ul className="space-y-4">

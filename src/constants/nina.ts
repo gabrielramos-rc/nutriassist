@@ -105,8 +105,7 @@ Enquanto isso, estou aqui se precisar de algo!`,
   offTopicHarmless: () =>
     `Haha, entendo! Mas voltando ao que importa, posso te ajudar com alguma dúvida sobre seu plano alimentar ou agendamento? 😄`,
 
-  offTopicDangerous:
-    `Não posso ajudar com isso. Estou aqui apenas para dúvidas sobre seu plano alimentar e agendamentos.
+  offTopicDangerous: `Não posso ajudar com isso. Estou aqui apenas para dúvidas sobre seu plano alimentar e agendamentos.
 
 Posso te ajudar com algo nesse sentido?`,
 
@@ -115,11 +114,9 @@ Posso te ajudar com algo nesse sentido?`,
 
 Enquanto isso, posso te ajudar com agendamentos ou outras dúvidas!`,
 
-  dietAnswerSuffix: (page?: string) =>
-    page ? `\n\n*Ref: Plano alimentar, pág. ${page}*` : "",
+  dietAnswerSuffix: (page?: string) => (page ? `\n\n*Ref: Plano alimentar, pág. ${page}*` : ""),
 
-  notInDietPlan:
-    `Não encontrei essa informação no seu plano alimentar. Essa é uma boa pergunta para fazer diretamente para a nutricionista na sua próxima consulta!
+  notInDietPlan: `Não encontrei essa informação no seu plano alimentar. Essa é uma boa pergunta para fazer diretamente para a nutricionista na sua próxima consulta!
 
 Tem alguma outra dúvida sobre o que está no seu plano?`,
 
@@ -131,14 +128,11 @@ Tem alguma outra dúvida sobre o que está no seu plano?`,
 
 Você receberá um lembrete antes da consulta. Precisa de mais alguma coisa?`,
 
-  schedulingCancelled:
-    `Consulta cancelada. Se quiser reagendar, é só me avisar!`,
+  schedulingCancelled: `Consulta cancelada. Se quiser reagendar, é só me avisar!`,
 
-  schedulingNoAppointment:
-    `Não encontrei nenhuma consulta agendada para você. Quer marcar uma nova consulta?`,
+  schedulingNoAppointment: `Não encontrei nenhuma consulta agendada para você. Quer marcar uma nova consulta?`,
 
-  error:
-    `Desculpe, tive um probleminha aqui. Pode tentar novamente em alguns segundos?`,
+  error: `Desculpe, tive um probleminha aqui. Pode tentar novamente em alguns segundos?`,
 };
 
 // Diet Q&A prompt
@@ -163,7 +157,15 @@ Resposta:`;
 export const FAQ_KEYWORDS = {
   price: ["preço", "valor", "quanto custa", "quanto é", "custo", "pagamento", "pagar"],
   location: ["endereço", "onde fica", "localização", "local", "consultório", "clínica"],
-  preparation: ["preparo", "preparação", "preparar", "levar", "trazer", "primeira consulta", "o que levar"],
+  preparation: [
+    "preparo",
+    "preparação",
+    "preparar",
+    "levar",
+    "trazer",
+    "primeira consulta",
+    "o que levar",
+  ],
   duration: ["duração", "quanto tempo", "demora", "leva quanto tempo"],
   online: ["online", "videochamada", "remoto", "à distância", "atende online"],
 };

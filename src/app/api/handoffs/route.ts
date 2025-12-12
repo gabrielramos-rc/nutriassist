@@ -7,10 +7,7 @@ export async function GET(request: NextRequest) {
   const nutritionistId = searchParams.get("nutritionistId");
 
   if (!nutritionistId) {
-    return NextResponse.json(
-      { error: "nutritionistId é obrigatório" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
   }
 
   const handoffs = await getPendingHandoffs(nutritionistId);
@@ -24,19 +21,13 @@ export async function PATCH(request: NextRequest) {
     const { handoffId } = body;
 
     if (!handoffId) {
-      return NextResponse.json(
-        { error: "handoffId é obrigatório" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "handoffId é obrigatório" }, { status: 400 });
     }
 
     await resolveHandoff(handoffId);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error resolving handoff:", error);
-    return NextResponse.json(
-      { error: "Erro ao resolver handoff" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao resolver handoff" }, { status: 500 });
   }
 }

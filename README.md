@@ -22,11 +22,11 @@ Plataforma SaaS que fornece aos nutricionistas uma assistente virtual com IA (Ni
 
 ## URLs
 
-| Ambiente | URL |
-|----------|-----|
-| Produção | https://nutriassist-one.vercel.app |
+| Ambiente      | URL                                                                          |
+| ------------- | ---------------------------------------------------------------------------- |
+| Produção      | https://nutriassist-one.vercel.app                                           |
 | Chat de Teste | https://nutriassist-one.vercel.app/chat/11111111-1111-1111-1111-111111111111 |
-| Dashboard | https://nutriassist-one.vercel.app/dashboard |
+| Dashboard     | https://nutriassist-one.vercel.app/dashboard                                 |
 
 ## Começando
 

@@ -36,34 +36,20 @@ export default async function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 mt-1">
-          Visão geral das suas atividades
-        </p>
+        <p className="text-gray-500 mt-1">Visão geral das suas atividades</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Conversas Ativas"
-          value={activeConversations}
-          icon={MessageSquare}
-        />
+        <StatsCard title="Conversas Ativas" value={activeConversations} icon={MessageSquare} />
         <StatsCard
           title="Aguardando Resposta"
           value={pendingHandoffs}
           icon={AlertCircle}
           className={pendingHandoffs > 0 ? "border-orange-200 bg-orange-50" : ""}
         />
-        <StatsCard
-          title="Consultas Hoje"
-          value={todayAppointments.length}
-          icon={Calendar}
-        />
-        <StatsCard
-          title="Total de Pacientes"
-          value={patientCount}
-          icon={Users}
-        />
+        <StatsCard title="Consultas Hoje" value={todayAppointments.length} icon={Calendar} />
+        <StatsCard title="Total de Pacientes" value={patientCount} icon={Users} />
       </div>
 
       {/* Content Grid */}
@@ -71,9 +57,7 @@ export default async function DashboardPage() {
         {/* Today's Appointments */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Consultas de Hoje
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Consultas de Hoje</h2>
             <Link
               href="/dashboard/appointments"
               className="text-sm text-green-600 hover:text-green-700"
@@ -83,9 +67,7 @@ export default async function DashboardPage() {
           </div>
 
           {todayAppointments.length === 0 ? (
-            <p className="text-gray-500 text-sm py-4">
-              Nenhuma consulta agendada para hoje
-            </p>
+            <p className="text-gray-500 text-sm py-4">Nenhuma consulta agendada para hoje</p>
           ) : (
             <ul className="space-y-3">
               {todayAppointments.map((apt) => (
@@ -95,11 +77,10 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium text-gray-900">
-                      {(apt as unknown as { patients: { name: string } }).patients?.name || "Paciente"}
+                      {(apt as unknown as { patients: { name: string } }).patients?.name ||
+                        "Paciente"}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      {formatTime(apt.starts_at)}
-                    </p>
+                    <p className="text-sm text-gray-500">{formatTime(apt.starts_at)}</p>
                   </div>
                   <span className="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
                     Agendado
@@ -113,9 +94,7 @@ export default async function DashboardPage() {
         {/* Pending Handoffs */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Aguardando Resposta
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Aguardando Resposta</h2>
             <Link
               href="/dashboard/conversations"
               className="text-sm text-green-600 hover:text-green-700"
@@ -125,24 +104,18 @@ export default async function DashboardPage() {
           </div>
 
           {handoffs.length === 0 ? (
-            <p className="text-gray-500 text-sm py-4">
-              Nenhuma conversa aguardando resposta
-            </p>
+            <p className="text-gray-500 text-sm py-4">Nenhuma conversa aguardando resposta</p>
           ) : (
             <ul className="space-y-3">
               {handoffs.slice(0, 5).map((handoff) => (
-                <li
-                  key={handoff.id}
-                  className="py-3 border-b border-gray-100 last:border-0"
-                >
+                <li key={handoff.id} className="py-3 border-b border-gray-100 last:border-0">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {(handoff as unknown as { chat_sessions: { patients: { name: string } } }).chat_sessions?.patients?.name || "Paciente"}
+                        {(handoff as unknown as { chat_sessions: { patients: { name: string } } })
+                          .chat_sessions?.patients?.name || "Paciente"}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {truncate(handoff.reason, 50)}
-                      </p>
+                      <p className="text-sm text-gray-500 mt-1">{truncate(handoff.reason, 50)}</p>
                     </div>
                     <span className="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">
                       Pendente
@@ -158,9 +131,7 @@ export default async function DashboardPage() {
       {/* Recent Conversations */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Conversas Recentes
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Conversas Recentes</h2>
           <Link
             href="/dashboard/conversations"
             className="text-sm text-green-600 hover:text-green-700"
@@ -170,9 +141,7 @@ export default async function DashboardPage() {
         </div>
 
         {recentConversations.length === 0 ? (
-          <p className="text-gray-500 text-sm py-4">
-            Nenhuma conversa ativa no momento
-          </p>
+          <p className="text-gray-500 text-sm py-4">Nenhuma conversa ativa no momento</p>
         ) : (
           <ul className="divide-y divide-gray-100">
             {recentConversations.map((conv) => (
@@ -184,12 +153,15 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                       <span className="text-green-700 font-medium">
-                        {((conv as unknown as { patients: { name: string } }).patients?.name || "P").charAt(0).toUpperCase()}
+                        {((conv as unknown as { patients: { name: string } }).patients?.name || "P")
+                          .charAt(0)
+                          .toUpperCase()}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        {(conv as unknown as { patients: { name: string } }).patients?.name || "Paciente"}
+                        {(conv as unknown as { patients: { name: string } }).patients?.name ||
+                          "Paciente"}
                       </p>
                       <p className="text-sm text-gray-500">
                         {conv.channel === "web" ? "Chat Web" : "WhatsApp"}

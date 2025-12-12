@@ -26,42 +26,27 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!file) {
-      return NextResponse.json(
-        { error: "No file provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
     if (!patientId) {
-      return NextResponse.json(
-        { error: "Patient ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Patient ID is required" }, { status: 400 });
     }
 
     // Validate patient exists
     const patient = await getPatient(patientId);
     if (!patient) {
-      return NextResponse.json(
-        { error: "Patient not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Patient not found" }, { status: 404 });
     }
 
     // Validate file type
     if (file.type !== "application/pdf") {
-      return NextResponse.json(
-        { error: "Only PDF files are allowed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Only PDF files are allowed" }, { status: 400 });
     }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "File size exceeds 10MB limit" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "File size exceeds 10MB limit" }, { status: 400 });
     }
 
     // Convert file to buffer
@@ -70,10 +55,7 @@ export async function POST(request: NextRequest) {
 
     // Validate PDF magic bytes
     if (!isValidPDF(buffer)) {
-      return NextResponse.json(
-        { error: "Invalid PDF file" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid PDF file" }, { status: 400 });
     }
 
     // Extract text from PDF
@@ -100,16 +82,11 @@ export async function POST(request: NextRequest) {
 
     if (uploadError) {
       console.error("Storage upload error:", uploadError);
-      return NextResponse.json(
-        { error: "Failed to upload file to storage" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Failed to upload file to storage" }, { status: 500 });
     }
 
     // Get public URL for the uploaded file
-    const { data: urlData } = supabase.storage
-      .from("diet-pdfs")
-      .getPublicUrl(fileName);
+    const { data: urlData } = supabase.storage.from("diet-pdfs").getPublicUrl(fileName);
 
     const publicUrl = urlData.publicUrl;
 
@@ -127,9 +104,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Upload API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

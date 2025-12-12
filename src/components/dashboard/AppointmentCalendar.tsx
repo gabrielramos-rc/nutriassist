@@ -172,10 +172,7 @@ export function AppointmentCalendar({
           {/* Weekday headers */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day) => (
-              <div
-                key={day}
-                className="text-center text-sm font-medium text-gray-500 py-2"
-              >
+              <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
                 {day}
               </div>
             ))}
@@ -194,9 +191,7 @@ export function AppointmentCalendar({
                   onClick={() => onSelectDate(day)}
                   className={cn(
                     "min-h-[100px] p-2 text-left border rounded-lg transition-colors",
-                    isCurrentMonth
-                      ? "bg-white hover:bg-gray-50"
-                      : "bg-gray-50 text-gray-400",
+                    isCurrentMonth ? "bg-white hover:bg-gray-50" : "bg-gray-50 text-gray-400",
                     isToday && "ring-2 ring-green-500"
                   )}
                 >
@@ -239,9 +234,7 @@ export function AppointmentCalendar({
       ) : (
         <div className="p-4">
           {upcomingAppointments.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              Nenhuma consulta agendada
-            </p>
+            <p className="text-center text-gray-500 py-8">Nenhuma consulta agendada</p>
           ) : (
             <ul className="divide-y divide-gray-100">
               {upcomingAppointments.map((apt) => (

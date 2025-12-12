@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  MessageSquare,
-  Users,
-  Calendar,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {

@@ -4,11 +4,7 @@ import { getNutritionist } from "@/services/patients";
 // For MVP, hardcode the nutritionist ID (auth will be added later)
 const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const nutritionist = await getNutritionist(TEST_NUTRITIONIST_ID);
 
   if (!nutritionist) {

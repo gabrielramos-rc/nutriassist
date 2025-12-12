@@ -187,9 +187,7 @@ export default function ConversationsPage() {
     <div className="h-[calc(100vh-8rem)]">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Conversas</h1>
-        <p className="text-gray-500 mt-1">
-          Gerencie as conversas com seus pacientes
-        </p>
+        <p className="text-gray-500 mt-1">Gerencie as conversas com seus pacientes</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-[calc(100%-5rem)] flex">
@@ -226,9 +224,7 @@ export default function ConversationsPage() {
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center px-8">
               <MessageSquare className="w-16 h-16 text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Selecione uma conversa
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Selecione uma conversa</h3>
               <p className="text-gray-500 text-sm">
                 Escolha uma conversa na lista ao lado para ver os detalhes e responder
               </p>

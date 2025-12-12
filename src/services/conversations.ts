@@ -1,8 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type {
-  ChatSession,
-  Message,
-} from "@/types";
+import type { ChatSession, Message } from "@/types";
 
 const CONTEXT_MESSAGE_LIMIT = 10;
 
@@ -74,11 +71,7 @@ export async function getOrCreateSession(
 export async function getSession(sessionId: string): Promise<ChatSession | null> {
   const supabase = getSupabase();
 
-  const { data } = await supabase
-    .from("chat_sessions")
-    .select("*")
-    .eq("id", sessionId)
-    .single();
+  const { data } = await supabase.from("chat_sessions").select("*").eq("id", sessionId).single();
 
   return data as ChatSession | null;
 }
@@ -158,10 +151,7 @@ export async function closeSession(sessionId: string): Promise<void> {
 /**
  * Create a handoff record for escalation
  */
-export async function createHandoff(
-  sessionId: string,
-  reason: string
-): Promise<void> {
+export async function createHandoff(sessionId: string, reason: string): Promise<void> {
   const supabase = getSupabase();
 
   const { error } = await supabase.from("handoffs").insert({
@@ -183,7 +173,8 @@ export async function getPendingHandoffs(nutritionistId: string) {
 
   const { data, error } = await supabase
     .from("handoffs")
-    .select(`
+    .select(
+      `
       *,
       chat_sessions!inner (
         id,
@@ -196,7 +187,8 @@ export async function getPendingHandoffs(nutritionistId: string) {
           phone
         )
       )
-    `)
+    `
+    )
     .eq("chat_sessions.nutritionist_id", nutritionistId)
     .eq("status", "pending")
     .order("created_at", { ascending: false });
@@ -236,7 +228,8 @@ export async function getHandoffWithContext(handoffId: string) {
 
   const { data: handoff, error: handoffError } = await supabase
     .from("handoffs")
-    .select(`
+    .select(
+      `
       *,
       chat_sessions (
         id,
@@ -252,7 +245,8 @@ export async function getHandoffWithContext(handoffId: string) {
           phone
         )
       )
-    `)
+    `
+    )
     .eq("id", handoffId)
     .single();
 
@@ -349,7 +343,8 @@ export async function getConversations(
 
   let query = supabase
     .from("chat_sessions")
-    .select(`
+    .select(
+      `
       *,
       patients (
         id,
@@ -357,7 +352,8 @@ export async function getConversations(
         email,
         phone
       )
-    `)
+    `
+    )
     .eq("nutritionist_id", nutritionistId)
     .order("updated_at", { ascending: false });
 
@@ -387,7 +383,8 @@ export async function getConversationWithMessages(sessionId: string, messageLimi
 
   const { data: session, error: sessionError } = await supabase
     .from("chat_sessions")
-    .select(`
+    .select(
+      `
       *,
       patients (
         id,
@@ -399,7 +396,8 @@ export async function getConversationWithMessages(sessionId: string, messageLimi
         id,
         name
       )
-    `)
+    `
+    )
     .eq("id", sessionId)
     .single();
 

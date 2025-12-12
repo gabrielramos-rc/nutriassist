@@ -22,10 +22,7 @@ export function matchFAQKey(message: string): string | null {
  * Handle FAQ questions
  * Returns the nutritionist's configured response for the matched FAQ
  */
-export function handleFAQ(
-  message: string,
-  nutritionist: Nutritionist
-): NinaResponse {
+export function handleFAQ(message: string, nutritionist: Nutritionist): NinaResponse {
   const faqKey = matchFAQKey(message);
   const faqResponses = nutritionist.faq_responses as FAQResponses | null;
 
