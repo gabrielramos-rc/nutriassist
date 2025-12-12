@@ -74,8 +74,8 @@ export default function ConversationsPage() {
       }));
 
       setConversations(enrichedConversations);
-    } catch (error) {
-      console.error("Error fetching conversations:", error);
+    } catch {
+      // Failed to fetch conversations
     } finally {
       setIsLoading(false);
     }
@@ -88,8 +88,8 @@ export default function ConversationsPage() {
       const res = await fetch(`/api/conversations?sessionId=${sessionId}`);
       const data = await res.json();
       setSelectedConversation(data);
-    } catch (error) {
-      console.error("Error fetching conversation:", error);
+    } catch {
+      // Failed to fetch conversation
     } finally {
       setIsLoadingDetail(false);
     }
@@ -157,8 +157,8 @@ export default function ConversationsPage() {
         }),
       });
       // Message will appear via Realtime subscription
-    } catch (error) {
-      console.error("Error sending message:", error);
+    } catch {
+      // Failed to send message
     }
   };
 
@@ -178,8 +178,8 @@ export default function ConversationsPage() {
           selectedId && fetchConversationDetail(selectedId),
         ]);
       }
-    } catch (error) {
-      console.error("Error resolving handoff:", error);
+    } catch {
+      // Failed to resolve handoff
     }
   };
 

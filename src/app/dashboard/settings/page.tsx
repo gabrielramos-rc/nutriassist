@@ -81,8 +81,8 @@ export default function SettingsPage() {
       setAppointmentDuration(data.appointment_duration || 60);
       setBusinessHours(data.business_hours || DEFAULT_BUSINESS_HOURS);
       setFaqResponses(data.faq_responses || {});
-    } catch (error) {
-      console.error("Error fetching nutritionist:", error);
+    } catch {
+      // Failed to fetch nutritionist
     } finally {
       setIsLoading(false);
     }
@@ -131,8 +131,8 @@ export default function SettingsPage() {
         }),
       });
       await fetchNutritionist();
-    } catch (error) {
-      console.error("Error saving settings:", error);
+    } catch {
+      // Failed to save settings
     } finally {
       setIsSaving(false);
     }
@@ -156,8 +156,8 @@ export default function SettingsPage() {
       }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error("Failed to copy:", error);
+    } catch {
+      // Failed to copy
     }
   };
 

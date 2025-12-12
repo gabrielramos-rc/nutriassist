@@ -93,7 +93,6 @@ export async function getSessionMessages(
     .limit(limit);
 
   if (error) {
-    console.error("Error fetching messages:", error);
     return [];
   }
 
@@ -161,7 +160,7 @@ export async function createHandoff(sessionId: string, reason: string): Promise<
   });
 
   if (error) {
-    console.error("Failed to create handoff:", error);
+    // Handoff creation failed silently
   }
 }
 
@@ -194,7 +193,6 @@ export async function getPendingHandoffs(nutritionistId: string) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching handoffs:", error);
     return [];
   }
 
@@ -282,7 +280,6 @@ export async function hasActiveHandoff(sessionId: string): Promise<boolean> {
     .limit(1);
 
   if (error) {
-    console.error("Error checking for active handoff:", error);
     return false;
   }
 
@@ -302,7 +299,6 @@ export async function getHandoffCount(nutritionistId: string): Promise<number> {
     .eq("status", "pending");
 
   if (error) {
-    console.error("Error counting handoffs:", error);
     return 0;
   }
 
@@ -322,7 +318,6 @@ export async function getActiveConversationCount(nutritionistId: string): Promis
     .eq("status", "active");
 
   if (error) {
-    console.error("Error counting conversations:", error);
     return 0;
   }
 
@@ -368,7 +363,6 @@ export async function getConversations(
   const { data, error } = await query;
 
   if (error) {
-    console.error("Error fetching conversations:", error);
     return [];
   }
 
@@ -414,7 +408,6 @@ export async function getConversationWithMessages(sessionId: string, messageLimi
     .limit(messageLimit);
 
   if (messagesError) {
-    console.error("Error fetching messages:", messagesError);
     return { ...session, messages: [] };
   }
 

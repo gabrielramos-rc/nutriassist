@@ -158,8 +158,7 @@ export function ChatWidget({
           }))
         );
       }
-    } catch (err) {
-      console.error("Error sending message:", err);
+    } catch {
       setError("Desculpe, ocorreu um erro. Tente novamente.");
 
       // Add error message

@@ -63,8 +63,7 @@ export async function handleDietQuestion(
           }
         : undefined,
     };
-  } catch (error) {
-    console.error("Error handling diet question:", error);
+  } catch {
     return {
       content: RESPONSE_TEMPLATES.error,
       intent: "diet_question",

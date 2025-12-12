@@ -47,8 +47,7 @@ export async function PATCH(request: NextRequest) {
     });
 
     return NextResponse.json(nutritionist);
-  } catch (error) {
-    console.error("Error updating nutritionist:", error);
+  } catch {
     return NextResponse.json({ error: "Erro ao atualizar configurações" }, { status: 500 });
   }
 }

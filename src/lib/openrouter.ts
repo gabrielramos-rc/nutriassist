@@ -157,7 +157,6 @@ export async function generateResponse(
 
         // Success! Update sticky primary to this model
         if (currentModelIndex !== index) {
-          console.log(`[OpenRouter] Switched to model: ${model}`);
           currentModelIndex = index;
         }
 
@@ -168,7 +167,6 @@ export async function generateResponse(
 
         // If 404 (model unavailable), skip to next model immediately
         if (status === 404) {
-          console.warn(`[OpenRouter] Model ${model} unavailable (404), trying next...`);
           break;
         }
 

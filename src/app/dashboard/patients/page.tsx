@@ -29,8 +29,8 @@ export default function PatientsPage() {
       const res = await fetch(`/api/patients?nutritionistId=${TEST_NUTRITIONIST_ID}`);
       const data = await res.json();
       setPatients(data);
-    } catch (error) {
-      console.error("Error fetching patients:", error);
+    } catch {
+      // Failed to fetch patients
     } finally {
       setIsLoading(false);
     }
@@ -82,8 +82,8 @@ export default function PatientsPage() {
         method: "DELETE",
       });
       await fetchPatients();
-    } catch (error) {
-      console.error("Error deleting patient:", error);
+    } catch {
+      // Failed to delete patient
     }
   };
 

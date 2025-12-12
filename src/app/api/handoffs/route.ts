@@ -26,8 +26,7 @@ export async function PATCH(request: NextRequest) {
 
     await resolveHandoff(handoffId);
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error resolving handoff:", error);
+  } catch {
     return NextResponse.json({ error: "Erro ao resolver handoff" }, { status: 500 });
   }
 }

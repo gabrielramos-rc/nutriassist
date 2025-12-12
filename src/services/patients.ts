@@ -167,7 +167,6 @@ export async function getPatientsByNutritionist(nutritionistId: string): Promise
     .order("name");
 
   if (error) {
-    console.error("Error fetching patients:", error);
     return [];
   }
 
@@ -215,7 +214,6 @@ export async function getPatientCount(nutritionistId: string): Promise<number> {
     .eq("nutritionist_id", nutritionistId);
 
   if (error) {
-    console.error("Error counting patients:", error);
     return 0;
   }
 

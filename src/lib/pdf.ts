@@ -33,7 +33,6 @@ export async function extractTextFromPDF(pdfBuffer: Buffer): Promise<PDFExtracti
       },
     };
   } catch (error) {
-    console.error("Error extracting text from PDF:", error);
     throw new Error(
       `Failed to extract text from PDF: ${error instanceof Error ? error.message : "Unknown error"}`
     );
