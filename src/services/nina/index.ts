@@ -1,15 +1,15 @@
 import { runGuardrails } from "./guardrails";
 import { classifyIntent, matchFAQKey } from "./intents";
-import { handleScheduling } from "./scheduling";
+import { handleScheduling, processSlotSelection, processCancellation } from "./scheduling";
 import { handleDietQuestion } from "./dietQA";
 import { RESPONSE_TEMPLATES } from "@/constants/nina";
 import type {
   NinaResponse,
-  NinaIntent,
   Nutritionist,
   Patient,
   Message,
   FAQResponses,
+  AppointmentSlot,
 } from "@/types";
 
 export interface ProcessMessageContext {
@@ -39,10 +39,21 @@ export async function processMessage(
     };
   }
 
-  // 2. Classify intent
+  // 2. Check for pending conversation state (multi-turn flows)
+  const pendingStateResponse = await checkPendingConversationState(
+    userMessage,
+    conversationHistory,
+    nutritionist,
+    patient
+  );
+  if (pendingStateResponse) {
+    return pendingStateResponse;
+  }
+
+  // 3. Classify intent
   const intent = await classifyIntent(userMessage);
 
-  // 3. Route to appropriate handler
+  // 4. Route to appropriate handler
   switch (intent) {
     case "greeting":
       return handleGreeting(nutritionist, patient);
@@ -74,12 +85,85 @@ export async function processMessage(
 }
 
 /**
+ * Check for pending conversation state in the last Nina message.
+ * This enables multi-turn flows like slot selection and cancellation confirmation.
+ */
+async function checkPendingConversationState(
+  userMessage: string,
+  conversationHistory: Message[],
+  nutritionist: Nutritionist,
+  patient: Patient | null | undefined
+): Promise<NinaResponse | null> {
+  // Find the last Nina message
+  const lastNinaMessage = [...conversationHistory].reverse().find((m) => m.sender === "nina");
+
+  if (!lastNinaMessage?.metadata) {
+    return null;
+  }
+
+  const metadata = lastNinaMessage.metadata as Record<string, unknown>;
+
+  // Check for pending slot selection (booking or rescheduling)
+  if (metadata.availableSlots && Array.isArray(metadata.availableSlots)) {
+    const availableSlots = metadata.availableSlots as AppointmentSlot[];
+    const trimmedMessage = userMessage.trim();
+
+    // Check if user's response looks like a slot selection (number 1-9)
+    if (/^[1-9]$/.test(trimmedMessage) && availableSlots.length > 0) {
+      // Patient is required for booking
+      if (!patient) {
+        return {
+          content: `Para confirmar o agendamento, preciso identificar você primeiro. Poderia me informar seu nome completo ou email?`,
+          intent: "scheduling",
+          metadata: {
+            requiresHandoff: true,
+            handoffReason: "patient_not_identified",
+            availableSlots, // Keep slots available for later
+          },
+        };
+      }
+
+      return processSlotSelection(trimmedMessage, availableSlots, nutritionist, patient);
+    }
+  }
+
+  // Check for pending cancellation confirmation
+  if (metadata.currentAppointmentId && !metadata.availableSlots) {
+    const appointmentId = metadata.currentAppointmentId as string;
+    const trimmedMessage = userMessage.trim().toLowerCase();
+
+    // Check if user is confirming cancellation
+    if (
+      trimmedMessage === "sim" ||
+      trimmedMessage === "confirmar" ||
+      trimmedMessage === "confirmo"
+    ) {
+      return processCancellation(appointmentId);
+    }
+
+    // Check if user is declining cancellation
+    if (
+      trimmedMessage === "não" ||
+      trimmedMessage === "nao" ||
+      trimmedMessage === "cancelar" ||
+      trimmedMessage === "manter"
+    ) {
+      return {
+        content: `Ok, sua consulta continua agendada. Posso te ajudar com algo mais?`,
+        intent: "scheduling",
+        subIntent: "cancel",
+      };
+    }
+  }
+
+  // No pending state detected
+  return null;
+}
+
+/**
  * Handle greeting messages
  */
-function handleGreeting(
-  nutritionist: Nutritionist,
-  patient?: Patient | null
-): NinaResponse {
+function handleGreeting(nutritionist: Nutritionist, patient?: Patient | null): NinaResponse {
   const content = patient?.name
     ? RESPONSE_TEMPLATES.greetingWithPatientName(patient.name, nutritionist.name)
     : RESPONSE_TEMPLATES.greeting(nutritionist.name);
@@ -89,8 +173,6 @@ function handleGreeting(
     intent: "greeting",
   };
 }
-
-
 
 /**
  * Handle FAQ questions
@@ -121,15 +203,13 @@ function handleFAQ(message: string, nutritionist: Nutritionist): NinaResponse {
  * Handle messages that need human intervention
  * Detects specific handoff reasons and returns appropriate responses
  */
-function handleHandoff(
-  nutritionist: Nutritionist,
-  message?: string
-): NinaResponse {
+function handleHandoff(nutritionist: Nutritionist, message?: string): NinaResponse {
   // Detect specific handoff reason for better response
   const normalizedMessage = (message || "").toLowerCase();
 
   // Medical/symptom questions
-  const medicalPatterns = /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação|tontura|febre|alergia|reação)\b/i;
+  const medicalPatterns =
+    /\b(sintoma|dor|mal estar|enjoo|náusea|nausea|vômito|vomito|diarreia|constipação|tontura|febre|alergia|reação)\b/i;
   if (medicalPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffMedical(nutritionist.name),
@@ -142,7 +222,8 @@ function handleHandoff(
   }
 
   // Complaints
-  const complaintPatterns = /\b(reclamação|reclamacao|insatisf|problema com|não gostei|nao gostei|péssimo|pessimo|horrível|horrivel|decepcion)\b/i;
+  const complaintPatterns =
+    /\b(reclamação|reclamacao|insatisf|problema com|não gostei|nao gostei|péssimo|pessimo|horrível|horrivel|decepcion)\b/i;
   if (complaintPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffComplaint(nutritionist.name),
@@ -155,7 +236,8 @@ function handleHandoff(
   }
 
   // Explicit request for human
-  const humanRequestPatterns = /\b(falar com|conversar com|quero.*humano|quero.*pessoa|atendente|falar.*nutricionista|preciso.*nutricionista)\b/i;
+  const humanRequestPatterns =
+    /\b(falar com|conversar com|quero.*humano|quero.*pessoa|atendente|falar.*nutricionista|preciso.*nutricionista)\b/i;
   if (humanRequestPatterns.test(normalizedMessage)) {
     return {
       content: RESPONSE_TEMPLATES.handoffHumanRequest(nutritionist.name),

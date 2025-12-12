@@ -14,10 +14,7 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -46,12 +43,10 @@ export class ErrorBoundary extends Component<
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
             <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Algo deu errado
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Algo deu errado</h2>
           <p className="text-gray-600 mb-6 max-w-md">
-            Ocorreu um erro inesperado. Por favor, tente novamente ou entre em
-            contato com o suporte se o problema persistir.
+            Ocorreu um erro inesperado. Por favor, tente novamente ou entre em contato com o suporte
+            se o problema persistir.
           </p>
           <Button onClick={this.handleRetry} leftIcon={<RefreshCw className="w-4 h-4" />}>
             Tentar novamente

@@ -13,11 +13,7 @@ export function LoadingSpinner({ size = "md", className }: LoadingSpinnerProps) 
     lg: "w-12 h-12",
   };
 
-  return (
-    <Loader2
-      className={cn("animate-spin text-green-600", sizes[size], className)}
-    />
-  );
+  return <Loader2 className={cn("animate-spin text-green-600", sizes[size], className)} />;
 }
 
 interface LoadingPageProps {
@@ -56,14 +52,7 @@ interface SkeletonProps {
 }
 
 export function Skeleton({ className }: SkeletonProps) {
-  return (
-    <div
-      className={cn(
-        "animate-pulse bg-gray-200 rounded",
-        className
-      )}
-    />
-  );
+  return <div className={cn("animate-pulse bg-gray-200 rounded", className)} />;
 }
 
 export function SkeletonCard() {

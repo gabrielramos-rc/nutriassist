@@ -21,11 +21,7 @@ function getSupabase() {
 export async function getPatient(patientId: string): Promise<Patient | null> {
   const supabase = getSupabase();
 
-  const { data } = await supabase
-    .from("patients")
-    .select("*")
-    .eq("id", patientId)
-    .single();
+  const { data } = await supabase.from("patients").select("*").eq("id", patientId).single();
 
   return data as Patient | null;
 }
@@ -161,9 +157,7 @@ export async function updatePatientDiet(
 /**
  * Get all patients for a nutritionist
  */
-export async function getPatientsByNutritionist(
-  nutritionistId: string
-): Promise<Patient[]> {
+export async function getPatientsByNutritionist(nutritionistId: string): Promise<Patient[]> {
   const supabase = getSupabase();
 
   const { data, error } = await supabase
@@ -173,7 +167,6 @@ export async function getPatientsByNutritionist(
     .order("name");
 
   if (error) {
-    console.error("Error fetching patients:", error);
     return [];
   }
 
@@ -221,7 +214,6 @@ export async function getPatientCount(nutritionistId: string): Promise<number> {
     .eq("nutritionist_id", nutritionistId);
 
   if (error) {
-    console.error("Error counting patients:", error);
     return 0;
   }
 
@@ -264,10 +256,7 @@ export async function updatePatient(
 export async function deletePatient(patientId: string): Promise<void> {
   const supabase = getSupabase();
 
-  const { error } = await supabase
-    .from("patients")
-    .delete()
-    .eq("id", patientId);
+  const { error } = await supabase.from("patients").delete().eq("id", patientId);
 
   if (error) {
     throw new Error(`Failed to delete patient: ${error.message}`);

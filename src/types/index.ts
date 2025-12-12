@@ -34,11 +34,7 @@ export type NinaIntent =
   | "off_topic"
   | "dangerous";
 
-export type SchedulingSubIntent =
-  | "book"
-  | "reschedule"
-  | "cancel"
-  | "check_availability";
+export type SchedulingSubIntent = "book" | "reschedule" | "cancel" | "check_availability";
 
 // Nina response types
 export interface NinaResponse {

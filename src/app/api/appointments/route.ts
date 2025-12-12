@@ -6,39 +6,53 @@ import {
   rescheduleAppointment,
   getAppointment,
   updateAppointmentStatus,
+  updateAppointmentNotes,
 } from "@/services/appointments";
 import { getNutritionist } from "@/services/patients";
+import {
+  appointmentGetSchema,
+  appointmentCreateSchema,
+  appointmentUpdateSchema,
+  appointmentDeleteSchema,
+  getValidationError,
+} from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
  * GET /api/appointments
  * List appointments for a nutritionist
  */
 export async function GET(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
-    const nutritionistId = searchParams.get("nutritionistId");
-
-    if (!nutritionistId) {
-      return NextResponse.json(
-        { error: "nutritionistId is required" },
-        { status: 400 }
-      );
-    }
-
-    const appointments = await listAppointments(nutritionistId, {
+    const params = {
+      nutritionistId: searchParams.get("nutritionistId") || "",
       status: searchParams.get("status") || undefined,
       startDate: searchParams.get("startDate") || undefined,
       endDate: searchParams.get("endDate") || undefined,
       patientId: searchParams.get("patientId") || undefined,
+    };
+
+    const validation = appointmentGetSchema.safeParse(params);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
+    }
+
+    const appointments = await listAppointments(validation.data.nutritionistId, {
+      status: validation.data.status,
+      startDate: validation.data.startDate,
+      endDate: validation.data.endDate,
+      patientId: validation.data.patientId,
     });
 
     return NextResponse.json(appointments);
-  } catch (error) {
-    console.error("Error listing appointments:", error);
-    return NextResponse.json(
-      { error: "Failed to list appointments" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Failed to list appointments" }, { status: 500 });
   }
 }
 
@@ -47,24 +61,25 @@ export async function GET(request: NextRequest) {
  * Create a new appointment
  */
 export async function POST(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { nutritionistId, patientId, startsAt, duration } = body;
 
-    if (!nutritionistId || !patientId || !startsAt) {
-      return NextResponse.json(
-        { error: "nutritionistId, patientId, and startsAt are required" },
-        { status: 400 }
-      );
+    const validation = appointmentCreateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
+
+    const { nutritionistId, patientId, startsAt, duration } = validation.data;
 
     // Verify nutritionist exists
     const nutritionist = await getNutritionist(nutritionistId);
     if (!nutritionist) {
-      return NextResponse.json(
-        { error: "Nutritionist not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Nutritionist not found" }, { status: 404 });
     }
 
     const result = await createAppointment(
@@ -75,88 +90,73 @@ export async function POST(request: NextRequest) {
     );
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 409 });
     }
 
-    return NextResponse.json(
-      { appointment: result.appointment },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Error creating appointment:", error);
-    return NextResponse.json(
-      { error: "Failed to create appointment" },
-      { status: 500 }
-    );
+    return NextResponse.json({ appointment: result.appointment }, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: "Failed to create appointment" }, { status: 500 });
   }
 }
 
 /**
  * PATCH /api/appointments
- * Reschedule an appointment or update status
+ * Reschedule an appointment, update status, or update notes
  */
 export async function PATCH(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { appointmentId, newStartsAt, duration, status } = body;
 
-    if (!appointmentId) {
-      return NextResponse.json(
-        { error: "appointmentId is required" },
-        { status: 400 }
-      );
+    const validation = appointmentUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
+
+    const { appointmentId, newStartsAt, duration, status, notes } = validation.data;
 
     // Get existing appointment
     const existing = await getAppointment(appointmentId);
     if (!existing) {
-      return NextResponse.json(
-        { error: "Appointment not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
     }
 
     // If status is provided, update status
     if (status) {
       const result = await updateAppointmentStatus(appointmentId, status);
       if (!result.success) {
-        return NextResponse.json(
-          { error: result.error },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: result.error }, { status: 400 });
+      }
+      return NextResponse.json({ success: true });
+    }
+
+    // If notes is provided (including empty string to clear), update notes
+    if (notes !== undefined) {
+      const result = await updateAppointmentNotes(appointmentId, notes || null);
+      if (!result.success) {
+        return NextResponse.json({ error: result.error }, { status: 400 });
       }
       return NextResponse.json({ success: true });
     }
 
     // Otherwise, reschedule
-    if (!newStartsAt) {
-      return NextResponse.json(
-        { error: "newStartsAt or status is required" },
-        { status: 400 }
-      );
-    }
-
-    const result = await rescheduleAppointment(
-      appointmentId,
-      newStartsAt,
-      duration || 60
-    );
+    const result = await rescheduleAppointment(appointmentId, newStartsAt!, duration || 60);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 409 });
     }
 
     return NextResponse.json({ appointment: result.appointment });
   } catch (error) {
-    console.error("Error updating appointment:", error);
     return NextResponse.json(
-      { error: "Failed to update appointment" },
+      {
+        error: "Failed to update appointment",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
@@ -167,32 +167,30 @@ export async function PATCH(request: NextRequest) {
  * Cancel an appointment
  */
 export async function DELETE(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
-    const appointmentId = searchParams.get("appointmentId");
+    const params = {
+      appointmentId: searchParams.get("appointmentId") || "",
+    };
 
-    if (!appointmentId) {
-      return NextResponse.json(
-        { error: "appointmentId is required" },
-        { status: 400 }
-      );
+    const validation = appointmentDeleteSchema.safeParse(params);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
-    const result = await cancelAppointment(appointmentId);
+    const result = await cancelAppointment(validation.data.appointmentId);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 400 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error cancelling appointment:", error);
-    return NextResponse.json(
-      { error: "Failed to cancel appointment" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Failed to cancel appointment" }, { status: 500 });
   }
 }

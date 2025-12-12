@@ -62,12 +62,12 @@ const INTENT_KEYWORDS: Record<NinaIntent, RegExp[]> = {
 
 // Explicit order for intent checking (more specific first)
 const INTENT_CHECK_ORDER: NinaIntent[] = [
-  "greeting",      // Check greetings first (exact matches)
-  "faq",           // Check FAQ before scheduling (more specific patterns)
+  "greeting", // Check greetings first (exact matches)
+  "faq", // Check FAQ before scheduling (more specific patterns)
   "diet_question",
-  "off_topic",     // Check off-topic before handoff (off-topic has specific patterns)
-  "handoff",       // Handoff for medical/complaints
-  "scheduling",    // Broader patterns, check later
+  "off_topic", // Check off-topic before handoff (off-topic has specific patterns)
+  "handoff", // Handoff for medical/complaints
+  "scheduling", // Broader patterns, check later
   "dangerous",
 ];
 
@@ -117,8 +117,7 @@ async function classifyByLLM(message: string): Promise<NinaIntent> {
 
     // Default to off_topic if LLM returns invalid intent
     return "off_topic";
-  } catch (error) {
-    console.error("Error classifying intent with LLM:", error);
+  } catch {
     // Default to handoff on error to be safe
     return "handoff";
   }
@@ -142,9 +141,7 @@ export async function classifyIntent(message: string): Promise<NinaIntent> {
 /**
  * Classify scheduling sub-intent
  */
-export async function classifySchedulingSubIntent(
-  message: string
-): Promise<SchedulingSubIntent> {
+export async function classifySchedulingSubIntent(message: string): Promise<SchedulingSubIntent> {
   const normalizedMessage = message.toLowerCase();
 
   // Keyword-based classification
@@ -154,7 +151,11 @@ export async function classifySchedulingSubIntent(
   if (/\b(cancelar|desmarcar)\b/i.test(normalizedMessage)) {
     return "cancel";
   }
-  if (/\b(disponibilidade|horários disponíveis|quando tem|próxima consulta)\b/i.test(normalizedMessage)) {
+  if (
+    /\b(disponibilidade|horários disponíveis|quando tem|próxima consulta)\b/i.test(
+      normalizedMessage
+    )
+  ) {
     return "check_availability";
   }
   if (/\b(agendar|marcar|quero.*consulta)\b/i.test(normalizedMessage)) {
@@ -167,7 +168,12 @@ export async function classifySchedulingSubIntent(
     const response = await complete(prompt, { temperature: 0.1, maxTokens: 20 });
 
     const subIntent = response.toLowerCase().trim() as SchedulingSubIntent;
-    const validSubIntents: SchedulingSubIntent[] = ["book", "reschedule", "cancel", "check_availability"];
+    const validSubIntents: SchedulingSubIntent[] = [
+      "book",
+      "reschedule",
+      "cancel",
+      "check_availability",
+    ];
 
     if (validSubIntents.includes(subIntent)) {
       return subIntent;

@@ -1,14 +1,10 @@
-import { Sidebar } from "@/components/dashboard/Sidebar";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { getNutritionist } from "@/services/patients";
 
 // For MVP, hardcode the nutritionist ID (auth will be added later)
 const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const nutritionist = await getNutritionist(TEST_NUTRITIONIST_ID);
 
   if (!nutritionist) {
@@ -19,12 +15,5 @@ export default async function DashboardLayout({
     );
   }
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar nutritionistName={nutritionist.name} />
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">{children}</div>
-      </main>
-    </div>
-  );
+  return <DashboardShell nutritionistName={nutritionist.name}>{children}</DashboardShell>;
 }

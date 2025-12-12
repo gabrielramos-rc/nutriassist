@@ -8,21 +8,30 @@ import {
   createHandoff,
 } from "@/services/conversations";
 import { getNutritionist, getPatient } from "@/services/patients";
-import type { ChatRequest, ChatResponse } from "@/types";
+import { chatRequestSchema, getValidationError } from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import type { ChatResponse } from "@/types";
 
 export async function POST(request: NextRequest) {
-  try {
-    const body: ChatRequest = await request.json();
+  // Check rate limit
+  const rateLimit = checkRateLimit(request, "chat");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
 
-    // Validate request
-    if (!body.message || typeof body.message !== "string") {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
+  try {
+    const body = await request.json();
+
+    // Validate request with Zod
+    const validation = chatRequestSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
-    if (!body.nutritionistId && !body.sessionId) {
+    const { message, nutritionistId, patientId, sessionId } = validation.data;
+
+    // Require either nutritionistId or sessionId
+    if (!nutritionistId && !sessionId) {
       return NextResponse.json(
         { error: "Either nutritionistId or sessionId is required" },
         { status: 400 }
@@ -31,47 +40,36 @@ export async function POST(request: NextRequest) {
 
     // Get or create session
     let session;
-    let nutritionistId: string;
+    let resolvedNutritionistId: string;
 
-    if (body.sessionId) {
-      session = await getSession(body.sessionId);
+    if (sessionId) {
+      session = await getSession(sessionId);
       if (!session) {
-        return NextResponse.json(
-          { error: "Session not found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Session not found" }, { status: 404 });
       }
-      nutritionistId = session.nutritionist_id;
+      resolvedNutritionistId = session.nutritionist_id;
     } else {
-      nutritionistId = body.nutritionistId!;
-      session = await getOrCreateSession(
-        nutritionistId,
-        body.patientId || null
-      );
+      resolvedNutritionistId = nutritionistId!;
+      session = await getOrCreateSession(resolvedNutritionistId, patientId || null);
     }
 
     // Load nutritionist
-    const nutritionist = await getNutritionist(nutritionistId);
+    const nutritionist = await getNutritionist(resolvedNutritionistId);
     if (!nutritionist) {
-      return NextResponse.json(
-        { error: "Nutritionist not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Nutritionist not found" }, { status: 404 });
     }
 
     // Load patient if available
-    const patient = session.patient_id
-      ? await getPatient(session.patient_id)
-      : null;
+    const patient = session.patient_id ? await getPatient(session.patient_id) : null;
 
     // Load conversation history
     const conversationHistory = await getSessionMessages(session.id);
 
     // Save user message first
-    await saveMessage(session.id, "patient", body.message.trim());
+    await saveMessage(session.id, "patient", message);
 
     // Process through Nina
-    const ninaResponse = await processMessage(body.message.trim(), {
+    const ninaResponse = await processMessage(message, {
       nutritionist,
       patient,
       conversationHistory,
@@ -88,10 +86,7 @@ export async function POST(request: NextRequest) {
 
     // Create handoff if needed
     if (ninaResponse.metadata?.requiresHandoff) {
-      await createHandoff(
-        session.id,
-        ninaResponse.metadata.handoffReason || "unknown"
-      );
+      await createHandoff(session.id, ninaResponse.metadata.handoffReason || "unknown");
     }
 
     // Return response
@@ -101,11 +96,7 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json(response);
-  } catch (error) {
-    console.error("Chat API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

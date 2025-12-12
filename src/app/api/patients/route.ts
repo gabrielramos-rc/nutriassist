@@ -6,103 +6,116 @@ import {
   updatePatient,
   deletePatient,
 } from "@/services/patients";
+import {
+  patientGetSchema,
+  patientCreateSchema,
+  patientUpdateSchema,
+  patientDeleteSchema,
+  getValidationError,
+} from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 // GET /api/patients - List patients for a nutritionist or get a single patient
 export async function GET(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   const searchParams = request.nextUrl.searchParams;
-  const nutritionistId = searchParams.get("nutritionistId");
   const patientId = searchParams.get("patientId");
 
+  // If patientId is provided, get single patient (no nutritionistId required)
   if (patientId) {
     const patient = await getPatient(patientId);
     if (!patient) {
-      return NextResponse.json(
-        { error: "Paciente não encontrado" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
     }
     return NextResponse.json(patient);
   }
 
-  if (!nutritionistId) {
-    return NextResponse.json(
-      { error: "nutritionistId é obrigatório" },
-      { status: 400 }
-    );
+  // Otherwise, list patients for nutritionist
+  const params = {
+    nutritionistId: searchParams.get("nutritionistId") || "",
+    patientId: patientId || undefined,
+  };
+
+  const validation = patientGetSchema.safeParse(params);
+  if (!validation.success) {
+    return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
   }
 
-  const patients = await getPatientsByNutritionist(nutritionistId);
+  const patients = await getPatientsByNutritionist(validation.data.nutritionistId);
   return NextResponse.json(patients);
 }
 
 // POST /api/patients - Create a new patient
 export async function POST(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { nutritionistId, name, email, phone } = body;
 
-    if (!nutritionistId || !name) {
-      return NextResponse.json(
-        { error: "nutritionistId e name são obrigatórios" },
-        { status: 400 }
-      );
+    const validation = patientCreateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
-    const patient = await createPatient(nutritionistId, name, email, phone);
+    const { nutritionistId, name, email, phone } = validation.data;
+    const patient = await createPatient(nutritionistId, name, email || undefined, phone);
     return NextResponse.json(patient, { status: 201 });
-  } catch (error) {
-    console.error("Error creating patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao criar paciente" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Erro ao criar paciente" }, { status: 500 });
   }
 }
 
 // PATCH /api/patients - Update a patient
 export async function PATCH(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
-    const { patientId, name, email, phone } = body;
 
-    if (!patientId) {
-      return NextResponse.json(
-        { error: "patientId é obrigatório" },
-        { status: 400 }
-      );
+    const validation = patientUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
     }
 
+    const { patientId, name, email, phone } = validation.data;
     const patient = await updatePatient(patientId, { name, email, phone });
     return NextResponse.json(patient);
-  } catch (error) {
-    console.error("Error updating patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao atualizar paciente" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Erro ao atualizar paciente" }, { status: 500 });
   }
 }
 
 // DELETE /api/patients - Delete a patient
 export async function DELETE(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const patientId = searchParams.get("patientId");
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
 
-  if (!patientId) {
-    return NextResponse.json(
-      { error: "patientId é obrigatório" },
-      { status: 400 }
-    );
+  const searchParams = request.nextUrl.searchParams;
+  const params = {
+    patientId: searchParams.get("patientId") || "",
+  };
+
+  const validation = patientDeleteSchema.safeParse(params);
+  if (!validation.success) {
+    return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
   }
 
   try {
-    await deletePatient(patientId);
+    await deletePatient(validation.data.patientId);
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error deleting patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao excluir paciente" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Erro ao excluir paciente" }, { status: 500 });
   }
 }

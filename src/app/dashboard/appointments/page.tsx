@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { format, startOfMonth, endOfMonth, addMonths } from "date-fns";
 import { AppointmentCalendar } from "@/components/dashboard/AppointmentCalendar";
 import { AppointmentModal } from "@/components/dashboard/AppointmentModal";
+import { useToast } from "@/components/ui/Toast";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
 
@@ -24,10 +26,13 @@ interface Appointment {
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const toast = useToast();
 
   const fetchAppointments = useCallback(async () => {
+    setError(null);
     try {
       // Fetch appointments for a 3-month window
       const startDate = format(startOfMonth(new Date()), "yyyy-MM-dd");
@@ -36,10 +41,14 @@ export default function AppointmentsPage() {
       const res = await fetch(
         `/api/appointments?nutritionistId=${TEST_NUTRITIONIST_ID}&startDate=${startDate}&endDate=${endDate}`
       );
+      if (!res.ok) {
+        throw new Error("Erro ao carregar consultas");
+      }
       const data = await res.json();
       setAppointments(data);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao carregar consultas";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -54,25 +63,30 @@ export default function AppointmentsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSelectDate = (date: Date) => {
+  const handleSelectDate = (_date: Date) => {
     // Could open a modal to create appointment for that date
-    console.log("Selected date:", date);
   };
 
   const handleCancelAppointment = async (appointmentId: string) => {
     try {
-      await fetch(`/api/appointments?appointmentId=${appointmentId}`, {
+      const res = await fetch(`/api/appointments?appointmentId=${appointmentId}`, {
         method: "DELETE",
       });
+      if (!res.ok) {
+        throw new Error("Erro ao cancelar consulta");
+      }
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error cancelling appointment:", error);
+      toast.success("Consulta cancelada!");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao cancelar consulta";
+      toast.error(message);
+      throw err;
     }
   };
 
   const handleCompleteAppointment = async (appointmentId: string) => {
     try {
-      await fetch("/api/appointments", {
+      const res = await fetch("/api/appointments", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -80,15 +94,21 @@ export default function AppointmentsPage() {
           status: "completed",
         }),
       });
+      if (!res.ok) {
+        throw new Error("Erro ao marcar consulta como realizada");
+      }
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error completing appointment:", error);
+      toast.success("Consulta marcada como realizada!");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao atualizar consulta";
+      toast.error(message);
+      throw err;
     }
   };
 
   const handleNoShowAppointment = async (appointmentId: string) => {
     try {
-      await fetch("/api/appointments", {
+      const res = await fetch("/api/appointments", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,9 +116,37 @@ export default function AppointmentsPage() {
           status: "no_show",
         }),
       });
+      if (!res.ok) {
+        throw new Error("Erro ao marcar nao comparecimento");
+      }
       await fetchAppointments();
-    } catch (error) {
-      console.error("Error marking no-show:", error);
+      toast.success("Consulta marcada como nao compareceu!");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao atualizar consulta";
+      toast.error(message);
+      throw err;
+    }
+  };
+
+  const handleUpdateNotes = async (appointmentId: string, notes: string) => {
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId,
+          notes,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("Erro ao salvar observacoes");
+      }
+      await fetchAppointments();
+      toast.success("Observacoes salvas!");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao salvar observacoes";
+      toast.error(message);
+      throw err;
     }
   };
 
@@ -110,13 +158,31 @@ export default function AppointmentsPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center">
+        <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+        <p className="text-gray-900 font-medium mb-2">Erro ao carregar consultas</p>
+        <p className="text-gray-500 text-sm mb-4">{error}</p>
+        <button
+          onClick={() => {
+            setIsLoading(true);
+            fetchAppointments();
+          }}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Agenda</h1>
-        <p className="text-gray-500 mt-1">
-          Visualize e gerencie suas consultas
-        </p>
+        <p className="text-gray-500 mt-1">Visualize e gerencie suas consultas</p>
       </div>
 
       <AppointmentCalendar
@@ -135,6 +201,7 @@ export default function AppointmentsPage() {
         onCancel={handleCancelAppointment}
         onComplete={handleCompleteAppointment}
         onNoShow={handleNoShowAppointment}
+        onUpdateNotes={handleUpdateNotes}
       />
     </div>
   );

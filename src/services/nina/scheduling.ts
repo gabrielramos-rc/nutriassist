@@ -7,13 +7,7 @@ import {
 } from "@/services/appointments";
 import { classifySchedulingSubIntent } from "./intents";
 import { RESPONSE_TEMPLATES } from "@/constants/nina";
-import type {
-  Nutritionist,
-  Patient,
-  NinaResponse,
-  SchedulingSubIntent,
-  AppointmentSlot,
-} from "@/types";
+import type { Nutritionist, Patient, NinaResponse, AppointmentSlot } from "@/types";
 
 /**
  * Handle scheduling-related messages
@@ -27,7 +21,7 @@ export async function handleScheduling(
 
   switch (subIntent) {
     case "book":
-      return handleBooking(nutritionist, patient);
+      return handleBooking(nutritionist);
     case "check_availability":
       return handleCheckAvailability(nutritionist);
     case "reschedule":
@@ -42,10 +36,7 @@ export async function handleScheduling(
 /**
  * Handle new booking request
  */
-async function handleBooking(
-  nutritionist: Nutritionist,
-  patient: Patient | null | undefined
-): Promise<NinaResponse> {
+async function handleBooking(nutritionist: Nutritionist): Promise<NinaResponse> {
   const slots = await getAvailableSlots(nutritionist, 14, 5);
 
   if (slots.length === 0) {
@@ -60,9 +51,7 @@ async function handleBooking(
     };
   }
 
-  const slotList = slots
-    .map((s, i) => `${i + 1}. ${s.formatted}`)
-    .join("\n");
+  const slotList = slots.map((s, i) => `${i + 1}. ${s.formatted}`).join("\n");
 
   return {
     content: `Ótimo! Tenho esses horários disponíveis:\n\n${slotList}\n\nQual prefere? Responda com o número do horário escolhido.`,
@@ -77,9 +66,7 @@ async function handleBooking(
 /**
  * Handle check availability request
  */
-async function handleCheckAvailability(
-  nutritionist: Nutritionist
-): Promise<NinaResponse> {
+async function handleCheckAvailability(nutritionist: Nutritionist): Promise<NinaResponse> {
   const slots = await getAvailableSlots(nutritionist, 14, 5);
 
   if (slots.length === 0) {
@@ -93,9 +80,7 @@ async function handleCheckAvailability(
     };
   }
 
-  const slotList = slots
-    .map((s, i) => `${i + 1}. ${s.formatted}`)
-    .join("\n");
+  const slotList = slots.map((s, i) => `${i + 1}. ${s.formatted}`).join("\n");
 
   return {
     content: `Aqui estão os próximos horários disponíveis:\n\n${slotList}\n\nGostaria de agendar algum desses horários?`,
@@ -151,9 +136,7 @@ async function handleReschedule(
     };
   }
 
-  const slotList = slots
-    .map((s, i) => `${i + 1}. ${s.formatted}`)
-    .join("\n");
+  const slotList = slots.map((s, i) => `${i + 1}. ${s.formatted}`).join("\n");
 
   return {
     content: `Sua consulta atual está marcada para ${currentDate}.\n\nPosso remarcar para um desses horários:\n\n${slotList}\n\nQual prefere?`,
@@ -218,7 +201,8 @@ export async function processSlotSelection(
 ): Promise<NinaResponse> {
   const slotIndex = parseInt(selection, 10) - 1;
 
-  if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= availableSlots.length) {
+  const selectedSlot = availableSlots[slotIndex];
+  if (isNaN(slotIndex) || slotIndex < 0 || !selectedSlot) {
     return {
       content: `Não entendi sua escolha. Por favor, responda com o número do horário desejado (1-${availableSlots.length}).`,
       intent: "scheduling",
@@ -228,8 +212,6 @@ export async function processSlotSelection(
       },
     };
   }
-
-  const selectedSlot = availableSlots[slotIndex];
   const result = await createAppointment(
     nutritionist.id,
     patient.id,
@@ -258,9 +240,7 @@ export async function processSlotSelection(
 /**
  * Process cancellation confirmation
  */
-export async function processCancellation(
-  appointmentId: string
-): Promise<NinaResponse> {
+export async function processCancellation(appointmentId: string): Promise<NinaResponse> {
   const result = await cancelAppointment(appointmentId);
 
   if (!result.success) {

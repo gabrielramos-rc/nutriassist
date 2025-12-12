@@ -15,9 +15,7 @@ export interface PDFExtractionResult {
  * @param pdfBuffer - The PDF file as a Buffer
  * @returns Extracted text and metadata
  */
-export async function extractTextFromPDF(
-  pdfBuffer: Buffer
-): Promise<PDFExtractionResult> {
+export async function extractTextFromPDF(pdfBuffer: Buffer): Promise<PDFExtractionResult> {
   try {
     const parser = new PDFParse({ data: pdfBuffer });
     const textResult = await parser.getText();
@@ -35,7 +33,6 @@ export async function extractTextFromPDF(
       },
     };
   } catch (error) {
-    console.error("Error extracting text from PDF:", error);
     throw new Error(
       `Failed to extract text from PDF: ${error instanceof Error ? error.message : "Unknown error"}`
     );
@@ -58,15 +55,17 @@ export function isValidPDF(buffer: Buffer): boolean {
  * Removes excessive whitespace and normalizes line breaks
  */
 export function cleanExtractedText(text: string): string {
-  return text
-    // Replace multiple spaces with single space
-    .replace(/[ \t]+/g, " ")
-    // Replace multiple newlines with double newline (paragraph break)
-    .replace(/\n{3,}/g, "\n\n")
-    // Trim whitespace from each line
-    .split("\n")
-    .map((line) => line.trim())
-    .join("\n")
-    // Remove any remaining leading/trailing whitespace
-    .trim();
+  return (
+    text
+      // Replace multiple spaces with single space
+      .replace(/[ \t]+/g, " ")
+      // Replace multiple newlines with double newline (paragraph break)
+      .replace(/\n{3,}/g, "\n\n")
+      // Trim whitespace from each line
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n")
+      // Remove any remaining leading/trailing whitespace
+      .trim()
+  );
 }

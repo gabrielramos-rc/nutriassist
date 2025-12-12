@@ -120,69 +120,86 @@ export function AppointmentCalendar({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between p-2 sm:p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Mes anterior"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
           </button>
-          <h2 className="text-lg font-semibold text-gray-900 min-w-[200px] text-center">
-            {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
+          <h2 className="text-sm sm:text-lg font-semibold text-gray-900 min-w-[100px] sm:min-w-[200px] text-center capitalize">
+            {format(currentMonth, "MMM yyyy", { locale: ptBR })}
           </h2>
           <button
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Proximo mes"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+        <div
+          className="flex items-center gap-1 sm:gap-2 bg-gray-100 rounded-lg p-0.5 sm:p-1"
+          role="group"
+          aria-label="Visualizacao"
+        >
           <button
             onClick={() => setView("calendar")}
+            aria-pressed={view === "calendar"}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+              "flex items-center gap-1 sm:gap-2 p-2 sm:px-3 sm:py-1.5 rounded-md text-sm font-medium transition-colors",
               view === "calendar"
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             )}
           >
-            <Calendar className="w-4 h-4" />
-            Calendário
+            <Calendar className="w-4 h-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Calendario</span>
           </button>
           <button
             onClick={() => setView("list")}
+            aria-pressed={view === "list"}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+              "flex items-center gap-1 sm:gap-2 p-2 sm:px-3 sm:py-1.5 rounded-md text-sm font-medium transition-colors",
               view === "list"
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             )}
           >
-            <List className="w-4 h-4" />
-            Lista
+            <List className="w-4 h-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Lista</span>
           </button>
         </div>
       </div>
 
       {view === "calendar" ? (
-        <div className="p-4">
-          {/* Weekday headers */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day) => (
+        <div className="p-2 sm:p-4">
+          {/* Weekday headers - single letter on mobile */}
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
+            {[
+              { short: "D", full: "Dom" },
+              { short: "S", full: "Seg" },
+              { short: "T", full: "Ter" },
+              { short: "Q", full: "Qua" },
+              { short: "Q", full: "Qui" },
+              { short: "S", full: "Sex" },
+              { short: "S", full: "Sáb" },
+            ].map(({ short, full }, index) => (
               <div
-                key={day}
-                className="text-center text-sm font-medium text-gray-500 py-2"
+                key={`${full}-${index}`}
+                className="text-center text-xs sm:text-sm font-medium text-gray-500 py-1 sm:py-2"
               >
-                {day}
+                <span className="hidden sm:inline">{full}</span>
+                <span className="sm:hidden">{short}</span>
               </div>
             ))}
           </div>
 
           {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
             {calendarDays.map((day) => {
               const dayAppointments = getAppointmentsForDate(day);
               const isCurrentMonth = isSameMonth(day, currentMonth);
@@ -193,24 +210,22 @@ export function AppointmentCalendar({
                   key={day.toISOString()}
                   onClick={() => onSelectDate(day)}
                   className={cn(
-                    "min-h-[100px] p-2 text-left border rounded-lg transition-colors",
-                    isCurrentMonth
-                      ? "bg-white hover:bg-gray-50"
-                      : "bg-gray-50 text-gray-400",
+                    "min-h-[60px] sm:min-h-[80px] md:min-h-[100px] p-1 sm:p-2 text-left border rounded-lg transition-colors",
+                    isCurrentMonth ? "bg-white hover:bg-gray-50" : "bg-gray-50 text-gray-400",
                     isToday && "ring-2 ring-green-500"
                   )}
                 >
                   <span
                     className={cn(
-                      "inline-flex items-center justify-center w-7 h-7 text-sm rounded-full",
+                      "inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-xs sm:text-sm rounded-full",
                       isToday && "bg-green-600 text-white"
                     )}
                   >
                     {format(day, "d")}
                   </span>
 
-                  <div className="mt-1 space-y-1">
-                    {dayAppointments.slice(0, 3).map((apt) => (
+                  <div className="mt-0.5 sm:mt-1 space-y-0.5 sm:space-y-1">
+                    {dayAppointments.slice(0, 2).map((apt) => (
                       <button
                         key={apt.id}
                         onClick={(e) => {
@@ -218,16 +233,19 @@ export function AppointmentCalendar({
                           onSelectAppointment(apt);
                         }}
                         className={cn(
-                          "w-full text-xs px-1.5 py-0.5 rounded truncate text-left text-white",
+                          "w-full text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5 rounded truncate text-left text-white",
                           getStatusColor(apt.status)
                         )}
                       >
-                        {formatTime(apt.starts_at)} {apt.patients?.name || "Paciente"}
+                        <span className="hidden sm:inline">
+                          {formatTime(apt.starts_at)} {apt.patients?.name || "Paciente"}
+                        </span>
+                        <span className="sm:hidden">{formatTime(apt.starts_at)}</span>
                       </button>
                     ))}
-                    {dayAppointments.length > 3 && (
-                      <p className="text-xs text-gray-500 px-1">
-                        +{dayAppointments.length - 3} mais
+                    {dayAppointments.length > 2 && (
+                      <p className="text-[10px] sm:text-xs text-gray-500 px-1">
+                        +{dayAppointments.length - 2}
                       </p>
                     )}
                   </div>
@@ -239,9 +257,7 @@ export function AppointmentCalendar({
       ) : (
         <div className="p-4">
           {upcomingAppointments.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              Nenhuma consulta agendada
-            </p>
+            <p className="text-center text-gray-500 py-8">Nenhuma consulta agendada</p>
           ) : (
             <ul className="divide-y divide-gray-100">
               {upcomingAppointments.map((apt) => (

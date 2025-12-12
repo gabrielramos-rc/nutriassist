@@ -5,6 +5,7 @@
 NutriAssist is a SaaS platform that provides nutritionists with an AI-powered assistant (Nina) to handle appointment scheduling and patient diet questions automatically.
 
 ## System Architecture
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         CLIENTS                                  │
@@ -61,6 +62,7 @@ NutriAssist is a SaaS platform that provides nutritionists with an AI-powered as
 ### 1. Nina Service (`/src/services/nina/`)
 
 The brain of the application. Orchestrates all AI interactions.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      NINA SERVICE                            │
@@ -102,6 +104,7 @@ The brain of the application. Orchestrates all AI interactions.
 ```
 
 ### 2. Chat Flow
+
 ```
 Patient sends message
         │
@@ -144,6 +147,7 @@ Return response to client
 ```
 
 ### 3. Scheduling Flow
+
 ```
 User: "Quero agendar uma consulta"
                 │
@@ -190,6 +194,7 @@ User: "Quero agendar uma consulta"
 ```
 
 ### 4. Diet Q&A Flow
+
 ```
 User: "Posso trocar frango por atum?"
                 │
@@ -226,6 +231,7 @@ User: "Posso trocar frango por atum?"
 ## Data Flow
 
 ### Message Processing
+
 ```
 1. Patient message arrives
 2. Lookup/create chat_session
@@ -241,6 +247,7 @@ User: "Posso trocar frango por atum?"
 ```
 
 ### PDF Upload Flow
+
 ```
 1. Nutritionist uploads PDF in dashboard
 2. POST /api/upload with PDF file
@@ -254,6 +261,7 @@ User: "Posso trocar frango por atum?"
 ## Database Schema
 
 ### Entity Relationship
+
 ```
 ┌─────────────────┐       ┌─────────────────┐
 │  nutritionists  │       │    patients     │
@@ -302,16 +310,19 @@ User: "Posso trocar frango por atum?"
 ## Security Considerations
 
 ### API Security
+
 - All mutations use server-side Supabase client with service role
 - Client-side only has read access via anon key
 - Chat API validates session ownership
 
 ### Data Privacy
+
 - Patient diet PDFs stored securely in Supabase Storage
 - Extracted text never exposed to client directly
 - Conversation history scoped to session
 
 ### AI Safety
+
 - Guardrails check runs before any processing
 - Dangerous content blocked immediately
 - Off-topic content redirected, not engaged
@@ -320,6 +331,7 @@ User: "Posso trocar frango por atum?"
 ## Future Enhancements (Post-MVP)
 
 ### WhatsApp Integration
+
 ```
 ┌─────────────────┐
 │   Web Chat      │──────┐
@@ -331,18 +343,21 @@ User: "Posso trocar frango por atum?"
 │   (Meta API)    │
 └─────────────────┘
 ```
+
 - Set up Meta Business API
 - Create webhook endpoint for incoming messages
 - Implement message receiving/sending
 - Patient identification by phone number
 
 ### Google Calendar Integration
+
 - Set up Google OAuth
 - Two-way sync with nutritionist's calendar
 - Automatic slot detection from calendar availability
 - Calendar event creation on booking
 
 ### Authentication (Supabase Auth)
+
 - Nutritionist login/signup
 - Patient login (optional)
 - Protected API routes
@@ -350,12 +365,14 @@ User: "Posso trocar frango por atum?"
 - Production RLS policies (migration ready: `002_production_rls.sql`)
 
 ### Multi-tenant Support
+
 - Multiple nutritionists on single instance
 - Subscription/billing system
 - Usage limits per plan
 - Admin dashboard
 
 ### Multi-channel Expansion
+
 - Instagram DM integration
 - Telegram bot
 - SMS notifications (Twilio)

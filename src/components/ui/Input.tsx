@@ -1,8 +1,7 @@
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -12,17 +11,7 @@ export interface InputProps
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    {
-      className,
-      type = "text",
-      label,
-      error,
-      helperText,
-      leftIcon,
-      rightIcon,
-      id,
-      ...props
-    },
+    { className, type = "text", label, error, helperText, leftIcon, rightIcon, id, ...props },
     ref
   ) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
@@ -30,18 +19,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              {leftIcon}
-            </div>
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">{leftIcon}</div>
           )}
           <input
             ref={ref}
@@ -51,9 +35,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "w-full px-3 py-2 border rounded-lg transition-colors",
               "focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent",
               "disabled:bg-gray-100 disabled:cursor-not-allowed",
-              error
-                ? "border-red-300 focus:ring-red-500"
-                : "border-gray-300",
+              error ? "border-red-300 focus:ring-red-500" : "border-gray-300",
               leftIcon && "pl-10",
               rightIcon && "pr-10",
               className
@@ -66,12 +48,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
-        {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
-        )}
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {helperText && !error && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}
       </div>
     );
   }
