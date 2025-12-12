@@ -1,16 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getNutritionist, updateNutritionist } from "@/services/patients";
+import {
+  nutritionistGetSchema,
+  nutritionistUpdateSchema,
+  getValidationError,
+} from "@/lib/validations";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 // GET /api/nutritionists - Get nutritionist by ID
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const nutritionistId = searchParams.get("nutritionistId");
-
-  if (!nutritionistId) {
-    return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
   }
 
-  const nutritionist = await getNutritionist(nutritionistId);
+  const searchParams = request.nextUrl.searchParams;
+  const params = {
+    nutritionistId: searchParams.get("nutritionistId") || "",
+  };
+
+  const validation = nutritionistGetSchema.safeParse(params);
+  if (!validation.success) {
+    return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
+  }
+
+  const nutritionist = await getNutritionist(validation.data.nutritionistId);
 
   if (!nutritionist) {
     return NextResponse.json({ error: "Nutricionista não encontrado" }, { status: 404 });
@@ -21,8 +35,19 @@ export async function GET(request: NextRequest) {
 
 // PATCH /api/nutritionists - Update nutritionist settings
 export async function PATCH(request: NextRequest) {
+  const rateLimit = checkRateLimit(request, "api");
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.resetIn);
+  }
+
   try {
     const body = await request.json();
+
+    const validation = nutritionistUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
+    }
+
     const {
       nutritionistId,
       name,
@@ -31,11 +56,7 @@ export async function PATCH(request: NextRequest) {
       business_hours,
       appointment_duration,
       faq_responses,
-    } = body;
-
-    if (!nutritionistId) {
-      return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
-    }
+    } = validation.data;
 
     const nutritionist = await updateNutritionist(nutritionistId, {
       name,
