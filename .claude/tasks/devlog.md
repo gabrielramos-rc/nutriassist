@@ -4,6 +4,59 @@ Technical decisions, bugs fixed, and lessons learned during development.
 
 ---
 
+## Security Phase (PRs #28-34)
+
+### PR #34: API Input Validation & Rate Limiting (Phase 22.6)
+
+- **Change:** Added Zod validation and rate limiting to all API routes
+- **Rate limits:** Chat 20/min, APIs 60/min, Upload 10/min
+- **Files:** `src/lib/validations.ts`, `src/lib/rate-limit.ts`, all API routes
+
+### PR #32: Security Headers (Phase 22.5)
+
+- **Change:** Added HTTP security headers via next.config.ts
+- **Headers:** CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- **File:** `next.config.ts`
+
+### PR #31: Pre-commit Secret Detection (Phase 22.4)
+
+- **Change:** Added secretlint for pre-commit secret scanning
+- **Note:** Chose secretlint over gitleaks (see Gotchas)
+- **Files:** `.secretlintrc.json`, `.husky/pre-commit`
+
+### PR #30: GitHub Actions Security Workflow (Phase 22.3)
+
+- **Change:** Added security.yml with npm audit and CodeQL
+- **Triggers:** Push/PR to main/dev, weekly schedule
+- **File:** `.github/workflows/security.yml`
+
+### PR #29: GitHub Dependabot (Phase 22.2)
+
+- **Change:** Added Dependabot for automated dependency updates
+- **Schedule:** Weekly on Monday 9am BRT
+- **File:** `.github/dependabot.yml`
+
+### PR #28: Fix Vulnerabilities (Phase 22.1)
+
+- **Change:** Updated Next.js 16.0.8 → 16.0.10, removed 46 console.log statements
+- **Vulnerabilities fixed:** GHSA-w37m-7fhw-fmv9, GHSA-mwv6-3258-q52c
+
+---
+
+## Code Quality Phase (PR #27)
+
+### PR #27: Code Quality Improvements (Phase 21)
+
+- **Changes:**
+  - Added Prettier with eslint-config-prettier
+  - Added Husky + lint-staged for pre-commit hooks
+  - Added stricter ESLint rules (no-console, complexity, max-lines)
+  - Increased test coverage to 209 tests
+  - Enabled stricter TypeScript options
+- **Files:** `.prettierrc`, `.husky/*`, `eslint.config.mjs`, `tsconfig.json`
+
+---
+
 ## Bug Fixes (PRs #17-23)
 
 ### PR #23: Chat Real-time Updates (Issue #3)
@@ -196,6 +249,28 @@ Technical decisions, bugs fixed, and lessons learned during development.
 - **Decision:** Topic-based folders with lean summaries
 - **Pattern:** `summary.md` → `detail.md` progressive disclosure
 
+### Zod for API Validation
+
+- **Context:** Manual validation in API routes was verbose and inconsistent
+- **Decision:** Use Zod schemas for all API input validation
+- **Benefits:** Type inference, consistent error messages, input sanitization (trim, max length)
+- **File:** `src/lib/validations.ts`
+
+### In-Memory Rate Limiting
+
+- **Context:** Need to protect APIs from abuse, especially LLM calls
+- **Decision:** Simple in-memory sliding window rate limiter
+- **Limits:** Chat 20/min, APIs 60/min, Upload 10/min
+- **Trade-off:** Doesn't scale across instances - for production, use Upstash Redis
+- **File:** `src/lib/rate-limit.ts`
+
+### secretlint over gitleaks
+
+- **Context:** Need pre-commit secret detection
+- **Decision:** Use secretlint (pure Node.js) instead of gitleaks
+- **Why:** gitleaks npm package is just a wrapper that requires the Go binary installed separately
+- **Benefit:** Works out of the box with `npm install`, no external dependencies
+
 ---
 
 ## Gotchas
@@ -237,3 +312,11 @@ After adding Realtime subscription code, must run migration:
 ```sql
 alter publication supabase_realtime add table messages;
 ```
+
+### gitleaks npm Package
+
+The `gitleaks` npm package does NOT include the binary. It's just a wrapper that expects gitleaks to be installed via Homebrew/Go. Use `secretlint` instead for pure Node.js secret detection.
+
+### Rate Limiting in Serverless
+
+In-memory rate limiting resets on each cold start and doesn't share state across instances. For production with multiple instances, use Upstash Redis or similar distributed store.
