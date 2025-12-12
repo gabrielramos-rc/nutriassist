@@ -16,7 +16,7 @@ Plataforma SaaS que fornece aos nutricionistas uma assistente virtual com IA (Ni
 - **Framework**: Next.js 16 (App Router) + TypeScript
 - **Database**: Supabase (PostgreSQL)
 - **Storage**: Supabase Storage (PDFs)
-- **LLM**: OpenRouter (Llama 3.1 8B)
+- **LLM**: OpenRouter (fallback chain)
 - **Styling**: Tailwind CSS v4
 - **Hosting**: Vercel
 
@@ -74,14 +74,12 @@ supabase/migrations/001_initial_schema.sql
 ### Desenvolvimento
 
 ```bash
-# Iniciar servidor de desenvolvimento
-npm run dev
-
-# Build de produção
-npm run build
-
-# Lint
-npm run lint
+npm run dev          # Servidor de desenvolvimento
+npm run build        # Build de produção
+npm run lint         # ESLint
+npm run format       # Prettier
+npm run test         # Vitest (209 tests)
+npm run secrets:check # Scan for secrets
 ```
 
 ## Estrutura do Projeto
@@ -105,9 +103,9 @@ src/
 ## Documentação
 
 - [CLAUDE.md](./CLAUDE.md) - Guia de desenvolvimento e convenções
-- [ARCHITECTURE.md](./architecture.md) - Arquitetura do sistema
-- [DEPLOYMENT.md](./DEPLOYMENT.md) - Guia de deploy
-- [TASKS.md](./TASKS.md) - Lista de tarefas do projeto
+- [.claude/architecture/](./.claude/architecture/) - Arquitetura do sistema
+- [.claude/deployment/](./.claude/deployment/) - Guia de deploy
+- [.claude/tasks/](./.claude/tasks/) - Status e roadmap
 
 ## Roadmap
 

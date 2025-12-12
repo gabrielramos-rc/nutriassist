@@ -11,10 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - GitHub Actions release workflow
 - CHANGELOG.md following Keep a Changelog format
+- GitHub Dependabot for automated dependency updates
+- GitHub Actions security workflow (npm audit, CodeQL)
+- Pre-commit secret detection with secretlint
+- HTTP security headers (CSP, HSTS, X-Frame-Options, etc.)
+- API rate limiting (20/min chat, 60/min APIs, 10/min upload)
+- Zod input validation on all API routes
+- Prettier for code formatting
+- Husky + lint-staged for pre-commit hooks
+- Stricter ESLint rules (no-console, complexity, max-lines)
 
 ### Changed
 
 - Renamed `.claude/tasks/changelog.md` to `devlog.md`
+- Updated Next.js 16.0.8 → 16.0.10 (security fix)
+- Increased test coverage to 209 tests
+
+### Removed
+
+- 46 console.log statements from production code
 
 ---
 
