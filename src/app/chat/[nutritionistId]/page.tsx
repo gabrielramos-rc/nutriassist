@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { ChatWidget } from "@/components/chat";
 import { getNutritionist } from "@/services/patients";

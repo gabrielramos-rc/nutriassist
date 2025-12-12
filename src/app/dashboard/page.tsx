@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { MessageSquare, AlertCircle, Calendar, Users } from "lucide-react";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import {
