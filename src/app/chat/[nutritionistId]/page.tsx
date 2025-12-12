@@ -23,7 +23,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const initialGreeting = RESPONSE_TEMPLATES.greeting(nutritionist.name);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <h1 className="sr-only">Chat com {nutritionist.name}</h1>
       <div className="w-full max-w-md h-[600px]">
         <ChatWidget
           nutritionistId={nutritionistId}
@@ -31,7 +32,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
           initialGreeting={initialGreeting}
         />
       </div>
-    </div>
+    </main>
   );
 }
 

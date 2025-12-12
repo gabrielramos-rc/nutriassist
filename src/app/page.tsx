@@ -19,11 +19,11 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+                <Bot className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-xl font-bold text-gray-900">NutriAssist</span>
             </div>
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-8" aria-label="Principal">
               <a href="#features" className="text-gray-600 hover:text-gray-900">
                 Recursos
               </a>
@@ -66,7 +66,7 @@ export default function Home() {
                 className="w-full sm:w-auto px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-lg font-medium flex items-center justify-center gap-2"
               >
                 Começar gratuitamente
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" aria-hidden="true" />
               </Link>
               <Link
                 href="/chat/11111111-1111-1111-1111-111111111111"
@@ -123,7 +123,7 @@ export default function Home() {
             {/* Feature 1 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Calendar className="w-6 h-6 text-green-600" />
+                <Calendar className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Agendamento automático</h3>
               <p className="text-gray-600">
@@ -135,7 +135,7 @@ export default function Home() {
             {/* Feature 2 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <FileText className="w-6 h-6 text-green-600" />
+                <FileText className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Dúvidas sobre o plano</h3>
               <p className="text-gray-600">
@@ -147,7 +147,7 @@ export default function Home() {
             {/* Feature 3 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <MessageSquare className="w-6 h-6 text-green-600" />
+                <MessageSquare className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">FAQ personalizado</h3>
               <p className="text-gray-600">
@@ -159,7 +159,7 @@ export default function Home() {
             {/* Feature 4 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Bot className="w-6 h-6 text-green-600" />
+                <Bot className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Handoff inteligente</h3>
               <p className="text-gray-600">
@@ -171,7 +171,7 @@ export default function Home() {
             {/* Feature 5 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Clock className="w-6 h-6 text-green-600" />
+                <Clock className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Disponível 24/7</h3>
               <p className="text-gray-600">
@@ -182,7 +182,7 @@ export default function Home() {
             {/* Feature 6 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-green-600" />
+                <Shield className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Seguro e confiável</h3>
               <p className="text-gray-600">
@@ -263,14 +263,14 @@ export default function Home() {
                 <ul className="space-y-4">
                   {[
                     "Chat com IA ilimitado",
-                    "Agendamento automático",
+                    "Agendamento automatico",
                     "Upload de planos em PDF",
                     "FAQ personalizado",
                     "Dashboard completo",
                     "Suporte por e-mail",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" aria-hidden="true" />
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
@@ -279,8 +279,8 @@ export default function Home() {
                   href="/dashboard"
                   className="mt-8 w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-center font-medium flex items-center justify-center gap-2"
                 >
-                  Começar agora
-                  <ArrowRight className="w-4 h-4" />
+                  Comecar agora
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>
             </div>
@@ -303,7 +303,7 @@ export default function Home() {
               className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-white text-green-600 rounded-lg hover:bg-green-50 transition-colors text-lg font-medium"
             >
               Criar conta gratuita
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -315,7 +315,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+                <Bot className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-xl font-bold text-gray-900">NutriAssist</span>
             </div>
