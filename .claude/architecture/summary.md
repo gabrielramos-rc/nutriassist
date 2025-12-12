@@ -20,25 +20,25 @@ Dashboard ─────┘                         │
 
 ## Core Components
 
-| Layer | Location | Purpose |
-|-------|----------|---------|
-| **API Routes** | `src/app/api/` | REST endpoints |
-| **Nina Service** | `src/services/nina/` | AI orchestration, intents, flows |
-| **Services** | `src/services/` | Business logic |
-| **Components** | `src/components/` | React UI (chat/, dashboard/, ui/) |
-| **Lib** | `src/lib/` | Utilities (supabase, openrouter, pdf) |
+| Layer            | Location             | Purpose                               |
+| ---------------- | -------------------- | ------------------------------------- |
+| **API Routes**   | `src/app/api/`       | REST endpoints                        |
+| **Nina Service** | `src/services/nina/` | AI orchestration, intents, flows      |
+| **Services**     | `src/services/`      | Business logic                        |
+| **Components**   | `src/components/`    | React UI (chat/, dashboard/, ui/)     |
+| **Lib**          | `src/lib/`           | Utilities (supabase, openrouter, pdf) |
 
 ## API Routes
 
-| Endpoint | Purpose |
-|----------|---------|
-| `/api/chat` | Patient chat with Nina |
-| `/api/appointments` | Appointment CRUD |
-| `/api/patients` | Patient CRUD |
+| Endpoint             | Purpose                              |
+| -------------------- | ------------------------------------ |
+| `/api/chat`          | Patient chat with Nina               |
+| `/api/appointments`  | Appointment CRUD                     |
+| `/api/patients`      | Patient CRUD                         |
 | `/api/conversations` | Chat sessions + nutritionist replies |
-| `/api/handoffs` | Escalated conversations |
-| `/api/nutritionists` | Nutritionist profile |
-| `/api/upload` | Diet PDF upload |
+| `/api/handoffs`      | Escalated conversations              |
+| `/api/nutritionists` | Nutritionist profile                 |
+| `/api/upload`        | Diet PDF upload                      |
 
 ## Deep Dive
 

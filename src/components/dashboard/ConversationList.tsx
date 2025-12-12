@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { cn, formatDateTime, truncate } from "@/lib/utils";
+import { cn, formatDateTime } from "@/lib/utils";
 import { MessageSquare, AlertCircle } from "lucide-react";
 
 interface Conversation {
@@ -24,11 +24,7 @@ interface ConversationListProps {
   onSelect: (id: string) => void;
 }
 
-export function ConversationList({
-  conversations,
-  selectedId,
-  onSelect,
-}: ConversationListProps) {
+export function ConversationList({ conversations, selectedId, onSelect }: ConversationListProps) {
   const [filter, setFilter] = useState<"all" | "active" | "pending">("all");
 
   const filteredConversations = conversations.filter((conv) => {
@@ -45,9 +41,7 @@ export function ConversationList({
           onClick={() => setFilter("all")}
           className={cn(
             "px-3 py-1.5 text-sm font-medium rounded-lg transition-colors",
-            filter === "all"
-              ? "bg-green-100 text-green-700"
-              : "text-gray-600 hover:bg-gray-100"
+            filter === "all" ? "bg-green-100 text-green-700" : "text-gray-600 hover:bg-gray-100"
           )}
         >
           Todas
@@ -56,9 +50,7 @@ export function ConversationList({
           onClick={() => setFilter("active")}
           className={cn(
             "px-3 py-1.5 text-sm font-medium rounded-lg transition-colors",
-            filter === "active"
-              ? "bg-green-100 text-green-700"
-              : "text-gray-600 hover:bg-gray-100"
+            filter === "active" ? "bg-green-100 text-green-700" : "text-gray-600 hover:bg-gray-100"
           )}
         >
           Ativas
@@ -82,9 +74,7 @@ export function ConversationList({
         {filteredConversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
             <MessageSquare className="w-12 h-12 text-gray-300 mb-3" />
-            <p className="text-gray-500 text-sm">
-              Nenhuma conversa encontrada
-            </p>
+            <p className="text-gray-500 text-sm">Nenhuma conversa encontrada</p>
           </div>
         ) : (
           <ul>

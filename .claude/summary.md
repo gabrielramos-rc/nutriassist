@@ -16,13 +16,13 @@ Read **only** the relevant `summary.md` for your current task. Load detail files
 
 ## Quick Reference
 
-| Folder | When to Read | Entry Point |
-|--------|--------------|-------------|
+| Folder          | When to Read                   | Entry Point               |
+| --------------- | ------------------------------ | ------------------------- |
 | `architecture/` | System design, how things work | `architecture/summary.md` |
-| `deployment/` | Local setup, deploy, env vars | `deployment/summary.md` |
-| `testing/` | Writing tests, code review | `testing/summary.md` |
-| `tasks/` | What to build, priorities | `tasks/summary.md` |
-| `archived/` | Historical reference only | Browse directly |
+| `deployment/`   | Local setup, deploy, env vars  | `deployment/summary.md`   |
+| `testing/`      | Writing tests, code review     | `testing/summary.md`      |
+| `tasks/`        | What to build, priorities      | `tasks/summary.md`        |
+| `archived/`     | Historical reference only      | Browse directly           |
 
 ## Root Files
 

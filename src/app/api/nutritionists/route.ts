@@ -7,19 +7,13 @@ export async function GET(request: NextRequest) {
   const nutritionistId = searchParams.get("nutritionistId");
 
   if (!nutritionistId) {
-    return NextResponse.json(
-      { error: "nutritionistId é obrigatório" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
   }
 
   const nutritionist = await getNutritionist(nutritionistId);
 
   if (!nutritionist) {
-    return NextResponse.json(
-      { error: "Nutricionista não encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Nutricionista não encontrado" }, { status: 404 });
   }
 
   return NextResponse.json(nutritionist);
@@ -40,10 +34,7 @@ export async function PATCH(request: NextRequest) {
     } = body;
 
     if (!nutritionistId) {
-      return NextResponse.json(
-        { error: "nutritionistId é obrigatório" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
     }
 
     const nutritionist = await updateNutritionist(nutritionistId, {
@@ -58,9 +49,6 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(nutritionist);
   } catch (error) {
     console.error("Error updating nutritionist:", error);
-    return NextResponse.json(
-      { error: "Erro ao atualizar configurações" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao atualizar configurações" }, { status: 500 });
   }
 }

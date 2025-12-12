@@ -47,12 +47,14 @@ supabase/migrations/  # Database schema
 Nina is the AI assistant. She must follow these rules strictly.
 
 ### Response Style
+
 - Friendly, warm, professional Brazilian Portuguese
 - Conversational answers, not robotic
 - Include source references when answering from diet PDF
 - Use emojis sparingly (1-2 per message max)
 
 ### What Nina CAN Do
+
 1. Answer questions from patient's diet PDF (with page/section reference)
 2. Show available appointment slots
 3. Book, reschedule, cancel appointments
@@ -60,12 +62,14 @@ Nina is the AI assistant. She must follow these rules strictly.
 5. Light small talk redirected to nutrition topics
 
 ### What Nina CANNOT Do
+
 1. Give nutrition advice not in the patient's PDF
 2. Answer medical/health symptom questions → handoff
 3. Discuss dangerous/illegal topics → firm boundary
 4. Go off-topic for extended conversations → redirect
 
 ### Intent Classification
+
 - `greeting` - Hello, hi, oi, bom dia
 - `scheduling` - Agendar, marcar, horário, consulta, remarcar, cancelar
 - `diet_question` - Questions about food, meals, substitutions, portions
@@ -107,6 +111,7 @@ npm run lint     # Lint
 ## Git Workflow
 
 ### Branch Structure
+
 ```
 main        # Production-ready
 └── dev     # Integration branch
@@ -114,12 +119,15 @@ main        # Production-ready
 ```
 
 ### Commit Format
+
 ```
 <type>(<scope>): <description>
 ```
+
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ### Rules
+
 - Never commit directly to `main` or `dev`
 - One feature per branch
 - Squash commits on merge
@@ -128,6 +136,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 ## Documentation
 
 Detailed docs in `.claude/` folder:
+
 - `.claude/summary.md` - Documentation index
 - `.claude/architecture/` - System design, Nina service, database
 - `.claude/deployment/` - Vercel, environment setup
@@ -139,6 +148,7 @@ Detailed docs in `.claude/` folder:
 ## Claude Workflow
 
 ### 1. Session Start (Always)
+
 ```
 CLAUDE.md (auto-loaded)
     ↓
@@ -146,6 +156,7 @@ CLAUDE.md (auto-loaded)
 ```
 
 ### 2. Before Coding (Load if relevant to task)
+
 ```
 Nina/intents work    → .claude/architecture/nina-service.md
 Database/queries     → .claude/architecture/database.md
@@ -155,12 +166,15 @@ Writing tests        → .claude/testing/guide.md
 ```
 
 ### 3. Do the Work
+
 - Follow existing patterns in codebase
 - Apply Nina AI rules from this file
 - Check changelog gotchas before touching known problem areas
 
 ### 4. Write & Run Tests
+
 After coding, always:
+
 1. **Write tests** for the code changed (unit, integration, or E2E)
 2. **Run tests** to verify they pass
 3. **Include test results** in PR description
@@ -174,19 +188,23 @@ npm run build       # Always verify build passes
 > See `.claude/testing/` for test patterns and examples.
 
 ### 5. Code Review Checklist
+
 Before committing, verify:
 
 **Functionality**
+
 - [ ] Feature works as expected
 - [ ] Edge cases handled
 - [ ] Error states handled
 
 **Security**
+
 - [ ] No secrets in code
 - [ ] Server-side validation for user input
 - [ ] Supabase service role only used server-side
 
 **Code Quality**
+
 - [ ] No `any` types
 - [ ] No console.log left in code
 - [ ] Functions have single responsibility
@@ -194,17 +212,19 @@ Before committing, verify:
 > Full checklist in `.claude/testing/guide.md`
 
 ### 6. Update Docs (if applicable)
-| What happened | Update |
-|---------------|--------|
-| Bug fix (significant) | `changelog.md` → Add Problem/Solution/File |
-| Architectural decision | `changelog.md` → Add to Decisions section |
-| Found a gotcha | `changelog.md` → Add to Gotchas section |
-| Task completed | `tasks/full.md` → Check off item |
-| System changed | Relevant architecture doc |
+
+| What happened          | Update                                     |
+| ---------------------- | ------------------------------------------ |
+| Bug fix (significant)  | `changelog.md` → Add Problem/Solution/File |
+| Architectural decision | `changelog.md` → Add to Decisions section  |
+| Found a gotcha         | `changelog.md` → Add to Gotchas section    |
+| Task completed         | `tasks/full.md` → Check off item           |
+| System changed         | Relevant architecture doc                  |
 
 > Only update changelog for changes that impact future coding sessions.
 
 ### 7. Git Commit & PR
+
 - Create feature/fix branch from `dev`
 - Follow commit format (see Git Workflow above)
 - Include test plan in PR description

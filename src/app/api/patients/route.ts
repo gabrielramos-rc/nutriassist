@@ -16,19 +16,13 @@ export async function GET(request: NextRequest) {
   if (patientId) {
     const patient = await getPatient(patientId);
     if (!patient) {
-      return NextResponse.json(
-        { error: "Paciente não encontrado" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
     }
     return NextResponse.json(patient);
   }
 
   if (!nutritionistId) {
-    return NextResponse.json(
-      { error: "nutritionistId é obrigatório" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "nutritionistId é obrigatório" }, { status: 400 });
   }
 
   const patients = await getPatientsByNutritionist(nutritionistId);
@@ -52,10 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(patient, { status: 201 });
   } catch (error) {
     console.error("Error creating patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao criar paciente" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao criar paciente" }, { status: 500 });
   }
 }
 
@@ -66,20 +57,14 @@ export async function PATCH(request: NextRequest) {
     const { patientId, name, email, phone } = body;
 
     if (!patientId) {
-      return NextResponse.json(
-        { error: "patientId é obrigatório" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "patientId é obrigatório" }, { status: 400 });
     }
 
     const patient = await updatePatient(patientId, { name, email, phone });
     return NextResponse.json(patient);
   } catch (error) {
     console.error("Error updating patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao atualizar paciente" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao atualizar paciente" }, { status: 500 });
   }
 }
 
@@ -89,10 +74,7 @@ export async function DELETE(request: NextRequest) {
   const patientId = searchParams.get("patientId");
 
   if (!patientId) {
-    return NextResponse.json(
-      { error: "patientId é obrigatório" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "patientId é obrigatório" }, { status: 400 });
   }
 
   try {
@@ -100,9 +82,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting patient:", error);
-    return NextResponse.json(
-      { error: "Erro ao excluir paciente" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao excluir paciente" }, { status: 500 });
   }
 }

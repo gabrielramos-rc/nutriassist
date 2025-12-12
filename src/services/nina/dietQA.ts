@@ -1,9 +1,5 @@
 import { chat } from "@/lib/openrouter";
-import {
-  NINA_SYSTEM_PROMPT,
-  DIET_QA_PROMPT,
-  RESPONSE_TEMPLATES,
-} from "@/constants/nina";
+import { NINA_SYSTEM_PROMPT, DIET_QA_PROMPT, RESPONSE_TEMPLATES } from "@/constants/nina";
 import type { NinaResponse, Nutritionist, Patient, Message } from "@/types";
 
 /**
@@ -34,17 +30,15 @@ export async function handleDietQuestion(
     }));
 
     // Create the diet Q&A prompt
-    const prompt = DIET_QA_PROMPT.replace(
-      "{dietText}",
-      patient.diet_extracted_text
-    ).replace("{question}", message);
-
-    const response = await chat(
-      NINA_SYSTEM_PROMPT,
-      prompt,
-      historyMessages,
-      { temperature: 0.3, maxTokens: 512 }
+    const prompt = DIET_QA_PROMPT.replace("{dietText}", patient.diet_extracted_text).replace(
+      "{question}",
+      message
     );
+
+    const response = await chat(NINA_SYSTEM_PROMPT, prompt, historyMessages, {
+      temperature: 0.3,
+      maxTokens: 512,
+    });
 
     // Check if the response indicates the information wasn't found
     const notFoundIndicators = [

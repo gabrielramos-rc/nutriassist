@@ -5,11 +5,13 @@
 **Test Framework:** Vitest configured ✅
 
 **Stack:**
+
 - **Unit/Integration:** Vitest (configured)
 - **E2E:** Playwright MCP (available in Claude Code)
 - **API Testing:** Vitest + fetch
 
 **Commands:**
+
 ```bash
 npm test          # Watch mode
 npm run test:run  # Single run
@@ -66,11 +68,11 @@ browser_navigate → full URL with bypass
 
 ## Test Types
 
-| Type | What to Test | When to Run |
-|------|--------------|-------------|
-| **Unit** | Pure functions, utilities, intent classification | Every commit |
-| **Integration** | API routes, service functions with DB | Every PR |
-| **E2E** | Full user flows (chat, scheduling, dashboard) | Before merge to main |
+| Type            | What to Test                                     | When to Run          |
+| --------------- | ------------------------------------------------ | -------------------- |
+| **Unit**        | Pure functions, utilities, intent classification | Every commit         |
+| **Integration** | API routes, service functions with DB            | Every PR             |
+| **E2E**         | Full user flows (chat, scheduling, dashboard)    | Before merge to main |
 
 ## Claude's Testing Workflow
 
@@ -90,17 +92,20 @@ npm run test:all    # Everything
 ## Priority Test Areas
 
 ### High Priority (Write tests first)
+
 - `src/services/nina/intents.ts` - Intent classification
 - `src/services/nina/scheduling.ts` - Slot selection, booking flow
 - `src/services/appointments.ts` - Slot calculation, booking logic
 - `src/lib/openrouter.ts` - Fallback chain behavior
 
 ### Medium Priority
+
 - `src/services/conversations.ts` - Message ordering, session management
 - `src/services/nina/faq.ts` - FAQ matching
 - `src/services/nina/guardrails.ts` - Dangerous content blocking
 
 ### Lower Priority (E2E covers these)
+
 - UI components
 - Dashboard pages
 - API routes (test via integration)

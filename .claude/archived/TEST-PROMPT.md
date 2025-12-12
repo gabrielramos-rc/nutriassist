@@ -92,21 +92,25 @@ Start by navigating to the landing page and taking an initial screenshot.
 After pasting the prompt, you can also give these specific commands:
 
 ### Test only Landing Page:
+
 ```
 Test only the landing page at https://nutriassist-one.vercel.app. Check that it loads, take a screenshot, and verify there are no console errors.
 ```
 
 ### Test only Chat:
+
 ```
 Test the chat widget at https://nutriassist-one.vercel.app/chat/11111111-1111-1111-1111-111111111111. Send "Oi" and verify Nina responds. Then test "Quanto custa a consulta?" for FAQ.
 ```
 
 ### Test only Dashboard:
+
 ```
 Test the dashboard at https://nutriassist-one.vercel.app/dashboard. Navigate through all sections (conversations, patients, appointments, settings) and take screenshots.
 ```
 
 ### Full Test Run:
+
 ```
 Execute the full test plan from test-plan.md. Test landing page, chat widget, and all dashboard sections. Report results and update the test-plan.md file.
 ```

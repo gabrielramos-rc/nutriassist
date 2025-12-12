@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { cn, formatDate, formatPhone } from "@/lib/utils";
+import { formatDate, formatPhone } from "@/lib/utils";
 import {
   Search,
   Plus,
@@ -99,9 +99,7 @@ export function PatientList({
             {filteredPatients.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                  {search
-                    ? "Nenhum paciente encontrado"
-                    : "Nenhum paciente cadastrado"}
+                  {search ? "Nenhum paciente encontrado" : "Nenhum paciente cadastrado"}
                 </td>
               </tr>
             ) : (
@@ -114,9 +112,7 @@ export function PatientList({
                           {patient.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="font-medium text-gray-900">
-                        {patient.name}
-                      </span>
+                      <span className="font-medium text-gray-900">{patient.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -163,9 +159,7 @@ export function PatientList({
                   <td className="px-6 py-4 text-right">
                     <div className="relative inline-block">
                       <button
-                        onClick={() =>
-                          setOpenMenuId(openMenuId === patient.id ? null : patient.id)
-                        }
+                        onClick={() => setOpenMenuId(openMenuId === patient.id ? null : patient.id)}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       >
                         <MoreVertical className="w-4 h-4 text-gray-500" />
@@ -173,10 +167,7 @@ export function PatientList({
 
                       {openMenuId === patient.id && (
                         <>
-                          <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setOpenMenuId(null)}
-                          />
+                          <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
                           <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
                             <button
                               onClick={() => {

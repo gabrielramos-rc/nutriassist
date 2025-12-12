@@ -77,16 +77,11 @@ export function Modal({
           <div className="flex items-start justify-between p-4 border-b border-gray-200">
             <div>
               {title && (
-                <h2
-                  id="modal-title"
-                  className="text-lg font-semibold text-gray-900"
-                >
+                <h2 id="modal-title" className="text-lg font-semibold text-gray-900">
                   {title}
                 </h2>
               )}
-              {description && (
-                <p className="text-sm text-gray-500 mt-1">{description}</p>
-              )}
+              {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
             </div>
             {showCloseButton && (
               <button

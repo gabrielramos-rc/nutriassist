@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
 
@@ -35,16 +36,22 @@ export function Avatar({ src, alt, name, size = "md", className }: AvatarProps) 
         .toUpperCase()
     : null;
 
+  const pixelSizes = {
+    xs: 24,
+    sm: 32,
+    md: 40,
+    lg: 48,
+    xl: 64,
+  };
+
   if (src) {
     return (
-      <img
+      <Image
         src={src}
         alt={alt || name || "Avatar"}
-        className={cn(
-          "rounded-full object-cover bg-gray-100",
-          sizes[size],
-          className
-        )}
+        width={pixelSizes[size]}
+        height={pixelSizes[size]}
+        className={cn("rounded-full object-cover bg-gray-100", sizes[size], className)}
       />
     );
   }
@@ -82,13 +89,7 @@ export function AvatarGroup({ avatars, max = 4, size = "md" }: AvatarGroupProps)
   return (
     <div className="flex items-center">
       {displayed.map((avatar, i) => (
-        <div
-          key={i}
-          className={cn(
-            "ring-2 ring-white rounded-full",
-            i > 0 && overlapSizes[size]
-          )}
-        >
+        <div key={i} className={cn("ring-2 ring-white rounded-full", i > 0 && overlapSizes[size])}>
           <Avatar src={avatar.src} name={avatar.name} size={size} />
         </div>
       ))}

@@ -25,6 +25,7 @@ This document captures all issues and limitations discovered during testing phas
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:** Option B (Message Metadata Analysis)
+
 - Before intent classification, check the last Nina message metadata
 - If `availableSlots` is present and user responds with a number (1-9), process as slot selection
 - If `currentAppointmentId` is present (without slots) and user responds "sim", process cancellation confirmation
@@ -33,9 +34,11 @@ This document captures all issues and limitations discovered during testing phas
 **PR:** fix/issue-1-scheduling-state
 
 ### Problem
+
 The multi-turn scheduling flow doesn't work. When a patient asks to book an appointment, Nina shows available slots and asks the patient to respond with a number (1-5). However, when the patient responds with the number, the system doesn't recognize it as a slot selection and instead treats it as a new, unrelated message (often creating a handoff).
 
 ### Technical Details
+
 - **Location**: `src/services/nina/index.ts` (processMessage function)
 - **Root Cause**: Each message is processed independently without conversation context
 - **Current Flow**:
@@ -45,6 +48,7 @@ The multi-turn scheduling flow doesn't work. When a patient asks to book an appo
   4. Nina: "Essa é uma ótima pergunta para a Dra. Ana Silva!" (WRONG - treats as unknown query)
 
 ### Why It Happens
+
 ```typescript
 // Current: Each message classified independently
 export async function processMessage(userMessage: string, context: ProcessMessageContext) {
@@ -59,10 +63,12 @@ export async function processMessage(userMessage: string, context: ProcessMessag
 ### Suggested Solutions
 
 #### Option A: Session State Storage (Recommended)
+
 Store conversation state in the database or session:
+
 ```typescript
 interface ConversationState {
-  pendingAction?: 'slot_selection' | 'cancellation_confirm' | 'reschedule';
+  pendingAction?: "slot_selection" | "cancellation_confirm" | "reschedule";
   availableSlots?: AppointmentSlot[];
   currentAppointmentId?: string;
 }
@@ -71,7 +77,9 @@ interface ConversationState {
 ```
 
 #### Option B: Message Metadata Analysis
+
 Check previous message metadata to determine expected response:
+
 ```typescript
 // Look at last Nina message metadata
 const lastNinaMessage = conversationHistory.findLast(m => m.sender === 'nina');
@@ -81,18 +89,22 @@ if (lastNinaMessage?.metadata?.availableSlots) {
 ```
 
 #### Option C: Context-Aware Intent Classification
+
 Pass conversation history to intent classifier:
+
 ```typescript
 const intent = await classifyIntent(userMessage, conversationHistory);
 // LLM can see: "Nina just offered slots, user said '3' = slot selection"
 ```
 
 ### Files to Modify
+
 - `src/services/nina/index.ts` - Add state checking before intent classification
 - `src/app/api/chat/route.ts` - Pass conversation history to processMessage
 - `supabase/migrations/` - Add state column to chat_sessions (if Option A)
 
 ### Acceptance Criteria
+
 - [x] Patient can complete booking by responding with slot number
 - [x] Patient can confirm cancellation by responding "sim"
 - [x] Patient can complete rescheduling flow
@@ -107,6 +119,7 @@ const intent = await classifyIntent(userMessage, conversationHistory);
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:** Combined Options A + B + C
+
 - Updated default models to best available free models (December 2025)
 - Added `OPENROUTER_MODEL` env var for single model override
 - Added `OPENROUTER_FALLBACK_MODELS` env var for custom fallback chain
@@ -115,9 +128,11 @@ const intent = await classifyIntent(userMessage, conversationHistory);
 **PR:** fix/issue-2-openrouter-fallback
 
 ### Problem
+
 The OpenRouter API returns 404 for the model `meta-llama/llama-3.1-8b-instruct:free`. This blocks all LLM-powered features including intent classification and diet Q&A.
 
 ### Technical Details
+
 - **Location**: `src/lib/openrouter.ts`
 - **Error**: `{"error":{"message":"No endpoints found for meta-llama/llama-3.1-8b-instruct:free.","code":404}}`
 - **Impact**:
@@ -127,16 +142,18 @@ The OpenRouter API returns 404 for the model `meta-llama/llama-3.1-8b-instruct:f
 ### Resolution
 
 #### Default Fallback Chain (quality-based order)
+
 ```typescript
 const DEFAULT_FALLBACK_MODELS = [
-  "deepseek/deepseek-chat-v3-0324:free",           // Best for dialogue
+  "deepseek/deepseek-chat-v3-0324:free", // Best for dialogue
   "mistralai/mistral-small-3.1-24b-instruct:free", // Great for structured output
-  "google/gemini-2.5-pro-exp-03-25:free",          // Excellent reasoning
+  "google/gemini-2.5-pro-exp-03-25:free", // Excellent reasoning
   "nousresearch/deephermes-3-llama-3-8b-preview:free", // Compact fallback
 ];
 ```
 
 #### Environment Variables
+
 ```env
 # Optional: Override the default model
 OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324:free
@@ -146,6 +163,7 @@ OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
 ```
 
 #### Behavior
+
 1. If `OPENROUTER_FALLBACK_MODELS` set → use custom chain only
 2. If `OPENROUTER_MODEL` set → use it first, then defaults
 3. Otherwise → use default fallback chain
@@ -153,10 +171,12 @@ OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
 5. Auto-failover: skips 404 models immediately
 
 ### Files Modified
+
 - `src/lib/openrouter.ts` - Fallback chain implementation
 - `.env.example` - New environment variables documented
 
 ### Acceptance Criteria
+
 - [x] LLM calls succeed without 404 errors
 - [x] Intent classification works for ambiguous messages
 - [x] Diet Q&A can generate responses from diet text
@@ -170,6 +190,7 @@ OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
 ### Status: PARTIAL (2025-12-11)
 
 **Solution implemented:** Option C (Real-time Updates)
+
 - Added Supabase Realtime subscription to ChatWidget component
 - Patient now sees nutritionist replies instantly without page refresh
 - Full cross-device session persistence deferred (would require Supabase Auth)
@@ -177,9 +198,11 @@ OPENROUTER_FALLBACK_MODELS=model-1,model-2,model-3
 **PR:** #23 fix/issue-3-chat-realtime
 
 ### Problem
+
 When the nutritionist replies to a patient message from the dashboard, the reply is stored in the database but the patient doesn't see it in the chat widget. The chat widget creates a new session each time, losing the conversation history.
 
 ### Technical Details
+
 - **Location**: `src/app/chat/[nutritionistId]/page.tsx`
 - **Root Cause**:
   - Session ID is stored in localStorage per browser tab
@@ -192,6 +215,7 @@ When the nutritionist replies to a patient message from the dashboard, the reply
   4. Patient sees only welcome message, not the reply
 
 ### Why It Happens
+
 ```typescript
 // Current: Generate new session ID for each chat instance
 useEffect(() => {
@@ -207,7 +231,9 @@ useEffect(() => {
 ### Suggested Solutions
 
 #### Option A: Patient Identification (Recommended for Production)
+
 Add optional patient login/identification:
+
 ```typescript
 // Patient can enter email/phone to resume conversation
 const identifyPatient = async (email: string) => {
@@ -220,31 +246,37 @@ const identifyPatient = async (email: string) => {
 ```
 
 #### Option B: Longer Session Persistence
+
 Use more persistent storage with longer TTL:
+
 ```typescript
 // Use cookie with 30-day expiry instead of localStorage
 const sessionId = Cookies.get(`chat_session_${nutritionistId}`) || createNewSession();
 ```
 
 #### Option C: Real-time Updates (WebSocket/SSE)
+
 Add real-time message delivery:
+
 ```typescript
 // Subscribe to new messages for current session
 useEffect(() => {
   const subscription = supabase
     .channel(`messages:${sessionId}`)
-    .on('INSERT', handleNewMessage)
+    .on("INSERT", handleNewMessage)
     .subscribe();
   return () => subscription.unsubscribe();
 }, [sessionId]);
 ```
 
 ### Files to Modify
+
 - `src/app/chat/[nutritionistId]/page.tsx` - Add identification or persistence
 - `src/components/chat/ChatWidget.tsx` - Handle real-time updates
 - `src/app/api/chat/route.ts` - Link messages to identified patients
 
 ### Acceptance Criteria
+
 - [ ] Patient can see nutritionist replies (either via identification or real-time)
 - [ ] Conversation history persists across reasonable time periods
 - [ ] Clear UX for how patient can access their conversation
@@ -258,6 +290,7 @@ useEffect(() => {
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:**
+
 - Updated QuickReplies component to accept `{label, value}` objects
 - Button displays formatted slot text but sends slot number
 - ChatWidget maps slots with index as value
@@ -265,14 +298,17 @@ useEffect(() => {
 **PR:** #20 fix/issue-4-quick-reply-format
 
 ### Problem
+
 The quick reply buttons for scheduling slots send the full slot text (e.g., "sexta 12/12 às 09:30") instead of the expected number format ("3"). This causes the scheduling flow to fail even when using the buttons.
 
 ### Technical Details
+
 - **Location**: `src/components/chat/QuickReplies.tsx`
 - **Current Behavior**: Button click sends the button label as message
 - **Expected Behavior**: Button click should send the slot number
 
 ### Suggested Solution
+
 ```typescript
 // QuickReplies component
 interface QuickReply {
@@ -291,10 +327,12 @@ onClick={() => sendMessage(reply.value)}
 ```
 
 ### Files to Modify
+
 - `src/components/chat/QuickReplies.tsx`
 - `src/services/nina/scheduling.ts` - Ensure slot formatting includes value
 
 ### Acceptance Criteria
+
 - [ ] Clicking slot button sends correct number
 - [ ] Booking completes when using quick reply buttons
 
@@ -307,6 +345,7 @@ onClick={() => sendMessage(reply.value)}
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:**
+
 - Added `validateForm()` function with error state management
 - Validates required fields (name) before save
 - Shows inline error messages on invalid fields
@@ -314,21 +353,24 @@ onClick={() => sendMessage(reply.value)}
 **PR:** #21 fix/issue-5-profile-validation
 
 ### Problem
+
 The profile settings form accepts empty values for required fields like the nutritionist's name. Users can save a profile with an empty name, which could cause display issues throughout the application.
 
 ### Technical Details
+
 - **Location**: `src/app/dashboard/settings/page.tsx`
 - **Discovered**: Phase 15 - Dashboard Settings Testing
 - **Current Behavior**: Form submits successfully even with empty name field
 - **Expected Behavior**: Form should validate required fields and show error messages
 
 ### Suggested Solution
+
 ```typescript
 // Add validation before save
 const handleSaveProfile = async () => {
   // Validate required fields
   if (!profile.name?.trim()) {
-    setError('Nome é obrigatório');
+    setError("Nome é obrigatório");
     return;
   }
 
@@ -337,16 +379,18 @@ const handleSaveProfile = async () => {
 
 // Or use a validation library like zod
 const profileSchema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
-  email: z.string().email('Email inválido').optional(),
+  name: z.string().min(1, "Nome é obrigatório"),
+  email: z.string().email("Email inválido").optional(),
   phone: z.string().optional(),
 });
 ```
 
 ### Files to Modify
+
 - `src/app/dashboard/settings/page.tsx` - Add form validation
 
 ### Acceptance Criteria
+
 - [ ] Empty name field shows validation error
 - [ ] Form doesn't submit with invalid data
 - [ ] Clear error messages displayed to user
@@ -360,6 +404,7 @@ const profileSchema = z.object({
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:**
+
 - Added `updateAppointmentNotes()` function to appointments service
 - Updated PATCH endpoint to handle notes updates
 - Added editable notes section to AppointmentModal with local state management
@@ -367,9 +412,11 @@ const profileSchema = z.object({
 **PR:** #22 fix/issue-6-appointment-notes
 
 ### Problem
+
 When editing an existing appointment, there is no way to add or modify notes. The notes field is not exposed in the edit appointment UI, even though the database schema supports storing notes.
 
 ### Technical Details
+
 - **Location**: `src/app/dashboard/appointments/page.tsx`
 - **Discovered**: Phase 14 - Dashboard Appointments Testing
 - **Database Column**: `appointments.notes` (exists in schema)
@@ -377,6 +424,7 @@ When editing an existing appointment, there is no way to add or modify notes. Th
 - **Expected Behavior**: Edit modal should allow viewing and editing notes
 
 ### Suggested Solution
+
 ```typescript
 // In the appointment edit modal, add notes field
 <div className="mb-4">
@@ -395,10 +443,12 @@ When editing an existing appointment, there is no way to add or modify notes. Th
 ```
 
 ### Files to Modify
+
 - `src/app/dashboard/appointments/page.tsx` - Add notes field to edit modal
 - `src/app/api/appointments/route.ts` - Ensure PUT handler accepts notes
 
 ### Acceptance Criteria
+
 - [ ] Notes field visible in appointment edit modal
 - [ ] Notes can be added to new appointments
 - [ ] Notes can be edited on existing appointments
@@ -413,6 +463,7 @@ When editing an existing appointment, there is no way to add or modify notes. Th
 ### Status: RESOLVED (2025-12-11)
 
 **Solution implemented:** Option C (Real-time Subscription)
+
 - Enabled Supabase Realtime on messages table via SQL migration
 - Added Realtime subscription to ConversationsPage
 - Nutritionist replies appear instantly without page refresh
@@ -420,9 +471,11 @@ When editing an existing appointment, there is no way to add or modify notes. Th
 **PR:** #19 fix/issue-7-dashboard-reply
 
 ### Problem
+
 When a nutritionist replies to a patient message from the dashboard conversations page, the reply is stored in the database but doesn't appear immediately in the conversation view. The nutritionist must refresh the page to see their own reply.
 
 ### Technical Details
+
 - **Location**: `src/app/dashboard/conversations/page.tsx`
 - **Discovered**: Phase 12 - Dashboard Conversations Testing
 - **Root Cause**: After sending a reply, the local state isn't updated to include the new message
@@ -435,42 +488,50 @@ When a nutritionist replies to a patient message from the dashboard conversation
 ### Suggested Solutions
 
 #### Option A: Optimistic Update (Recommended)
+
 Add the new message to local state immediately after successful send:
+
 ```typescript
 const handleSendReply = async () => {
-  const response = await fetch('/api/chat', {
-    method: 'POST',
-    body: JSON.stringify({ sessionId, message: replyText, sender: 'nutritionist' })
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    body: JSON.stringify({ sessionId, message: replyText, sender: "nutritionist" }),
   });
 
   if (response.ok) {
     const newMessage = await response.json();
     // Update local state with new message
-    setMessages(prev => [...prev, newMessage]);
-    setReplyText('');
+    setMessages((prev) => [...prev, newMessage]);
+    setReplyText("");
   }
 };
 ```
 
 #### Option B: Refetch Messages
+
 Reload the message list after successful send:
+
 ```typescript
 const handleSendReply = async () => {
-  await fetch('/api/chat', { /* ... */ });
+  await fetch("/api/chat", {
+    /* ... */
+  });
   // Refetch all messages for this session
   await fetchMessages(sessionId);
-  setReplyText('');
+  setReplyText("");
 };
 ```
 
 #### Option C: Real-time Subscription
+
 Use Supabase real-time to subscribe to new messages:
+
 ```typescript
 useEffect(() => {
   const subscription = supabase
     .channel(`messages:session_id=eq.${sessionId}`)
-    .on('postgres_changes', { event: 'INSERT' }, (payload) => {
-      setMessages(prev => [...prev, payload.new]);
+    .on("postgres_changes", { event: "INSERT" }, (payload) => {
+      setMessages((prev) => [...prev, payload.new]);
     })
     .subscribe();
 
@@ -479,9 +540,11 @@ useEffect(() => {
 ```
 
 ### Files to Modify
+
 - `src/app/dashboard/conversations/page.tsx` - Add state update after reply
 
 ### Acceptance Criteria
+
 - [ ] Nutritionist reply appears immediately in conversation view
 - [ ] No page refresh required to see sent messages
 - [ ] Message appears in correct chronological order
@@ -490,15 +553,15 @@ useEffect(() => {
 
 ## Implementation Priority
 
-| Issue | Priority | Effort | Impact | Status |
-|-------|----------|--------|--------|--------|
-| #2 OpenRouter Model | HIGH | Low | High | ✅ RESOLVED (PR #17) |
-| #1 Scheduling State | HIGH | Medium | High | ✅ RESOLVED (PR #18) |
-| #7 Dashboard Reply | MEDIUM | Low | Medium | ✅ RESOLVED (PR #19) |
-| #4 Quick Reply Format | LOW | Low | Medium | ✅ RESOLVED (PR #20) |
-| #5 Profile Validation | LOW | Low | Low | ✅ RESOLVED (PR #21) |
-| #6 Appointment Notes | LOW | Low | Low | ✅ RESOLVED (PR #22) |
-| #3 Session Persistence | MEDIUM | High | Medium | ✅ PARTIAL (PR #23) |
+| Issue                  | Priority | Effort | Impact | Status               |
+| ---------------------- | -------- | ------ | ------ | -------------------- |
+| #2 OpenRouter Model    | HIGH     | Low    | High   | ✅ RESOLVED (PR #17) |
+| #1 Scheduling State    | HIGH     | Medium | High   | ✅ RESOLVED (PR #18) |
+| #7 Dashboard Reply     | MEDIUM   | Low    | Medium | ✅ RESOLVED (PR #19) |
+| #4 Quick Reply Format  | LOW      | Low    | Medium | ✅ RESOLVED (PR #20) |
+| #5 Profile Validation  | LOW      | Low    | Low    | ✅ RESOLVED (PR #21) |
+| #6 Appointment Notes   | LOW      | Low    | Low    | ✅ RESOLVED (PR #22) |
+| #3 Session Persistence | MEDIUM   | High   | Medium | ✅ PARTIAL (PR #23)  |
 
 ---
 
@@ -528,5 +591,5 @@ git checkout -b fix/architectural-issues
 
 ---
 
-*Document created: 2025-12-11*
-*Last updated: 2025-12-11 (resolved Issue #1: Scheduling Flow State Management)*
+_Document created: 2025-12-11_
+_Last updated: 2025-12-11 (resolved Issue #1: Scheduling Flow State Management)_

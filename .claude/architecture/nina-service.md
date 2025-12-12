@@ -4,14 +4,14 @@ Nina is the AI assistant. Located in `src/services/nina/`.
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `index.ts` | Main orchestrator, `processMessage()` entry point |
-| `intents.ts` | Intent classification (keyword + LLM fallback) |
-| `scheduling.ts` | Appointment booking, reschedule, cancel flows |
-| `dietQA.ts` | Diet questions from patient PDF |
-| `faq.ts` | FAQ responses (price, location, etc.) |
-| `guardrails.ts` | Block dangerous content |
+| File            | Purpose                                           |
+| --------------- | ------------------------------------------------- |
+| `index.ts`      | Main orchestrator, `processMessage()` entry point |
+| `intents.ts`    | Intent classification (keyword + LLM fallback)    |
+| `scheduling.ts` | Appointment booking, reschedule, cancel flows     |
+| `dietQA.ts`     | Diet questions from patient PDF                   |
+| `faq.ts`        | FAQ responses (price, location, etc.)             |
+| `guardrails.ts` | Block dangerous content                           |
 
 ## Processing Flow
 
@@ -36,15 +36,15 @@ User Message
 
 ## Intents
 
-| Intent | Trigger Examples | Handler |
-|--------|------------------|---------|
-| `greeting` | "oi", "olá", "bom dia" | Simple greeting response |
-| `scheduling` | "agendar", "marcar", "cancelar" | Multi-turn booking flow |
-| `diet_question` | "posso comer", "substituir" | LLM + patient diet PDF |
-| `faq` | "quanto custa", "endereço" | Nutritionist FAQ config |
-| `handoff` | "falar com nutricionista" | Escalate to human |
-| `off_topic` | "futebol", "política" | Redirect to nutrition |
-| `dangerous` | weapons, drugs, harm | Block immediately |
+| Intent          | Trigger Examples                | Handler                  |
+| --------------- | ------------------------------- | ------------------------ |
+| `greeting`      | "oi", "olá", "bom dia"          | Simple greeting response |
+| `scheduling`    | "agendar", "marcar", "cancelar" | Multi-turn booking flow  |
+| `diet_question` | "posso comer", "substituir"     | LLM + patient diet PDF   |
+| `faq`           | "quanto custa", "endereço"      | Nutritionist FAQ config  |
+| `handoff`       | "falar com nutricionista"       | Escalate to human        |
+| `off_topic`     | "futebol", "política"           | Redirect to nutrition    |
+| `dangerous`     | weapons, drugs, harm            | Block immediately        |
 
 ## Multi-turn State
 
@@ -68,49 +68,50 @@ For flows requiring multiple messages (booking, cancellation):
 ## How to Add New Intents
 
 ### 1. Define the Intent Type
+
 ```typescript
 // src/types/index.ts
 export type NinaIntent =
-  | 'greeting'
-  | 'scheduling'
-  | 'diet_question'
-  | 'faq'
-  | 'handoff'
-  | 'off_topic'
-  | 'dangerous'
-  | 'your_new_intent'  // Add here
+  | "greeting"
+  | "scheduling"
+  | "diet_question"
+  | "faq"
+  | "handoff"
+  | "off_topic"
+  | "dangerous"
+  | "your_new_intent"; // Add here
 ```
 
 ### 2. Add Keywords Pattern
+
 ```typescript
 // src/services/nina/intents.ts
 const INTENT_PATTERNS: Record<NinaIntent, RegExp[]> = {
   // ... existing patterns
-  your_new_intent: [
-    /keyword1/i,
-    /keyword2/i,
-  ],
-}
+  your_new_intent: [/keyword1/i, /keyword2/i],
+};
 ```
 
 ### 3. Add to Check Order (Important!)
+
 ```typescript
 // src/services/nina/intents.ts
 const INTENT_CHECK_ORDER: NinaIntent[] = [
-  'dangerous',
-  'greeting',
-  'faq',           // More specific patterns first
-  'scheduling',
-  'diet_question',
-  'your_new_intent', // Add in correct position
-  'off_topic',
-  'handoff',
-]
+  "dangerous",
+  "greeting",
+  "faq", // More specific patterns first
+  "scheduling",
+  "diet_question",
+  "your_new_intent", // Add in correct position
+  "off_topic",
+  "handoff",
+];
 ```
 
 **Rule:** More specific patterns before broader ones.
 
 ### 4. Create Handler (if needed)
+
 ```typescript
 // src/services/nina/yourNewIntent.ts
 export async function handleYourNewIntent(
@@ -122,6 +123,7 @@ export async function handleYourNewIntent(
 ```
 
 ### 5. Add Route in Orchestrator
+
 ```typescript
 // src/services/nina/index.ts
 case 'your_new_intent':
@@ -129,18 +131,20 @@ case 'your_new_intent':
 ```
 
 ### 6. Add Response Template
+
 ```typescript
 // src/constants/nina.ts
 export const NINA_RESPONSES = {
   // ... existing
-  your_new_intent: 'Response template here',
-}
+  your_new_intent: "Response template here",
+};
 ```
 
 ### 7. Write Tests
+
 ```typescript
 // src/services/nina/__tests__/intents.test.ts
-it('classifies your_new_intent correctly', () => {
-  expect(classifyIntent('keyword1')).toBe('your_new_intent')
-})
+it("classifies your_new_intent correctly", () => {
+  expect(classifyIntent("keyword1")).toBe("your_new_intent");
+});
 ```
