@@ -5,6 +5,7 @@ import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { QuickReplies, QuickReplyOption } from "./QuickReplies";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/ui/Toast";
 import type { ChatMessage, ChatResponse } from "@/types";
 
 interface ChatWidgetProps {
@@ -24,9 +25,11 @@ export function ChatWidget({
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [quickReplies, setQuickReplies] = useState<QuickReplyOption[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabaseRef = useRef(createClient());
+  const toast = useToast();
 
   // Auto-scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -113,6 +116,7 @@ export function ChatWidget({
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
     setError(null);
+    setLastFailedMessage(null);
     setQuickReplies([]);
 
     try {
@@ -128,7 +132,14 @@ export function ChatWidget({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to send message");
+        // Handle rate limiting
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("Retry-After") || "60";
+          throw new Error(`Muitas mensagens. Aguarde ${retryAfter} segundos.`);
+        }
+        // Try to get error message from response
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Erro ao enviar mensagem. Tente novamente.");
       }
 
       const data: ChatResponse = await response.json();
@@ -158,14 +169,26 @@ export function ChatWidget({
           }))
         );
       }
-    } catch {
-      setError("Desculpe, ocorreu um erro. Tente novamente.");
+    } catch (err) {
+      // Determine error message
+      let errorMsg = "Desculpe, ocorreu um erro. Tente novamente.";
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        errorMsg = "Sem conexao com a internet. Verifique sua conexao e tente novamente.";
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
 
-      // Add error message
+      // Store failed message for retry
+      setLastFailedMessage(content);
+      setError(errorMsg);
+      toast.error(errorMsg);
+
+      // Add error message to chat
       const errorMessage: ChatMessage = {
         id: `error-${Date.now()}`,
         sender: "nina",
-        content: "Desculpe, tive um probleminha aqui. Pode tentar novamente em alguns segundos?",
+        content:
+          "Desculpe, tive um probleminha aqui. Voce pode clicar em 'Tentar novamente' abaixo.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -206,8 +229,24 @@ export function ChatWidget({
       {/* Quick replies */}
       <QuickReplies options={quickReplies} onSelect={handleQuickReply} disabled={isLoading} />
 
-      {/* Error message */}
-      {error && <div className="px-4 py-2 bg-red-50 text-red-600 text-sm">{error}</div>}
+      {/* Error message with retry */}
+      {error && (
+        <div className="px-4 py-2 bg-red-50 border-t border-red-100 flex items-center justify-between">
+          <span className="text-red-600 text-sm">{error}</span>
+          {lastFailedMessage && (
+            <button
+              onClick={() => {
+                setError(null);
+                sendMessage(lastFailedMessage);
+                setLastFailedMessage(null);
+              }}
+              className="text-sm text-red-600 hover:text-red-700 font-medium underline ml-2"
+            >
+              Tentar novamente
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Input */}
       <MessageInput onSend={sendMessage} disabled={isLoading} />
