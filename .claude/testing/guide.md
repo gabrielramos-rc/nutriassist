@@ -129,6 +129,65 @@ test.describe('Chat Widget', () => {
 
 ---
 
+## E2E Testing on Vercel Previews
+
+### Prerequisites
+- Changes committed and pushed to branch
+- Vercel deployment completed (check GitHub deployment status)
+- `VERCEL_AUTOMATION_BYPASS_SECRET` in `.env.local`
+
+### Step-by-Step with Playwright MCP
+
+**1. Commit and push changes:**
+```bash
+git add .
+git commit -m "feat(scope): description"
+git push
+```
+
+**2. Wait for deployment (check status):**
+```bash
+# Check if deployment exists for current commit
+COMMIT=$(git rev-parse HEAD)
+gh api repos/gabrielramos-rc/nutriassist/deployments \
+  --jq ".[] | select(.ref == \"$COMMIT\") | {state: \"found\", created: .created_at}"
+```
+
+**3. Get preview URL:**
+```bash
+COMMIT=$(git rev-parse HEAD)
+DEPLOY_ID=$(gh api repos/gabrielramos-rc/nutriassist/deployments \
+  --jq ".[] | select(.ref == \"$COMMIT\") | .id" | head -1)
+PREVIEW_URL=$(gh api repos/gabrielramos-rc/nutriassist/deployments/$DEPLOY_ID/statuses \
+  --jq '.[0].environment_url')
+echo $PREVIEW_URL
+```
+
+**4. Read bypass secret from .env.local:**
+```bash
+cat .env.local | grep VERCEL_AUTOMATION_BYPASS_SECRET
+# Output: VERCEL_AUTOMATION_BYPASS_SECRET=<secret_value>
+```
+
+**5. Test with Playwright MCP:**
+```
+# Combine preview URL + bypass secret:
+browser_navigate → {PREVIEW_URL}?x-vercel-protection-bypass={SECRET}
+browser_snapshot → verify page loaded
+browser_click → interact with elements
+```
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "No deployment found" | Push hasn't triggered deploy yet. Wait 30s and retry. |
+| 403 Forbidden | Bypass secret incorrect. Check `.env.local`. |
+| Deployment pending | Vercel still building. Wait for "success" state. |
+| Old preview URL | Make sure COMMIT matches your latest push. |
+
+---
+
 ## Code Review Checklist
 
 Before submitting PR, verify:

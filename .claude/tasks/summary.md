@@ -36,7 +36,7 @@
 | Patient identification | Anonymous web users only | Add login flow |
 | Manual appointment creation | Not available in dashboard | Use chat or direct DB |
 | Profile validation | Basic validation only | Add comprehensive validation |
-| Test framework | Not configured | Setup Vitest + Playwright |
+| Test framework | Vitest configured ✅ | Playwright MCP for E2E |
 | Authentication | No auth - dashboard open | Implement Supabase Auth |
 
 ## Future Work (Post-MVP)

@@ -2,27 +2,67 @@
 
 ## Current Status
 
-**Test Framework:** Not yet configured (TODO)
+**Test Framework:** Vitest configured ✅
 
-**Recommended Stack:**
-- **Unit/Integration:** Vitest (fast, ESM native)
+**Stack:**
+- **Unit/Integration:** Vitest (configured)
 - **E2E:** Playwright MCP (available in Claude Code)
-- **API Testing:** Vitest + fetch/supertest
+- **API Testing:** Vitest + fetch
 
-## Vercel Protection Bypass
+**Commands:**
+```bash
+npm test          # Watch mode
+npm run test:run  # Single run
+npm run test:coverage  # With coverage
+```
 
-To test Vercel preview deployments, append the bypass secret to URLs:
+## E2E Testing on Vercel Previews
+
+### Workflow
+
+**Rule:** Always commit to the branch and wait for Vercel deploy before testing.
+
+1. **Commit & push** your changes
+2. **Wait for Vercel** to deploy (~30-60 seconds)
+3. **Fetch preview URL** for current commit
+4. **Test with Playwright MCP** using URL + bypass secret
+
+### Fetch Preview URL
+
+```bash
+# Get preview URL for current commit
+COMMIT=$(git rev-parse HEAD)
+DEPLOY_ID=$(gh api repos/gabrielramos-rc/nutriassist/deployments \
+  --jq ".[] | select(.ref == \"$COMMIT\") | .id" | head -1)
+gh api repos/gabrielramos-rc/nutriassist/deployments/$DEPLOY_ID/statuses \
+  --jq '.[0].environment_url'
+```
+
+### Vercel Protection Bypass
+
+Append the bypass secret to test protected deployments:
 
 ```
-https://nutriassist-xxx.vercel.app?x-vercel-protection-bypass=SECRET
+{PREVIEW_URL}?x-vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}
 ```
 
-**Secret location:** `VERCEL_AUTOMATION_BYPASS_SECRET` in Vercel project settings
+**Secret location:** `.env.local` → `VERCEL_AUTOMATION_BYPASS_SECRET`
 
-**Using with Playwright MCP:**
+### Using with Playwright MCP
+
+```bash
+# 1. Read bypass secret from .env.local
+cat .env.local | grep VERCEL_AUTOMATION_BYPASS_SECRET
+
+# 2. Get the preview URL (commands above)
+
+# 3. Combine: {PREVIEW_URL}?x-vercel-protection-bypass={SECRET}
+
+# 4. Use with Playwright MCP
+browser_navigate → full URL with bypass
 ```
-browser_navigate → url with ?x-vercel-protection-bypass=SECRET
-```
+
+**Important:** Always read `VERCEL_AUTOMATION_BYPASS_SECRET` from `.env.local` before testing.
 
 ## Test Types
 
