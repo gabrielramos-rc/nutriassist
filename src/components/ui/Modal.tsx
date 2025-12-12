@@ -90,10 +90,10 @@ export function Modal({
   if (!isOpen) return null;
 
   const sizes = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
+    sm: "max-w-[calc(100vw-2rem)] sm:max-w-sm",
+    md: "max-w-[calc(100vw-2rem)] sm:max-w-md",
+    lg: "max-w-[calc(100vw-2rem)] sm:max-w-lg",
+    xl: "max-w-[calc(100vw-2rem)] sm:max-w-xl",
   };
 
   return (
@@ -118,14 +118,16 @@ export function Modal({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-start justify-between p-4 border-b border-gray-200">
+          <div className="flex items-start justify-between p-3 sm:p-4 border-b border-gray-200">
             <div>
               {title && (
-                <h2 id="modal-title" className="text-lg font-semibold text-gray-900">
+                <h2 id="modal-title" className="text-base sm:text-lg font-semibold text-gray-900">
                   {title}
                 </h2>
               )}
-              {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
+              {description && (
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">{description}</p>
+              )}
             </div>
             {showCloseButton && (
               <button
@@ -140,7 +142,7 @@ export function Modal({
         )}
 
         {/* Content */}
-        <div className="p-4">{children}</div>
+        <div className="p-3 sm:p-4">{children}</div>
       </div>
     </div>
   );
