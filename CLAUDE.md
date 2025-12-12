@@ -95,9 +95,11 @@ OPENROUTER_FALLBACK_MODELS=
 ## Commands
 
 ```bash
-npm run dev      # Development
-npm run build    # Build
-npm run lint     # Lint
+npm run dev            # Development
+npm run build          # Build
+npm run lint           # Lint
+npm run test           # Run tests
+npm run secrets:check  # Scan entire repo for secrets
 ```
 
 ## Important Notes
@@ -132,6 +134,23 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - One feature per branch
 - Squash commits on merge
 - Delete branch after merge
+
+### Pre-commit Hooks
+
+The following checks run automatically on every commit:
+
+1. **lint-staged** - ESLint + Prettier on staged files
+2. **secretlint** - Secret detection on all files
+
+If secretlint detects a potential secret, the commit will be blocked. To fix:
+
+- Remove the secret from your code
+- If it's a false positive, add pattern to `.secretlintrc.json` allowlist
+
+```bash
+# Scan entire repo for secrets
+npm run secrets:check
+```
 
 ## Documentation
 
