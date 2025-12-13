@@ -2,19 +2,16 @@ export const dynamic = "force-dynamic";
 
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { getNutritionist } from "@/services/patients";
-
-// For MVP, hardcode the nutritionist ID (auth will be added later)
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
+import { getNutritionistId } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const nutritionist = await getNutritionist(TEST_NUTRITIONIST_ID);
+  const nutritionistId = await getNutritionistId();
+  const nutritionist = await getNutritionist(nutritionistId);
 
   if (!nutritionist) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Nutricionista não encontrado</p>
-      </div>
-    );
+    // New user needs to complete onboarding
+    redirect("/onboarding");
   }
 
   return <DashboardShell nutritionistName={nutritionist.name}>{children}</DashboardShell>;

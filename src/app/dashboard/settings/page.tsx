@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Save, Copy, Check, ExternalLink } from "lucide-react";
-
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
+import { useNutritionistId } from "@/hooks/useAuth";
 
 interface BusinessHours {
   [key: string]: {
@@ -53,6 +52,7 @@ const DEFAULT_BUSINESS_HOURS: BusinessHours = {
 };
 
 export default function SettingsPage() {
+  const nutritionistId = useNutritionistId();
   const [_nutritionist, setNutritionist] = useState<Nutritionist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -69,8 +69,9 @@ export default function SettingsPage() {
   const [faqResponses, setFaqResponses] = useState<FAQResponses>({});
 
   const fetchNutritionist = useCallback(async () => {
+    if (!nutritionistId) return;
     try {
-      const res = await fetch(`/api/nutritionists?nutritionistId=${TEST_NUTRITIONIST_ID}`);
+      const res = await fetch(`/api/nutritionists?nutritionistId=${nutritionistId}`);
       const data = await res.json();
       setNutritionist(data);
 
@@ -86,7 +87,7 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [nutritionistId]);
 
   useEffect(() => {
     fetchNutritionist();
@@ -121,7 +122,7 @@ export default function SettingsPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nutritionistId: TEST_NUTRITIONIST_ID,
+          nutritionistId,
           name: name.trim(),
           email: email.trim(),
           phone: phone.trim() || null,
@@ -139,7 +140,7 @@ export default function SettingsPage() {
   };
 
   const handleCopyEmbed = async () => {
-    const chatUrl = `${window.location.origin}/chat/${TEST_NUTRITIONIST_ID}`;
+    const chatUrl = `${window.location.origin}/chat/${nutritionistId}`;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(chatUrl);
@@ -440,7 +441,7 @@ export default function SettingsPage() {
               <input
                 type="text"
                 readOnly
-                value={`${typeof window !== "undefined" ? window.location.origin : ""}/chat/${TEST_NUTRITIONIST_ID}`}
+                value={`${typeof window !== "undefined" ? window.location.origin : ""}/chat/${nutritionistId}`}
                 className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700"
               />
               <button
@@ -469,7 +470,7 @@ export default function SettingsPage() {
             </p>
 
             <a
-              href={`/chat/${TEST_NUTRITIONIST_ID}`}
+              href={`/chat/${nutritionistId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors"

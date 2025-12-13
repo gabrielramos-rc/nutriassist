@@ -11,11 +11,12 @@ import {
 import { getTodayAppointments } from "@/services/appointments";
 import { getPatientCount } from "@/services/patients";
 import { formatTime, truncate } from "@/lib/utils";
+import { getNutritionistId } from "@/lib/auth";
 import Link from "next/link";
 
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
-
 export default async function DashboardPage() {
+  const nutritionistId = await getNutritionistId();
+
   // Fetch all stats in parallel
   const [
     activeConversations,
@@ -25,12 +26,12 @@ export default async function DashboardPage() {
     recentConversations,
     handoffs,
   ] = await Promise.all([
-    getActiveConversationCount(TEST_NUTRITIONIST_ID),
-    getHandoffCount(TEST_NUTRITIONIST_ID),
-    getTodayAppointments(TEST_NUTRITIONIST_ID),
-    getPatientCount(TEST_NUTRITIONIST_ID),
-    getConversations(TEST_NUTRITIONIST_ID, { status: "active", limit: 5 }),
-    getPendingHandoffs(TEST_NUTRITIONIST_ID),
+    getActiveConversationCount(nutritionistId),
+    getHandoffCount(nutritionistId),
+    getTodayAppointments(nutritionistId),
+    getPatientCount(nutritionistId),
+    getConversations(nutritionistId, { status: "active", limit: 5 }),
+    getPendingHandoffs(nutritionistId),
   ]);
 
   return (

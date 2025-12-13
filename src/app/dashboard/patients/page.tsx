@@ -6,8 +6,7 @@ import { PatientModal } from "@/components/dashboard/PatientModal";
 import { UploadDietModal } from "@/components/dashboard/UploadDietModal";
 import { useToast } from "@/components/ui/Toast";
 import { AlertCircle, RefreshCw } from "lucide-react";
-
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
+import { useNutritionistId } from "@/hooks/useAuth";
 
 interface Patient {
   id: string;
@@ -19,6 +18,7 @@ interface Patient {
 }
 
 export default function PatientsPage() {
+  const nutritionistId = useNutritionistId();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +29,10 @@ export default function PatientsPage() {
   const toast = useToast();
 
   const fetchPatients = useCallback(async () => {
+    if (!nutritionistId) return;
     setError(null);
     try {
-      const res = await fetch(`/api/patients?nutritionistId=${TEST_NUTRITIONIST_ID}`);
+      const res = await fetch(`/api/patients?nutritionistId=${nutritionistId}`);
       if (!res.ok) {
         throw new Error("Erro ao carregar pacientes");
       }
@@ -43,7 +44,7 @@ export default function PatientsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [nutritionistId]);
 
   useEffect(() => {
     fetchPatients();
@@ -74,7 +75,7 @@ export default function PatientsPage() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              nutritionistId: TEST_NUTRITIONIST_ID,
+              nutritionistId,
               ...data,
             }),
           });

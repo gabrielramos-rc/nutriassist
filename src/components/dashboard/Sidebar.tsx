@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SidebarProps {
   nutritionistName: string;
@@ -41,12 +42,17 @@ const navItems = [
 
 export function Sidebar({ nutritionistName, isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   const handleNavClick = (): void => {
     // Close sidebar on mobile when navigating
     if (onClose) {
       onClose();
     }
+  };
+
+  const handleLogout = async (): Promise<void> => {
+    await signOut();
   };
 
   return (
@@ -110,7 +116,10 @@ export function Sidebar({ nutritionistName, isOpen = false, onClose }: SidebarPr
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-200">
-        <button className="flex items-center gap-3 px-4 py-2.5 w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-2.5 w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors"
+        >
           <LogOut className="w-5 h-5" />
           Sair
         </button>

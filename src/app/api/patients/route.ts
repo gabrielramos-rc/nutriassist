@@ -14,6 +14,7 @@ import {
   getValidationError,
 } from "@/lib/validations";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { validateNutritionistOwnership } from "@/lib/api-auth";
 
 // GET /api/patients - List patients for a nutritionist or get a single patient
 export async function GET(request: NextRequest) {
@@ -45,6 +46,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: getValidationError(validation.error) }, { status: 400 });
   }
 
+  // Validate user owns this nutritionist resource
+  const authError = await validateNutritionistOwnership(validation.data.nutritionistId);
+  if (authError) return authError;
+
   const patients = await getPatientsByNutritionist(validation.data.nutritionistId);
   return NextResponse.json(patients);
 }
@@ -65,6 +70,11 @@ export async function POST(request: NextRequest) {
     }
 
     const { nutritionistId, name, email, phone } = validation.data;
+
+    // Validate user owns this nutritionist resource
+    const authError = await validateNutritionistOwnership(nutritionistId);
+    if (authError) return authError;
+
     const patient = await createPatient(nutritionistId, name, email || undefined, phone);
     return NextResponse.json(patient, { status: 201 });
   } catch {

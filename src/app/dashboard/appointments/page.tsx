@@ -6,8 +6,7 @@ import { AppointmentCalendar } from "@/components/dashboard/AppointmentCalendar"
 import { AppointmentModal } from "@/components/dashboard/AppointmentModal";
 import { useToast } from "@/components/ui/Toast";
 import { AlertCircle, RefreshCw } from "lucide-react";
-
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
+import { useNutritionistId } from "@/hooks/useAuth";
 
 interface Patient {
   id: string;
@@ -24,6 +23,7 @@ interface Appointment {
 }
 
 export default function AppointmentsPage() {
+  const nutritionistId = useNutritionistId();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +32,7 @@ export default function AppointmentsPage() {
   const toast = useToast();
 
   const fetchAppointments = useCallback(async () => {
+    if (!nutritionistId) return;
     setError(null);
     try {
       // Fetch appointments for a 3-month window
@@ -39,7 +40,7 @@ export default function AppointmentsPage() {
       const endDate = format(endOfMonth(addMonths(new Date(), 2)), "yyyy-MM-dd");
 
       const res = await fetch(
-        `/api/appointments?nutritionistId=${TEST_NUTRITIONIST_ID}&startDate=${startDate}&endDate=${endDate}`
+        `/api/appointments?nutritionistId=${nutritionistId}&startDate=${startDate}&endDate=${endDate}`
       );
       if (!res.ok) {
         throw new Error("Erro ao carregar consultas");
@@ -52,7 +53,7 @@ export default function AppointmentsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [nutritionistId]);
 
   useEffect(() => {
     fetchAppointments();

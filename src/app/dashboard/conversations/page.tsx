@@ -7,8 +7,7 @@ import { MessageSquare, AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
-
-const TEST_NUTRITIONIST_ID = "11111111-1111-1111-1111-111111111111";
+import { useNutritionistId } from "@/hooks/useAuth";
 
 interface Patient {
   id: string;
@@ -47,6 +46,7 @@ interface ConversationDetail extends Conversation {
 }
 
 export default function ConversationsPage() {
+  const nutritionistId = useNutritionistId();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedConversation, setSelectedConversation] = useState<ConversationDetail | null>(null);
@@ -58,11 +58,12 @@ export default function ConversationsPage() {
 
   // Fetch conversations list
   const fetchConversations = useCallback(async () => {
+    if (!nutritionistId) return;
     setError(null);
     try {
       const [conversationsRes, handoffsRes] = await Promise.all([
-        fetch(`/api/conversations?nutritionistId=${TEST_NUTRITIONIST_ID}`),
-        fetch(`/api/handoffs?nutritionistId=${TEST_NUTRITIONIST_ID}`),
+        fetch(`/api/conversations?nutritionistId=${nutritionistId}`),
+        fetch(`/api/handoffs?nutritionistId=${nutritionistId}`),
       ]);
 
       if (!conversationsRes.ok || !handoffsRes.ok) {
@@ -89,7 +90,7 @@ export default function ConversationsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [nutritionistId]);
 
   // Fetch conversation detail
   const fetchConversationDetail = useCallback(
