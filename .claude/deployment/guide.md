@@ -106,7 +106,7 @@ No SQL Editor do Supabase, execute:
 ### 2.3 Criar Storage Bucket
 
 1. Vá em Storage > New Bucket
-2. Nome: `diets`
+2. Nome: `diet-pdfs`
 3. Marque como público: **Não**
 4. Permitir uploads: 10MB max
 

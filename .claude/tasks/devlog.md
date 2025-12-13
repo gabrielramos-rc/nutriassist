@@ -4,6 +4,58 @@ Technical decisions, bugs fixed, and lessons learned during development.
 
 ---
 
+## Authentication (PR #46)
+
+### PR #46: Supabase Auth Implementation (Phase 23)
+
+- **Scope:** Complete authentication system with Email/Password + Google OAuth
+- **Files added (12):**
+  - `/src/middleware.ts` - Route protection
+  - `/src/lib/auth.ts` - Server-side auth utilities
+  - `/src/lib/api-auth.ts` - API route auth helpers
+  - `/src/contexts/AuthContext.tsx` - Client-side auth context
+  - `/src/hooks/useAuth.ts` - Auth hook re-exports
+  - `/src/app/(auth)/layout.tsx` - Auth pages layout
+  - `/src/app/(auth)/login/page.tsx` - Login page
+  - `/src/app/(auth)/signup/page.tsx` - Signup page
+  - `/src/app/(auth)/callback/route.ts` - OAuth callback
+  - `/src/app/(auth)/reset-password/page.tsx` - Password reset
+  - `/src/app/onboarding/page.tsx` - New user onboarding
+  - `/supabase/migrations/004_auth_trigger.sql` - Auto-create nutritionist
+- **Files modified (9):**
+  - Dashboard pages migrated from `TEST_NUTRITIONIST_ID` to `getNutritionistId()`
+  - `/src/components/dashboard/Sidebar.tsx` - Added logout button
+  - `/src/components/Providers.tsx` - Added AuthProvider
+  - `/src/app/api/patients/route.ts` - Added auth validation
+
+### Key Implementation Details
+
+**Middleware Pattern:**
+
+```typescript
+// Protect dashboard, allow public routes
+const publicRoutes = ["/chat", "/login", "/signup", "/reset-password", "/auth", "/onboarding"];
+if (!user && pathname.startsWith("/dashboard")) {
+  redirect to /login with redirect param
+}
+```
+
+**OAuth Callback Flow:**
+
+1. Supabase redirects to `/auth/callback`
+2. Exchange code for session
+3. Check if nutritionist record exists
+4. If new user → redirect to `/onboarding`
+5. If existing → redirect to `/dashboard`
+
+**Onboarding Flow:**
+
+1. Profile (name, phone)
+2. Schedule (duration, business hours)
+3. Confirmation → PATCH to `/api/nutritionists`
+
+---
+
 ## Bug Fixes (PR #35)
 
 ### PR #35: UUID Validation Fix (Phase 16 Re-test)
@@ -312,6 +364,25 @@ All tests run against production (nutriassist-one.vercel.app) using curl:
 - **Why:** gitleaks npm package is just a wrapper that requires the Go binary installed separately
 - **Benefit:** Works out of the box with `npm install`, no external dependencies
 
+### Supabase Auth with @supabase/ssr
+
+- **Context:** Need auth for Next.js App Router with server components
+- **Decision:** Use `@supabase/ssr` package instead of deprecated `@supabase/auth-helpers-nextjs`
+- **Pattern:**
+  - Server components: Use `createClient()` from `lib/supabase/server`
+  - Client components: Use `createClient()` from `lib/supabase/client`
+  - Middleware: Create client inline with cookie handlers
+- **Benefit:** Proper cookie handling for SSR, works with both server and client components
+
+### Auth Context with Server Components
+
+- **Context:** Dashboard uses mix of server and client components
+- **Decision:**
+  - Server components call `getNutritionistId()` from `lib/auth.ts`
+  - Client components use `useNutritionistId()` hook
+- **Why:** Can't use React context in server components
+- **Trade-off:** Slight code duplication, but keeps server components truly server-rendered
+
 ---
 
 ## Gotchas
@@ -361,6 +432,44 @@ The `gitleaks` npm package does NOT include the binary. It's just a wrapper that
 ### Rate Limiting in Serverless
 
 In-memory rate limiting resets on each cold start and doesn't share state across instances. For production with multiple instances, use Upstash Redis or similar distributed store.
+
+### Supabase SSR Auth Cookies
+
+When using `@supabase/ssr` with Next.js App Router, the middleware must handle cookie updates carefully:
+
+```typescript
+// In middleware.ts - must recreate response after setting cookies
+cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+supabaseResponse = NextResponse.next({ request }); // Recreate response!
+cookiesToSet.forEach(({ name, value, options }) =>
+  supabaseResponse.cookies.set(name, value, options)
+);
+```
+
+### Google OAuth Redirect URLs
+
+- Google Console only needs the Supabase callback URL: `https://<project>.supabase.co/auth/v1/callback`
+- Your app's callback URL (`/auth/callback`) goes in Supabase Dashboard only
+- Localhost URLs don't need to be added to Google Console (Supabase handles the OAuth flow)
+
+### Supabase Site URL
+
+The "Site URL" in Supabase Dashboard must be your production URL, not localhost. This is used as the base for email confirmation links. Add localhost to the "Redirect URLs" list instead.
+
+### TypeScript with Supabase Query Results
+
+Supabase query results sometimes infer as `never` when using `.single()`. Use type assertions:
+
+```typescript
+const { data: nutritionist } = await supabase
+  .from("nutritionists")
+  .select("id, name")
+  .eq("id", user.id)
+  .single();
+
+// Type assertion needed
+const nutri = nutritionist as { id: string; name: string } | null;
+```
 
 ### Zod UUID Validation
 

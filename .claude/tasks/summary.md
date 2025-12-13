@@ -2,11 +2,11 @@
 
 ## Current Status
 
-**Version:** beta-v0.1.0 (MVP Complete)
+**Version:** beta-v0.2.0 (Authentication Ready)
 
-**Next Release:** beta-v0.2.0 (Code Quality & Security)
+**Next Release:** beta-v0.3.0 (Production RLS)
 
-**Phase:** Testing & Quality Assurance
+**Phase:** Authentication Complete - Ready for RLS Migration
 
 ## Completed
 
@@ -14,47 +14,34 @@
 | ----- | --------------------------------------------------------------- |
 | 0-9   | Core MVP (Chat, Scheduling, Diet Q&A, Dashboard)                |
 | 10-15 | Testing (Chat, Conversations, Patients, Appointments, Settings) |
-| 16    | Integration Testing (partial - 2/7 tests)                       |
+| 16    | Integration Testing (6/7 - push notifications future)           |
+| 17-20 | Quality Testing (Performance, Errors, A11y, Responsive)         |
 | 21    | Code Quality (Prettier, Husky, ESLint, 209 tests)               |
-| 22    | Security (22.1-22.6 complete, 22.7 blocked by Auth)             |
+| 22    | Security (22.1-22.6 complete, 22.7 ready for RLS)               |
+| 23    | Authentication (Supabase Auth + Google OAuth)                   |
 
 ## In Progress
 
-### Integration Issues (Phase 16)
+### Phase 22.7 (Unblocked)
 
-- Scheduling flow needs conversation state management
-- OpenRouter model availability (fallback chain implemented)
-
-### Quality Testing (Phases 17-20) ✅
-
-| Phase | Focus             | Status      |
-| ----- | ----------------- | ----------- |
-| 17    | Performance       | ✅ Complete |
-| 18    | Error Handling    | ✅ Complete |
-| 19    | Accessibility     | ✅ Complete |
-| 20    | Responsive Design | ✅ Complete |
-
-### Phase 22.7 (Blocked)
-
-- Enable production RLS (requires Supabase Auth)
+- [ ] Apply 002_production_rls.sql migration
+- [ ] Test all RLS policies with authenticated users
+- [ ] Verify chat widget works with anonymous access
 
 ## Known Limitations
 
-| Feature                     | Limitation                                 | Workaround/Future Fix                   |
-| --------------------------- | ------------------------------------------ | --------------------------------------- |
-| Session persistence         | Chat sessions don't persist across devices | Requires Supabase Auth                  |
-| Patient identification      | Anonymous web users only                   | Add login flow                          |
-| Manual appointment creation | Not available in dashboard                 | Use chat or direct DB                   |
-| Profile validation          | Basic validation only                      | Add comprehensive validation            |
-| Test framework              | Vitest configured ✅ (57% coverage)        | Target 80% coverage, Playwright for E2E |
-| Authentication              | No auth - dashboard open                   | Implement Supabase Auth                 |
+| Feature                     | Limitation                          | Workaround/Future Fix                   |
+| --------------------------- | ----------------------------------- | --------------------------------------- |
+| Manual appointment creation | Not available in dashboard          | Use chat or direct DB                   |
+| Profile validation          | Basic validation only               | Add comprehensive validation            |
+| Test framework              | Vitest configured ✅ (57% coverage) | Target 80% coverage, Playwright for E2E |
+| Patient notifications       | No push notifications               | Future: WebSocket or email              |
 
 ## Future Work (Post-MVP)
 
 - WhatsApp integration
 - Google Calendar sync
-- Supabase Auth (fixes session + auth limitations)
-- Multi-tenant support
+- Multi-tenant support (multiple nutritionists)
 
 ## Deep Dive
 

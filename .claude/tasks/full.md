@@ -2,22 +2,23 @@
 
 ## Phase Status
 
-| Phase | Description               | Status                       |
-| ----- | ------------------------- | ---------------------------- |
-| 0-9   | MVP Build                 | ✅ Complete                  |
-| 10    | Bug Fixes (FAQ intent)    | ✅ Complete                  |
-| 11    | Chat Widget Testing       | ✅ Complete                  |
-| 12    | Dashboard Conversations   | ✅ Complete                  |
-| 13    | Patients CRUD Testing     | ✅ Complete                  |
-| 14    | Appointments CRUD Testing | ✅ Complete                  |
-| 15    | Settings CRUD Testing     | ✅ Complete                  |
-| 16    | Integration Testing       | ✅ Complete (6/7)            |
-| 17    | Performance Testing       | ✅ Complete (17.2 manual)    |
-| 18    | Error Handling Testing    | ✅ Complete                  |
-| 19    | Accessibility Testing     | ✅ Complete                  |
-| 20    | Responsive Design Testing | ✅ Complete                  |
-| 21    | Code Quality              | ✅ Complete                  |
-| 22    | Security                  | ⚠️ Partial (22.7 needs Auth) |
+| Phase | Description               | Status                    |
+| ----- | ------------------------- | ------------------------- |
+| 0-9   | MVP Build                 | ✅ Complete               |
+| 10    | Bug Fixes (FAQ intent)    | ✅ Complete               |
+| 11    | Chat Widget Testing       | ✅ Complete               |
+| 12    | Dashboard Conversations   | ✅ Complete               |
+| 13    | Patients CRUD Testing     | ✅ Complete               |
+| 14    | Appointments CRUD Testing | ✅ Complete               |
+| 15    | Settings CRUD Testing     | ✅ Complete               |
+| 16    | Integration Testing       | ✅ Complete (6/7)         |
+| 17    | Performance Testing       | ✅ Complete (17.2 manual) |
+| 18    | Error Handling Testing    | ✅ Complete               |
+| 19    | Accessibility Testing     | ✅ Complete               |
+| 20    | Responsive Design Testing | ✅ Complete               |
+| 21    | Code Quality              | ✅ Complete               |
+| 22    | Security                  | ⚠️ 22.7 ready for RLS     |
+| 23    | Authentication            | ✅ Complete               |
 
 ---
 
@@ -226,11 +227,83 @@
 - [x] Add input validation with Zod schemas
 - [x] Sanitize user inputs (trim, max length, UUID validation)
 
-### 22.7 Enable Production RLS ⏳ (Blocked)
+### 22.7 Enable Production RLS ⏳ (Unblocked - Ready)
 
-- [ ] Implement Supabase Auth (prerequisite)
+- [x] Implement Supabase Auth (prerequisite) ✅ Phase 23
 - [ ] Apply 002_production_rls.sql migration
-- [ ] Test all RLS policies
+- [ ] Test all RLS policies with authenticated users
+- [ ] Verify chat widget works with anonymous access
+
+---
+
+## Phase 23: Authentication ✅
+
+### 23.1 Supabase Dashboard Setup (Manual) ✅
+
+- [x] Enable Email provider with confirmation
+- [x] Enable Google OAuth provider
+- [x] Configure Site URL (production)
+- [x] Configure Redirect URLs (localhost + production)
+
+### 23.2 Middleware ✅
+
+- [x] Create `/src/middleware.ts` for route protection
+- [x] Protect `/dashboard/*` routes
+- [x] Allow public: `/chat/*`, `/login`, `/signup`, `/reset-password`, `/auth/*`, `/onboarding`
+- [x] Redirect unauthenticated users to `/login`
+- [x] Redirect authenticated users away from auth pages
+
+### 23.3 Auth Utilities ✅
+
+- [x] Create `/src/lib/auth.ts` - Server-side auth helpers
+- [x] Create `/src/lib/api-auth.ts` - API route auth helpers
+- [x] `getUser()`, `requireAuth()`, `getNutritionistId()`
+- [x] `requireApiAuth()`, `validateNutritionistOwnership()`
+
+### 23.4 Auth Pages ✅
+
+- [x] Create `/src/app/(auth)/layout.tsx` - Shared auth layout
+- [x] Create `/src/app/(auth)/login/page.tsx` - Email/password + Google OAuth
+- [x] Create `/src/app/(auth)/signup/page.tsx` - Registration with validation
+- [x] Create `/src/app/(auth)/callback/route.ts` - OAuth callback handler
+- [x] Create `/src/app/(auth)/reset-password/page.tsx` - Password recovery
+
+### 23.5 Auth Context ✅
+
+- [x] Create `/src/contexts/AuthContext.tsx` - Client-side auth state
+- [x] Create `/src/hooks/useAuth.ts` - Hook re-exports
+- [x] Add `useNutritionistId()`, `useIsAuthenticated()`, `useUserEmail()`
+- [x] Add AuthProvider to Providers.tsx
+
+### 23.6 Dashboard Migration ✅
+
+- [x] Update `/src/app/dashboard/layout.tsx` - Use `getNutritionistId()`
+- [x] Update `/src/app/dashboard/page.tsx` - Server-side auth
+- [x] Update `/src/app/dashboard/appointments/page.tsx` - Client-side auth
+- [x] Update `/src/app/dashboard/patients/page.tsx` - Client-side auth
+- [x] Update `/src/app/dashboard/conversations/page.tsx` - Client-side auth
+- [x] Update `/src/app/dashboard/settings/page.tsx` - Client-side auth
+- [x] Update `/src/components/dashboard/Sidebar.tsx` - Add logout
+
+### 23.7 Database Trigger ✅
+
+- [x] Create `/supabase/migrations/004_auth_trigger.sql`
+- [x] Auto-create nutritionist record on auth.users insert
+- [x] Set default name from user metadata or "Novo Nutricionista"
+
+### 23.8 API Routes Auth ✅
+
+- [x] Update `/src/app/api/patients/route.ts` - Add auth validation
+- [x] Keep `/src/app/api/chat/route.ts` public (patient widget)
+
+### 23.9 Onboarding ✅
+
+- [x] Create `/src/app/onboarding/page.tsx` - 3-step wizard
+- [x] Step 1: Profile (name, phone)
+- [x] Step 2: Schedule (duration, business hours)
+- [x] Step 3: Confirmation and save
+
+**PR #46** - Merged to dev (Dec 2025)
 
 ---
 
@@ -247,12 +320,6 @@
 - Google OAuth setup
 - Sync appointments
 - Read availability
-
-### Authentication
-
-- Supabase Auth
-- Nutritionist login/signup
-- Protected routes
 
 ### Multi-tenant
 
